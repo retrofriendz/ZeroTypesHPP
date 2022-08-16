@@ -1868,10 +1868,7 @@ inline bool str_suffix(const char *astr, const char *bstr);
 // Return a random character from this list, uses uniform()
 inline char randomChar(const char *list);
 // Indentation state
-std::string &indention() {
-	static Zstring _indention;
-	return _indention.value;
-}
+inline std::string &indention();
 // Increase indentation
 inline void incdent();
 // Decrease indentation
@@ -2004,7 +2001,7 @@ public:
   return p;
  }
  char last() { return At(length-1); }
- const char *word( int number, char *out=buf ) {
+ const char *word( int number, char *out=ZTSB().buf) {
   rewind();
   for ( int i=0; i<number; i++ ) next(out);
   return out;
@@ -2014,7 +2011,7 @@ public:
   for ( int i=0; i<number; i++ ) next(out);
   return !str_cmp(matches,out);
  }
- char *next( char *out=buf ) {
+ char *next( char *out=ZTSB().buf ) {
   p=one_argument(p,out);
   return out;
  }
@@ -8167,6 +8164,12 @@ inline bool file_exists(const char *fn);
    if (!f.is_open()) return false;
    f.close();
    return true;
+  }
+
+  // Indentation state
+  inline std::string &indention() {
+	  static Zstring _indention;
+	  return _indention.value;
   }
 
 #endif // _ZEROTYPES_HPP_
