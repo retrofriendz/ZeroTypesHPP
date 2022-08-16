@@ -10,25 +10,39 @@ Copyright (c) 2007-2017
 */
 
 #pragma once
+#if !defined(__cplusplus)
+#error C++ Compiler Required
+#else
+#ifndef _ZEROTYPES_HPP_
+#define _ZEROTYPES_HPP_ 1
+
 #pragma warning (disable:4100)
 #pragma warning (disable:4101)
 
 // Call this on application startup.  Inits work strings and the seeder.
-void InitZeroTypesLibrary();
+inline void InitZeroTypesLibrary();
 
-void ZIndexed_Rigorous_Test();
+inline void ZIndexed_Rigorous_Test();
 
+// Removed due to problems: // #include <algorithm> // for std::min/max, string_infix ...
 #include <string>
-#include <cmath>
+#include <stdbool.h>
+#include <iostream>
+//#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <streambuf>
 
 #if !defined(DEBUG) && defined(_DEBUG)
 #define DEBUG _DEBUG
 #endif
 
+#if !defined(DONT_DECLARE_OUTPUT)
 #ifdef DEBUG
 #define OUTPUT(str,...) output__(str, ##__VA_ARGS__)
 #else
 #define OUTPUT(std,...) 
+#endif
 #endif
 
 // having, true-or-false (diminished meaning of bool) parameter specifiers...
@@ -36,7 +50,6 @@ void ZIndexed_Rigorous_Test();
 typedef bool trueorfalse;
 typedef bool having; // symbol name idea came after reading about /using/ C++ keyword on http://stackoverflow.com/questions/10747810/what-is-the-difference-between-typedef-and-using-in-c11
                      // Sometimes the implementation uses the presence of a bool typed parameter to allow for a quick variant of a function/method of same name
-                     // Example can be seen in GridSplitter where presence of "columns_instead_of_rows" parameter activates the feature whether presented with true or false.
                      // This is a slight brainly optimization that adds functionality where it was already present, and the typedef(s) above simplify programmer interface by
                      // embedding the nuance right in the code.  Most compilers would treat this as an alias, so bool and Zbool can still be provided when cast,
                      // but if you see /having/, passing it a bool variable isn't meaningful, you must test its value if it is to mean something.  The alternative
@@ -46,10 +59,10 @@ typedef bool having; // symbol name idea came after reading about /using/ C++ ke
 
                      // Basic cross-platform soft error reporting function.
                      // Put a breakpoint on the calls to this to catch your issues with the debugger in debug mode.
-void output__(const char *fmt, ...);
+inline void output__(const char *fmt, ...);
 
 // Basic cross-platform string formatting printf style
-std::string FMT(const char *fmt, ...);
+inline std::string FMT(const char *fmt, ...);
 
 // POD-type replacements
 #define Zb Zbool
@@ -216,15 +229,15 @@ public:
 };
 
 // Mixed type interactions
-float operator+ ( const Zfloat& a, const Zint& b );
-float operator+ ( const Zint& a, const Zfloat& b );
-float operator* ( const Zfloat& a, const Zint& b );
-float operator* ( const Zint& a, const Zfloat& b );
+inline float operator+ ( const Zfloat& a, const Zint& b );
+inline float operator+ ( const Zint& a, const Zfloat& b );
+inline float operator* ( const Zfloat& a, const Zint& b );
+inline float operator* ( const Zint& a, const Zfloat& b );
 // Float and itself
-float operator+ ( const Zfloat& a, const Zfloat& b );
-float operator- ( const Zfloat& a, const Zfloat& b );
-float operator* ( const Zfloat& a, const Zfloat& b );
-float operator/ ( const Zfloat& a, const Zfloat& b );
+inline float operator+ ( const Zfloat& a, const Zfloat& b );
+inline float operator- ( const Zfloat& a, const Zfloat& b );
+inline float operator* ( const Zfloat& a, const Zfloat& b );
+inline float operator/ ( const Zfloat& a, const Zfloat& b );
 /* Creates C2593 for some reason...
 float operator+ ( Zfloat a, Zfloat b );
 float operator- ( Zfloat a, Zfloat b );
@@ -232,137 +245,137 @@ float operator* ( Zfloat a, Zfloat b );
 float operator/ ( Zfloat a, Zfloat b );
 */
 // Casted int operations
-float operator+ ( const Zfloat& a, int b );
-float operator- ( const Zfloat& a, int b );
-float operator* ( const Zfloat& a, int b );
-float operator/ ( const Zfloat& a, int b );
-float operator+ ( int b, const Zfloat& a );
-float operator- ( int b, const Zfloat& a );
-float operator* ( int b, const Zfloat& a );
-float operator/ ( int b, const Zfloat& a );
+inline float operator+ ( const Zfloat& a, int b );
+inline float operator- ( const Zfloat& a, int b );
+inline float operator* ( const Zfloat& a, int b );
+inline float operator/ ( const Zfloat& a, int b );
+inline float operator+ ( int b, const Zfloat& a );
+inline float operator- ( int b, const Zfloat& a );
+inline float operator* ( int b, const Zfloat& a );
+inline float operator/ ( int b, const Zfloat& a );
 // Float operations
-float operator+ ( const Zfloat& a, float b );
-float operator- ( const Zfloat& a, float b );
-float operator* ( const Zfloat& a, float b );
-float operator/ ( const Zfloat& a, float b );
-float operator+ ( float b, const Zfloat& a );
-float operator- ( float b, const Zfloat& a );
-float operator* ( float b, const Zfloat& a );
-float operator/ ( float b, const Zfloat& a );
+inline float operator+ ( const Zfloat& a, float b );
+inline float operator- ( const Zfloat& a, float b );
+inline float operator* ( const Zfloat& a, float b );
+inline float operator/ ( const Zfloat& a, float b );
+inline float operator+ ( float b, const Zfloat& a );
+inline float operator- ( float b, const Zfloat& a );
+inline float operator* ( float b, const Zfloat& a );
+inline float operator/ ( float b, const Zfloat& a );
 // Casted double operations (leans toward double precision)
-float operator+ ( const Zfloat& a, double b );
-float operator- ( const Zfloat& a, double b );
-float operator* ( const Zfloat& a, double b );
-float operator/ ( const Zfloat& a, double b );
-float operator+ ( double b, const Zfloat& a );
-float operator- ( double b, const Zfloat& a );
-float operator* ( double b, const Zfloat& a );
-float operator/ ( double b, const Zfloat& a );
+inline float operator+ ( const Zfloat& a, double b );
+inline float operator- ( const Zfloat& a, double b );
+inline float operator* ( const Zfloat& a, double b );
+inline float operator/ ( const Zfloat& a, double b );
+inline float operator+ ( double b, const Zfloat& a );
+inline float operator- ( double b, const Zfloat& a );
+inline float operator* ( double b, const Zfloat& a );
+inline float operator/ ( double b, const Zfloat& a );
 // Boolean operations
-bool operator>= ( const Zfloat& a, const Zfloat& b );
-bool operator>= ( const Zfloat& a, const Zbyte& b );
-bool operator>= ( const Zfloat& a, const Zushort& b );
-bool operator>= ( const Zfloat& a, const Zuint& b );
-bool operator>= ( const Zfloat& a, const Zint& b );
-bool operator>= ( const Zfloat& a, const Zdouble& b );
-bool operator>= ( const Zbyte& a, const Zfloat& b );
-bool operator>= ( const Zushort& a, const Zfloat& b );
-bool operator>= ( const Zuint& a, const Zfloat& b );
-bool operator>= ( const Zint& a, const Zfloat& b );
-bool operator>= ( const Zdouble& a, const Zfloat& b );
-bool operator>= ( const Zfloat& a, int b );
-bool operator>= ( const Zfloat& a, float b );
-bool operator>= ( const Zfloat& a, double b );
-bool operator>= ( int a, const Zfloat& b );
-bool operator>= ( float a, const Zfloat& b );
-bool operator>= ( double a, const Zfloat& b );
-bool operator== ( const Zfloat& a, const Zfloat& b );
-bool operator== ( const Zfloat& a, const Zbyte& b );
-bool operator== ( const Zfloat& a, const Zushort& b );
-bool operator== ( const Zfloat& a, const Zuint& b );
-bool operator== ( const Zfloat& a, const Zint& b );
-bool operator== ( const Zfloat& a, const Zdouble& b );
-bool operator== ( const Zbyte& a, const Zfloat& b );
-bool operator== ( const Zushort& a, const Zfloat& b );
-bool operator== ( const Zuint& a, const Zfloat& b );
-bool operator== ( const Zint& a, const Zfloat& b );
-bool operator== ( const Zdouble& a, const Zfloat& b );
-bool operator== ( const Zfloat& a, int b );
-bool operator== ( const Zfloat& a, float b );
-bool operator== ( const Zfloat& a, double b );
-bool operator== ( int a, const Zfloat& b );
-bool operator== ( float a, const Zfloat& b );
-bool operator== ( double a, const Zfloat& b );
-bool operator!= ( const Zfloat& a, const Zfloat& b );
-bool operator!= ( const Zfloat& a, const Zbyte& b );
-bool operator!= ( const Zfloat& a, const Zushort& b );
-bool operator!= ( const Zfloat& a, const Zuint& b );
-bool operator!= ( const Zfloat& a, const Zint& b );
-bool operator!= ( const Zfloat& a, const Zdouble& b );
-bool operator!= ( const Zbyte& a, const Zfloat& b );
-bool operator!= ( const Zushort& a, const Zfloat& b );
-bool operator!= ( const Zuint& a, const unsigned int b );
-bool operator!= ( const Zuint& a, const int b );
-bool operator!= ( const Zuint& a, const Zfloat& b );
-bool operator!= ( const Zint& a, const Zfloat& b );
-bool operator!= ( const Zdouble& a, const Zfloat& b );
-bool operator!= ( const Zfloat& a, int b );
-bool operator!= ( const Zfloat& a, float b );
-bool operator!= ( const Zfloat& a, double b );
-bool operator!= ( int a, const Zfloat& b );
-bool operator!= ( float a, const Zfloat& b );
-bool operator!= ( double a, const Zfloat& b );
-bool operator<= ( const Zfloat& a, const Zfloat& b );
-bool operator<= ( const Zfloat& a, const Zbyte& b );
-bool operator<= ( const Zfloat& a, const Zushort& b );
-bool operator<= ( const Zfloat& a, const Zuint& b );
-bool operator<= ( const Zfloat& a, const Zint& b );
-bool operator<= ( const Zfloat& a, const Zdouble& b );
-bool operator<= ( const Zbyte& a, const Zfloat& b );
-bool operator<= ( const Zushort& a, const Zfloat& b );
-bool operator<= ( const Zuint& a, const Zfloat& b );
-bool operator<= ( const Zint& a, const Zfloat& b );
-bool operator<= ( const Zdouble& a, const Zfloat& b );
-bool operator<= ( const Zfloat& a, int b );
-bool operator<= ( const Zfloat& a, float b );
-bool operator<= ( const Zfloat& a, double b );
-bool operator<= ( int a, const Zfloat& b );
-bool operator<= ( float a, const Zfloat& b );
-bool operator<= ( double a, const Zfloat& b );
-bool operator> ( const Zfloat& a, const Zfloat& b );
-bool operator> ( const Zfloat& a, const Zbyte& b );
-bool operator> ( const Zfloat& a, const Zushort& b );
-bool operator> ( const Zfloat& a, const Zuint& b );
-bool operator> ( const Zfloat& a, const Zint& b );
-bool operator> ( const Zfloat& a, const Zdouble& b );
-bool operator> ( const Zbyte& a, const Zfloat& b );
-bool operator> ( const Zushort& a, const Zfloat& b );
-bool operator> ( const Zuint& a, const Zfloat& b );
-bool operator> ( const Zint& a, const Zfloat& b );
-bool operator> ( const Zdouble& a, const Zfloat& b );
-bool operator> ( const Zfloat& a, int b );
-bool operator> ( const Zfloat& a, float b );
-bool operator> ( const Zfloat& a, double b );
-bool operator> ( int a, const Zfloat& b );
-bool operator> ( float a, const Zfloat& b );
-bool operator> ( double a, const Zfloat& b );
-bool operator< ( const Zfloat& a, const Zfloat& b );
-bool operator< ( const Zfloat& a, const Zbyte& b );
-bool operator< ( const Zfloat& a, const Zushort& b );
-bool operator< ( const Zfloat& a, const Zuint& b );
-bool operator< ( const Zfloat& a, const Zint& b );
-bool operator< ( const Zfloat& a, const Zdouble& b );
-bool operator< ( const Zbyte& a, const Zfloat& b );
-bool operator< ( const Zushort& a, const Zfloat& b );
-bool operator< ( const Zuint& a, const Zfloat& b );
-bool operator< ( const Zint& a, const Zfloat& b );
-bool operator< ( const Zdouble& a, const Zfloat& b );
-bool operator< ( const Zfloat& a, int b );
-bool operator< ( const Zfloat& a, float b );
-bool operator< ( const Zfloat& a, double b );
-bool operator< ( int a, const Zfloat& b );
-bool operator< ( float a, const Zfloat& b );
-bool operator< ( double a, const Zfloat& b );
+inline bool operator>= ( const Zfloat& a, const Zfloat& b );
+inline bool operator>= ( const Zfloat& a, const Zbyte& b );
+inline bool operator>= ( const Zfloat& a, const Zushort& b );
+inline bool operator>= ( const Zfloat& a, const Zuint& b );
+inline bool operator>= ( const Zfloat& a, const Zint& b );
+inline bool operator>= ( const Zfloat& a, const Zdouble& b );
+inline bool operator>= ( const Zbyte& a, const Zfloat& b );
+inline bool operator>= ( const Zushort& a, const Zfloat& b );
+inline bool operator>= ( const Zuint& a, const Zfloat& b );
+inline bool operator>= ( const Zint& a, const Zfloat& b );
+inline bool operator>= ( const Zdouble& a, const Zfloat& b );
+inline bool operator>= ( const Zfloat& a, int b );
+inline bool operator>= ( const Zfloat& a, float b );
+inline bool operator>= ( const Zfloat& a, double b );
+inline bool operator>= ( int a, const Zfloat& b );
+inline bool operator>= ( float a, const Zfloat& b );
+inline bool operator>= ( double a, const Zfloat& b );
+inline bool operator== ( const Zfloat& a, const Zfloat& b );
+inline bool operator== ( const Zfloat& a, const Zbyte& b );
+inline bool operator== ( const Zfloat& a, const Zushort& b );
+inline bool operator== ( const Zfloat& a, const Zuint& b );
+inline bool operator== ( const Zfloat& a, const Zint& b );
+inline bool operator== ( const Zfloat& a, const Zdouble& b );
+inline bool operator== ( const Zbyte& a, const Zfloat& b );
+inline bool operator== ( const Zushort& a, const Zfloat& b );
+inline bool operator== ( const Zuint& a, const Zfloat& b );
+inline bool operator== ( const Zint& a, const Zfloat& b );
+inline bool operator== ( const Zdouble& a, const Zfloat& b );
+inline bool operator== ( const Zfloat& a, int b );
+inline bool operator== ( const Zfloat& a, float b );
+inline bool operator== ( const Zfloat& a, double b );
+inline bool operator== ( int a, const Zfloat& b );
+inline bool operator== ( float a, const Zfloat& b );
+inline bool operator== ( double a, const Zfloat& b );
+inline bool operator!= ( const Zfloat& a, const Zfloat& b );
+inline bool operator!= ( const Zfloat& a, const Zbyte& b );
+inline bool operator!= ( const Zfloat& a, const Zushort& b );
+inline bool operator!= ( const Zfloat& a, const Zuint& b );
+inline bool operator!= ( const Zfloat& a, const Zint& b );
+inline bool operator!= ( const Zfloat& a, const Zdouble& b );
+inline bool operator!= ( const Zbyte& a, const Zfloat& b );
+inline bool operator!= ( const Zushort& a, const Zfloat& b );
+inline bool operator!= ( const Zuint& a, const unsigned int b );
+inline bool operator!= ( const Zuint& a, const int b );
+inline bool operator!= ( const Zuint& a, const Zfloat& b );
+inline bool operator!= ( const Zint& a, const Zfloat& b );
+inline bool operator!= ( const Zdouble& a, const Zfloat& b );
+inline bool operator!= ( const Zfloat& a, int b );
+inline bool operator!= ( const Zfloat& a, float b );
+inline bool operator!= ( const Zfloat& a, double b );
+inline bool operator!= ( int a, const Zfloat& b );
+inline bool operator!= ( float a, const Zfloat& b );
+inline bool operator!= ( double a, const Zfloat& b );
+inline bool operator<= ( const Zfloat& a, const Zfloat& b );
+inline bool operator<= ( const Zfloat& a, const Zbyte& b );
+inline bool operator<= ( const Zfloat& a, const Zushort& b );
+inline bool operator<= ( const Zfloat& a, const Zuint& b );
+inline bool operator<= ( const Zfloat& a, const Zint& b );
+inline bool operator<= ( const Zfloat& a, const Zdouble& b );
+inline bool operator<= ( const Zbyte& a, const Zfloat& b );
+inline bool operator<= ( const Zushort& a, const Zfloat& b );
+inline bool operator<= ( const Zuint& a, const Zfloat& b );
+inline bool operator<= ( const Zint& a, const Zfloat& b );
+inline bool operator<= ( const Zdouble& a, const Zfloat& b );
+inline bool operator<= ( const Zfloat& a, int b );
+inline bool operator<= ( const Zfloat& a, float b );
+inline bool operator<= ( const Zfloat& a, double b );
+inline bool operator<= ( int a, const Zfloat& b );
+inline bool operator<= ( float a, const Zfloat& b );
+inline bool operator<= ( double a, const Zfloat& b );
+inline bool operator> ( const Zfloat& a, const Zfloat& b );
+inline bool operator> ( const Zfloat& a, const Zbyte& b );
+inline bool operator> ( const Zfloat& a, const Zushort& b );
+inline bool operator> ( const Zfloat& a, const Zuint& b );
+inline bool operator> ( const Zfloat& a, const Zint& b );
+inline bool operator> ( const Zfloat& a, const Zdouble& b );
+inline bool operator> ( const Zbyte& a, const Zfloat& b );
+inline bool operator> ( const Zushort& a, const Zfloat& b );
+inline bool operator> ( const Zuint& a, const Zfloat& b );
+inline bool operator> ( const Zint& a, const Zfloat& b );
+inline bool operator> ( const Zdouble& a, const Zfloat& b );
+inline bool operator> ( const Zfloat& a, int b );
+inline bool operator> ( const Zfloat& a, float b );
+inline bool operator> ( const Zfloat& a, double b );
+inline bool operator> ( int a, const Zfloat& b );
+inline bool operator> ( float a, const Zfloat& b );
+inline bool operator> ( double a, const Zfloat& b );
+inline bool operator< ( const Zfloat& a, const Zfloat& b );
+inline bool operator< ( const Zfloat& a, const Zbyte& b );
+inline bool operator< ( const Zfloat& a, const Zushort& b );
+inline bool operator< ( const Zfloat& a, const Zuint& b );
+inline bool operator< ( const Zfloat& a, const Zint& b );
+inline bool operator< ( const Zfloat& a, const Zdouble& b );
+inline bool operator< ( const Zbyte& a, const Zfloat& b );
+inline bool operator< ( const Zushort& a, const Zfloat& b );
+inline bool operator< ( const Zuint& a, const Zfloat& b );
+inline bool operator< ( const Zint& a, const Zfloat& b );
+inline bool operator< ( const Zdouble& a, const Zfloat& b );
+inline bool operator< ( const Zfloat& a, int b );
+inline bool operator< ( const Zfloat& a, float b );
+inline bool operator< ( const Zfloat& a, double b );
+inline bool operator< ( int a, const Zfloat& b );
+inline bool operator< ( float a, const Zfloat& b );
+inline bool operator< ( double a, const Zfloat& b );
 
 /// Zfloat ////////////////////////////////////////////////////////////////////////////////////////// end
 
@@ -438,93 +451,93 @@ public:
 };
 
 
-unsigned char operator+ ( const Zbyte& a, const Zbyte& b );
-unsigned char operator- ( const Zbyte& a, const Zbyte& b );
-unsigned char operator* ( const Zbyte& a, const Zbyte& b );
-unsigned char operator/ ( const Zbyte& a, const Zbyte& b );
-unsigned char operator+ ( Zbyte a, Zbyte b );
-unsigned char operator- ( Zbyte a, Zbyte b );
-unsigned char operator* ( Zbyte a, Zbyte b );
-unsigned char operator/ ( Zbyte a, Zbyte b );
+inline unsigned char operator+ ( const Zbyte& a, const Zbyte& b );
+inline unsigned char operator- ( const Zbyte& a, const Zbyte& b );
+inline unsigned char operator* ( const Zbyte& a, const Zbyte& b );
+inline unsigned char operator/ ( const Zbyte& a, const Zbyte& b );
+inline unsigned char operator+ ( Zbyte a, Zbyte b );
+inline unsigned char operator- ( Zbyte a, Zbyte b );
+inline unsigned char operator* ( Zbyte a, Zbyte b );
+inline unsigned char operator/ ( Zbyte a, Zbyte b );
 // Casted unsigned int operations
-unsigned char operator+ ( const Zbyte& a, unsigned char b );
-unsigned char operator- ( const Zbyte& a, unsigned char b );
-unsigned char operator* ( const Zbyte& a, unsigned char b );
-unsigned char operator/ ( const Zbyte& a, unsigned char b );
-unsigned char operator+ ( unsigned char b, const Zbyte& a );
-unsigned char operator- ( unsigned char b, const Zbyte& a );
-unsigned char operator* ( unsigned char b, const Zbyte& a );
-unsigned char operator/ ( unsigned char b, const Zbyte& a );
+inline unsigned char operator+ ( const Zbyte& a, unsigned char b );
+inline unsigned char operator- ( const Zbyte& a, unsigned char b );
+inline unsigned char operator* ( const Zbyte& a, unsigned char b );
+inline unsigned char operator/ ( const Zbyte& a, unsigned char b );
+inline unsigned char operator+ ( unsigned char b, const Zbyte& a );
+inline unsigned char operator- ( unsigned char b, const Zbyte& a );
+inline unsigned char operator* ( unsigned char b, const Zbyte& a );
+inline unsigned char operator/ ( unsigned char b, const Zbyte& a );
 // Casted int operations
-unsigned char operator+ ( const Zbyte& a, int b );
-unsigned char operator- ( const Zbyte& a, int b );
-unsigned char operator* ( const Zbyte& a, int b );
-unsigned char operator/ ( const Zbyte& a, int b );
-unsigned char operator+ ( int b, const Zbyte& a );
-unsigned char operator- ( int b, const Zbyte& a );
-unsigned char operator* ( int b, const Zbyte& a );
-unsigned char operator/ ( int b, const Zbyte& a );
+inline unsigned char operator+ ( const Zbyte& a, int b );
+inline unsigned char operator- ( const Zbyte& a, int b );
+inline unsigned char operator* ( const Zbyte& a, int b );
+inline unsigned char operator/ ( const Zbyte& a, int b );
+inline unsigned char operator+ ( int b, const Zbyte& a );
+inline unsigned char operator- ( int b, const Zbyte& a );
+inline unsigned char operator* ( int b, const Zbyte& a );
+inline unsigned char operator/ ( int b, const Zbyte& a );
 // Float operations (leans toward float precision)
-unsigned char operator+ ( const Zbyte& a, float b );
-unsigned char operator- ( const Zbyte& a, float b );
-unsigned char operator* ( const Zbyte& a, float b );
-unsigned char operator/ ( const Zbyte& a, float b );
-unsigned char operator+ ( float b, const Zbyte& a );
-unsigned char operator- ( float b, const Zbyte& a );
-unsigned char operator* ( float b, const Zbyte& a );
-unsigned char operator/ ( float b, const Zbyte& a );
+inline unsigned char operator+ ( const Zbyte& a, float b );
+inline unsigned char operator- ( const Zbyte& a, float b );
+inline unsigned char operator* ( const Zbyte& a, float b );
+inline unsigned char operator/ ( const Zbyte& a, float b );
+inline unsigned char operator+ ( float b, const Zbyte& a );
+inline unsigned char operator- ( float b, const Zbyte& a );
+inline unsigned char operator* ( float b, const Zbyte& a );
+inline unsigned char operator/ ( float b, const Zbyte& a );
 // Casted double operations (leans toward double precision)
-unsigned char operator+ ( const Zbyte& a, double b );
-unsigned char operator- ( const Zbyte& a, double b );
-unsigned char operator* ( const Zbyte& a, double b );
-unsigned char operator/ ( const Zbyte& a, double b );
-unsigned char operator+ ( double b, const Zbyte& a );
-unsigned char operator- ( double b, const Zbyte& a );
-unsigned char operator* ( double b, const Zbyte& a );
-unsigned char operator/ ( double b, const Zbyte& a );
+inline unsigned char operator+ ( const Zbyte& a, double b );
+inline unsigned char operator- ( const Zbyte& a, double b );
+inline unsigned char operator* ( const Zbyte& a, double b );
+inline unsigned char operator/ ( const Zbyte& a, double b );
+inline unsigned char operator+ ( double b, const Zbyte& a );
+inline unsigned char operator- ( double b, const Zbyte& a );
+inline unsigned char operator* ( double b, const Zbyte& a );
+inline unsigned char operator/ ( double b, const Zbyte& a );
 // Boolean operations
-bool operator>= ( const Zbyte& a, const Zbyte& b );
-bool operator>= ( const Zbyte& a, int b );
-bool operator>= ( const Zbyte& a, float b );
-bool operator>= ( const Zbyte& a, double b );
-bool operator>= ( int a, const Zbyte& b );
-bool operator>= ( float a, const Zbyte& b );
-bool operator>= ( double a, const Zbyte& b );
-bool operator== ( const Zbyte& a, const Zbyte& b );
-bool operator== ( const Zbyte& a, int b );
-bool operator== ( const Zbyte& a, float b );
-bool operator== ( const Zbyte& a, double b );
-bool operator== ( int a, const Zbyte& b );
-bool operator== ( float a, const Zbyte& b );
-bool operator== ( double a, const Zbyte& b );
-bool operator!= ( const Zbyte& a, const Zbyte& b );
-bool operator!= ( const Zbyte& a, int b );
-bool operator!= ( const Zbyte& a, float b );
-bool operator!= ( const Zbyte& a, double b );
-bool operator!= ( int a, const Zbyte& b );
-bool operator!= ( float a, const Zbyte& b );
-bool operator!= ( double a, const Zbyte& b );
-bool operator<= ( const Zbyte& a, const Zbyte& b );
-bool operator<= ( const Zbyte& a, int b );
-bool operator<= ( const Zbyte& a, float b );
-bool operator<= ( const Zbyte& a, double b );
-bool operator<= ( int a, const Zbyte& b );
-bool operator<= ( float a, const Zbyte& b );
-bool operator<= ( double a, const Zbyte& b );
-bool operator> ( const Zbyte& a, const Zbyte& b );
-bool operator> ( const Zbyte& a, int b );
-bool operator> ( const Zbyte& a, float b );
-bool operator> ( const Zbyte& a, double b );
-bool operator> ( int a, const Zbyte& b );
-bool operator> ( float a, const Zbyte& b );
-bool operator> ( double a, const Zbyte& b );
-bool operator< ( const Zbyte& a, const Zbyte& b );
-bool operator< ( const Zbyte& a, int b );
-bool operator< ( const Zbyte& a, float b );
-bool operator< ( const Zbyte& a, double b );
-bool operator< ( int a, const Zbyte& b );
-bool operator< ( float a, const Zbyte& b );
-bool operator< ( double a, const Zbyte& b );
+inline bool operator>= ( const Zbyte& a, const Zbyte& b );
+inline bool operator>= ( const Zbyte& a, int b );
+inline bool operator>= ( const Zbyte& a, float b );
+inline bool operator>= ( const Zbyte& a, double b );
+inline bool operator>= ( int a, const Zbyte& b );
+inline bool operator>= ( float a, const Zbyte& b );
+inline bool operator>= ( double a, const Zbyte& b );
+inline bool operator== ( const Zbyte& a, const Zbyte& b );
+inline bool operator== ( const Zbyte& a, int b );
+inline bool operator== ( const Zbyte& a, float b );
+inline bool operator== ( const Zbyte& a, double b );
+inline bool operator== ( int a, const Zbyte& b );
+inline bool operator== ( float a, const Zbyte& b );
+inline bool operator== ( double a, const Zbyte& b );
+inline bool operator!= ( const Zbyte& a, const Zbyte& b );
+inline bool operator!= ( const Zbyte& a, int b );
+inline bool operator!= ( const Zbyte& a, float b );
+inline bool operator!= ( const Zbyte& a, double b );
+inline bool operator!= ( int a, const Zbyte& b );
+inline bool operator!= ( float a, const Zbyte& b );
+inline bool operator!= ( double a, const Zbyte& b );
+inline bool operator<= ( const Zbyte& a, const Zbyte& b );
+inline bool operator<= ( const Zbyte& a, int b );
+inline bool operator<= ( const Zbyte& a, float b );
+inline bool operator<= ( const Zbyte& a, double b );
+inline bool operator<= ( int a, const Zbyte& b );
+inline bool operator<= ( float a, const Zbyte& b );
+inline bool operator<= ( double a, const Zbyte& b );
+inline bool operator> ( const Zbyte& a, const Zbyte& b );
+inline bool operator> ( const Zbyte& a, int b );
+inline bool operator> ( const Zbyte& a, float b );
+inline bool operator> ( const Zbyte& a, double b );
+inline bool operator> ( int a, const Zbyte& b );
+inline bool operator> ( float a, const Zbyte& b );
+inline bool operator> ( double a, const Zbyte& b );
+inline bool operator< ( const Zbyte& a, const Zbyte& b );
+inline bool operator< ( const Zbyte& a, int b );
+inline bool operator< ( const Zbyte& a, float b );
+inline bool operator< ( const Zbyte& a, double b );
+inline bool operator< ( int a, const Zbyte& b );
+inline bool operator< ( float a, const Zbyte& b );
+inline bool operator< ( double a, const Zbyte& b );
 
 
 /// Zbyte ///////////////////////////////////////////////////////////////////////////////////////// end
@@ -599,50 +612,50 @@ public:
 };
 
 
-unsigned short operator+ ( const Zushort& a, const Zushort& b );
-unsigned short operator- ( const Zushort& a, const Zushort& b );
-unsigned short operator* ( const Zushort& a, const Zushort& b );
-unsigned short operator/ ( const Zushort& a, const Zushort& b );
-unsigned short operator+ ( Zushort a, Zushort b );
-unsigned short operator- ( Zushort a, Zushort b );
-unsigned short operator* ( Zushort a, Zushort b );
-unsigned short operator/ ( Zushort a, Zushort b );
+inline unsigned short operator+ ( const Zushort& a, const Zushort& b );
+inline unsigned short operator- ( const Zushort& a, const Zushort& b );
+inline unsigned short operator* ( const Zushort& a, const Zushort& b );
+inline unsigned short operator/ ( const Zushort& a, const Zushort& b );
+inline unsigned short operator+ ( Zushort a, Zushort b );
+inline unsigned short operator- ( Zushort a, Zushort b );
+inline unsigned short operator* ( Zushort a, Zushort b );
+inline unsigned short operator/ ( Zushort a, Zushort b );
 // Casted unsigned int operations
-unsigned short operator+ ( const Zushort& a, unsigned char b );
-unsigned short operator- ( const Zushort& a, unsigned char b );
-unsigned short operator* ( const Zushort& a, unsigned char b );
-unsigned short operator/ ( const Zushort& a, unsigned char b );
-unsigned short operator+ ( unsigned char b, const Zushort& a );
-unsigned short operator- ( unsigned char b, const Zushort& a );
-unsigned short operator* ( unsigned char b, const Zushort& a );
-unsigned short operator/ ( unsigned char b, const Zushort& a );
+inline unsigned short operator+ ( const Zushort& a, unsigned char b );
+inline unsigned short operator- ( const Zushort& a, unsigned char b );
+inline unsigned short operator* ( const Zushort& a, unsigned char b );
+inline unsigned short operator/ ( const Zushort& a, unsigned char b );
+inline unsigned short operator+ ( unsigned char b, const Zushort& a );
+inline unsigned short operator- ( unsigned char b, const Zushort& a );
+inline unsigned short operator* ( unsigned char b, const Zushort& a );
+inline unsigned short operator/ ( unsigned char b, const Zushort& a );
 // Casted int operations
-unsigned short operator+ ( const Zushort& a, int b );
-unsigned short operator- ( const Zushort& a, int b );
-unsigned short operator* ( const Zushort& a, int b );
-unsigned short operator/ ( const Zushort& a, int b );
-unsigned short operator+ ( int b, const Zushort& a );
-unsigned short operator- ( int b, const Zushort& a );
-unsigned short operator* ( int b, const Zushort& a );
-unsigned short operator/ ( int b, const Zushort& a );
+inline unsigned short operator+ ( const Zushort& a, int b );
+inline unsigned short operator- ( const Zushort& a, int b );
+inline unsigned short operator* ( const Zushort& a, int b );
+inline unsigned short operator/ ( const Zushort& a, int b );
+inline unsigned short operator+ ( int b, const Zushort& a );
+inline unsigned short operator- ( int b, const Zushort& a );
+inline unsigned short operator* ( int b, const Zushort& a );
+inline unsigned short operator/ ( int b, const Zushort& a );
 // Float operations (leans toward float precision)
-unsigned short operator+ ( const Zushort& a, float b );
-unsigned short operator- ( const Zushort& a, float b );
-unsigned short operator* ( const Zushort& a, float b );
-unsigned short operator/ ( const Zushort& a, float b );
-unsigned short operator+ ( float b, const Zushort& a );
-unsigned short operator- ( float b, const Zushort& a );
-unsigned short operator* ( float b, const Zushort& a );
-unsigned short operator/ ( float b, const Zushort& a );
+inline unsigned short operator+ ( const Zushort& a, float b );
+inline unsigned short operator- ( const Zushort& a, float b );
+inline unsigned short operator* ( const Zushort& a, float b );
+inline unsigned short operator/ ( const Zushort& a, float b );
+inline unsigned short operator+ ( float b, const Zushort& a );
+inline unsigned short operator- ( float b, const Zushort& a );
+inline unsigned short operator* ( float b, const Zushort& a );
+inline unsigned short operator/ ( float b, const Zushort& a );
 // Casted double operations (leans toward double precision)
-unsigned short operator+ ( const Zushort& a, double b );
-unsigned short operator- ( const Zushort& a, double b );
-unsigned short operator* ( const Zushort& a, double b );
-unsigned short operator/ ( const Zushort& a, double b );
-unsigned short operator+ ( double b, const Zushort& a );
-unsigned short operator- ( double b, const Zushort& a );
-unsigned short operator* ( double b, const Zushort& a );
-unsigned short operator/ ( double b, const Zushort& a );
+inline unsigned short operator+ ( const Zushort& a, double b );
+inline unsigned short operator- ( const Zushort& a, double b );
+inline unsigned short operator* ( const Zushort& a, double b );
+inline unsigned short operator/ ( const Zushort& a, double b );
+inline unsigned short operator+ ( double b, const Zushort& a );
+inline unsigned short operator- ( double b, const Zushort& a );
+inline unsigned short operator* ( double b, const Zushort& a );
+inline unsigned short operator/ ( double b, const Zushort& a );
 
 /// Zbyte ///////////////////////////////////////////////////////////////////////////////////////// end
 
@@ -653,7 +666,27 @@ public:
  int value;
  Zint() { value=0; }
  Zint( int value ) { this->value=value; }
- int abs() { return value < 0 ? -value : value; } // Macos does not define abs(int)
+ inline int abs() { return value < 0 ? -value : value; } // Macos does not define abs(int)
+ inline bool On(int bits) { return this->value & bits; }
+ inline bool Off(int bits) { return !On(bits); }
+ inline void Set(int bits) { this->value |= bits; }
+ inline void Unset(int bits) { this->value &= ~bits; }
+ inline void Toggle(int bits) { this->value ^= bits; }
+ inline int Left(int bits) { return value << bits; }
+ inline int Right(int bits) { return value >> bits; }
+ /// This seems to be problematic.  Removing.
+// int Min(int other) { return std::min(value, other); }
+// int Max(int other) { return std::max(value, other); }
+ bool Exceeds(int other) { return value > other; }
+ bool ExceededBy(int other) { return other > value; }
+ bool Greater(int other) { return Exceeds(other); }
+ bool Lesser(int other) { return ExceededBy(other); }
+ bool Equals(int other) { return value == other; }
+ bool NotEquals(int other) { return other != value; }
+ bool GreaterEquals(int other) { return value >= other; }
+ bool LesserEquals(int other) { return value <= other; }
+ inline int Minus(int other) { return value - other; }
+ inline int Plus(int other) { return value + other; }
  std::string toString() { return std::to_string(value); }
  operator std::string() { return toString(); }
  operator int() { return value; }
@@ -726,10 +759,10 @@ public:
 };
 
 
-int operator+ ( const Zint& a, const Zint& b );
-int operator- ( const Zint& a, const Zint& b );
-int operator* ( const Zint& a, const Zint& b );
-int operator/ ( const Zint& a, const Zint& b );
+inline int operator+ ( const Zint& a, const Zint& b );
+inline int operator- ( const Zint& a, const Zint& b );
+inline int operator* ( const Zint& a, const Zint& b );
+inline int operator/ ( const Zint& a, const Zint& b );
 /* Creates C2593 for some reason...
 int operator+ ( Zint a, Zint b );
 int operator- ( Zint a, Zint b );
@@ -737,99 +770,99 @@ int operator* ( Zint a, Zint b );
 int operator/ ( Zint a, Zint b );
 */
 // Casted int operations
-int operator+ ( const Zint& a, int b );
-int operator- ( const Zint& a, int b );
-int operator* ( const Zint& a, int b );
-int operator/ ( const Zint& a, int b );
-int operator% ( const Zint& a, int b );
-int operator+ ( int b, const Zint& a );
-int operator- ( int b, const Zint& a );
-int operator* ( int b, const Zint& a );
-int operator/ ( int b, const Zint& a );
-int operator% ( int b, const Zint& a );
+inline int operator+ ( const Zint& a, int b );
+inline int operator- ( const Zint& a, int b );
+inline int operator* ( const Zint& a, int b );
+inline int operator/ ( const Zint& a, int b );
+inline int operator% ( const Zint& a, int b );
+inline int operator+ ( int b, const Zint& a );
+inline int operator- ( int b, const Zint& a );
+inline int operator* ( int b, const Zint& a );
+inline int operator/ ( int b, const Zint& a );
+inline int operator% ( int b, const Zint& a );
 // Float operations (leans toward float precision)
-int operator+ ( const Zint& a, float b );
-int operator- ( const Zint& a, float b );
-int operator* ( const Zint& a, float b );
-int operator/ ( const Zint& a, float b );
-int operator+ ( float b, const Zint& a );
-int operator- ( float b, const Zint& a );
-int operator* ( float b, const Zint& a );
-int operator/ ( float b, const Zint& a );
+inline int operator+ ( const Zint& a, float b );
+inline int operator- ( const Zint& a, float b );
+inline int operator* ( const Zint& a, float b );
+inline int operator/ ( const Zint& a, float b );
+inline int operator+ ( float b, const Zint& a );
+inline int operator- ( float b, const Zint& a );
+inline int operator* ( float b, const Zint& a );
+inline int operator/ ( float b, const Zint& a );
 // Casted double operations (leans toward double precision)
-int operator+ ( const Zint& a, double b );
-int operator- ( const Zint& a, double b );
-int operator* ( const Zint& a, double b );
-int operator/ ( const Zint& a, double b );
-int operator+ ( double b, const Zint& a );
-int operator- ( double b, const Zint& a );
-int operator* ( double b, const Zint& a );
-int operator/ ( double b, const Zint& a );
+inline int operator+ ( const Zint& a, double b );
+inline int operator- ( const Zint& a, double b );
+inline int operator* ( const Zint& a, double b );
+inline int operator/ ( const Zint& a, double b );
+inline int operator+ ( double b, const Zint& a );
+inline int operator- ( double b, const Zint& a );
+inline int operator* ( double b, const Zint& a );
+inline int operator/ ( double b, const Zint& a );
 // Modulo
-int operator% ( const Zint &a, const Zint &b );
+inline int operator% ( const Zint &a, const Zint &b );
 // Boolean operations
-bool operator>= ( const Zint& a, const Zint& b );
-bool operator>= ( const Zint& a, unsigned int b );
-bool operator>= ( const Zint& a, int b );
-bool operator>= ( const Zint& a, float b );
-bool operator>= ( const Zint& a, double b );
-bool operator>= ( unsigned int a, const Zint& b );
-bool operator>= ( int a, const Zint& b );
-bool operator>= ( float a, const Zint& b );
-bool operator>= ( double a, const Zint& b );
-bool operator== ( const Zint& a, const Zbyte& b );
-bool operator== ( const Zint& a, const Zushort& b );
-bool operator== ( const Zint& a, const Zuint& b );
-bool operator== ( const Zint& a, const Zdouble& b );
-bool operator== ( const Zbyte& a, const Zint& b );
-bool operator== ( const Zushort& a, const Zint& b );
-bool operator== ( const Zuint& a, const Zint& b );
-bool operator== ( const Zdouble& a, const Zint& b );
-bool operator== ( const Zint& a, const Zint& b );
-bool operator== ( const Zint& a, unsigned int b );
-bool operator== ( const Zint& a, int b );
-bool operator== ( const Zint& a, float b );
-bool operator== ( const Zint& a, double b );
-bool operator== ( unsigned int a, const Zint& b );
-bool operator== ( int a, const Zint& b );
-bool operator== ( float a, const Zint& b );
-bool operator== ( double a, const Zint& b );
-bool operator!= ( const Zint& a, const Zint& b );
-bool operator!= ( const Zint& a, unsigned int b );
-bool operator!= ( const Zint& a, int b );
-bool operator!= ( const Zint& a, float b );
-bool operator!= ( const Zint& a, double b );
-bool operator!= ( unsigned int a, const Zint& b );
-bool operator!= ( int a, const Zint& b );
-bool operator!= ( float a, const Zint& b );
-bool operator!= ( double a, const Zint& b );
-bool operator<= ( const Zint& a, const Zint& b );
-bool operator<= ( const Zint& a, unsigned int b );
-bool operator<= ( const Zint& a, int b );
-bool operator<= ( const Zint& a, float b );
-bool operator<= ( const Zint& a, double b );
-bool operator<= ( unsigned int a, const Zint& b );
-bool operator<= ( int a, const Zint& b );
-bool operator<= ( float a, const Zint& b );
-bool operator<= ( double a, const Zint& b );
-bool operator> ( const Zint& a, const Zint& b );
-bool operator> ( const Zint& a, unsigned int b );
-bool operator> ( const Zint& a, int b );
-bool operator> ( const Zint& a, float b );
-bool operator> ( const Zint& a, double b );
-bool operator> ( unsigned int a, const Zint& b );
-bool operator> ( int a, const Zint& b );
-bool operator> ( float a, const Zint& b );
-bool operator> ( double a, const Zint& b );
-bool operator< ( const Zint& a, const Zint& b );
-bool operator< ( const Zint& a, unsigned int b );
-bool operator< ( const Zint& a, int b );
-bool operator< ( const Zint& a, float b );
-bool operator< ( const Zint& a, double b );
-bool operator< ( unsigned int a, const Zint& b );
-bool operator< ( int a, const Zint& b );
-bool operator< ( float a, const Zint& b );
-bool operator< ( double a, const Zint& b );
+inline bool operator>= ( const Zint& a, const Zint& b );
+inline bool operator>= ( const Zint& a, unsigned int b );
+inline bool operator>= ( const Zint& a, int b );
+inline bool operator>= ( const Zint& a, float b );
+inline bool operator>= ( const Zint& a, double b );
+inline bool operator>= ( unsigned int a, const Zint& b );
+inline bool operator>= ( int a, const Zint& b );
+inline bool operator>= ( float a, const Zint& b );
+inline bool operator>= ( double a, const Zint& b );
+inline bool operator== ( const Zint& a, const Zbyte& b );
+inline bool operator== ( const Zint& a, const Zushort& b );
+inline bool operator== ( const Zint& a, const Zuint& b );
+inline bool operator== ( const Zint& a, const Zdouble& b );
+inline bool operator== ( const Zbyte& a, const Zint& b );
+inline bool operator== ( const Zushort& a, const Zint& b );
+inline bool operator== ( const Zuint& a, const Zint& b );
+inline bool operator== ( const Zdouble& a, const Zint& b );
+inline bool operator== ( const Zint& a, const Zint& b );
+inline bool operator== ( const Zint& a, unsigned int b );
+inline bool operator== ( const Zint& a, int b );
+inline bool operator== ( const Zint& a, float b );
+inline bool operator== ( const Zint& a, double b );
+inline bool operator== ( unsigned int a, const Zint& b );
+inline bool operator== ( int a, const Zint& b );
+inline bool operator== ( float a, const Zint& b );
+inline bool operator== ( double a, const Zint& b );
+inline bool operator!= ( const Zint& a, const Zint& b );
+inline bool operator!= ( const Zint& a, unsigned int b );
+inline bool operator!= ( const Zint& a, int b );
+inline bool operator!= ( const Zint& a, float b );
+inline bool operator!= ( const Zint& a, double b );
+inline bool operator!= ( unsigned int a, const Zint& b );
+inline bool operator!= ( int a, const Zint& b );
+inline bool operator!= ( float a, const Zint& b );
+inline bool operator!= ( double a, const Zint& b );
+inline bool operator<= ( const Zint& a, const Zint& b );
+inline bool operator<= ( const Zint& a, unsigned int b );
+inline bool operator<= ( const Zint& a, int b );
+inline bool operator<= ( const Zint& a, float b );
+inline bool operator<= ( const Zint& a, double b );
+inline bool operator<= ( unsigned int a, const Zint& b );
+inline bool operator<= ( int a, const Zint& b );
+inline bool operator<= ( float a, const Zint& b );
+inline bool operator<= ( double a, const Zint& b );
+inline bool operator> ( const Zint& a, const Zint& b );
+inline bool operator> ( const Zint& a, unsigned int b );
+inline bool operator> ( const Zint& a, int b );
+inline bool operator> ( const Zint& a, float b );
+inline bool operator> ( const Zint& a, double b );
+inline bool operator> ( unsigned int a, const Zint& b );
+inline bool operator> ( int a, const Zint& b );
+inline bool operator> ( float a, const Zint& b );
+inline bool operator> ( double a, const Zint& b );
+inline bool operator< ( const Zint& a, const Zint& b );
+inline bool operator< ( const Zint& a, unsigned int b );
+inline bool operator< ( const Zint& a, int b );
+inline bool operator< ( const Zint& a, float b );
+inline bool operator< ( const Zint& a, double b );
+inline bool operator< ( unsigned int a, const Zint& b );
+inline bool operator< ( int a, const Zint& b );
+inline bool operator< ( float a, const Zint& b );
+inline bool operator< ( double a, const Zint& b );
 
 /// Zint ////////////////////////////////////////////////////////////////////////////////////////// end
 
@@ -952,48 +985,48 @@ public:
  // operator float() { return (double) value; }
 };
 
-bool operator< ( unsigned int a, const Zuint& b );
+inline bool operator< ( unsigned int a, const Zuint& b );
 
-unsigned int operator+ ( const Zuint& a, const Zuint& b );
-unsigned int operator- ( const Zuint& a, const Zuint& b );
-unsigned int operator* ( const Zuint& a, const Zuint& b );
-unsigned int operator/ ( const Zuint& a, const Zuint& b );
+inline unsigned int operator+ ( const Zuint& a, const Zuint& b );
+inline unsigned int operator- ( const Zuint& a, const Zuint& b );
+inline unsigned int operator* ( const Zuint& a, const Zuint& b );
+inline unsigned int operator/ ( const Zuint& a, const Zuint& b );
 // Casted unsigned int operations
-unsigned int operator+ ( const Zuint& a, int b );
-unsigned int operator- ( const Zuint& a, int b );
-unsigned int operator* ( const Zuint& a, int b );
-unsigned int operator/ ( const Zuint& a, int b );
-unsigned int operator+ ( int b, const Zuint& a );
-unsigned int operator- ( int b, const Zuint& a );
-unsigned int operator* ( int b, const Zuint& a );
-unsigned int operator/ ( int b, const Zuint& a );
+inline unsigned int operator+ ( const Zuint& a, int b );
+inline unsigned int operator- ( const Zuint& a, int b );
+inline unsigned int operator* ( const Zuint& a, int b );
+inline unsigned int operator/ ( const Zuint& a, int b );
+inline unsigned int operator+ ( int b, const Zuint& a );
+inline unsigned int operator- ( int b, const Zuint& a );
+inline unsigned int operator* ( int b, const Zuint& a );
+inline unsigned int operator/ ( int b, const Zuint& a );
 // Casted int operations
-unsigned int operator+ ( const Zuint& a, int b );
-unsigned int operator- ( const Zuint& a, int b );
-unsigned int operator* ( const Zuint& a, int b );
-unsigned int operator/ ( const Zuint& a, int b );
-unsigned int operator+ ( int b, const Zuint& a );
-unsigned int operator- ( int b, const Zuint& a );
-unsigned int operator* ( int b, const Zuint& a );
-unsigned int operator/ ( int b, const Zuint& a );
+inline unsigned int operator+ ( const Zuint& a, int b );
+inline unsigned int operator- ( const Zuint& a, int b );
+inline unsigned int operator* ( const Zuint& a, int b );
+inline unsigned int operator/ ( const Zuint& a, int b );
+inline unsigned int operator+ ( int b, const Zuint& a );
+inline unsigned int operator- ( int b, const Zuint& a );
+inline unsigned int operator* ( int b, const Zuint& a );
+inline unsigned int operator/ ( int b, const Zuint& a );
 // Float operations (leans toward float precision)
-unsigned int operator+ ( const Zuint& a, float b );
-unsigned int operator- ( const Zuint& a, float b );
-unsigned int operator* ( const Zuint& a, float b );
-unsigned int operator/ ( const Zuint& a, float b );
-unsigned int operator+ ( float b, const Zuint& a );
-unsigned int operator- ( float b, const Zuint& a );
-unsigned int operator* ( float b, const Zuint& a );
-unsigned int operator/ ( float b, const Zuint& a );
+inline unsigned int operator+ ( const Zuint& a, float b );
+inline unsigned int operator- ( const Zuint& a, float b );
+inline unsigned int operator* ( const Zuint& a, float b );
+inline unsigned int operator/ ( const Zuint& a, float b );
+inline unsigned int operator+ ( float b, const Zuint& a );
+inline unsigned int operator- ( float b, const Zuint& a );
+inline unsigned int operator* ( float b, const Zuint& a );
+inline unsigned int operator/ ( float b, const Zuint& a );
 // Casted double operations (leans toward double precision)
-unsigned int operator+ ( const Zuint& a, double b );
-unsigned int operator- ( const Zuint& a, double b );
-unsigned int operator* ( const Zuint& a, double b );
-unsigned int operator/ ( const Zuint& a, double b );
-unsigned int operator+ ( double b, const Zuint& a );
-unsigned int operator- ( double b, const Zuint& a );
-unsigned int operator* ( double b, const Zuint& a );
-unsigned int operator/ ( double b, const Zuint& a );
+inline unsigned int operator+ ( const Zuint& a, double b );
+inline unsigned int operator- ( const Zuint& a, double b );
+inline unsigned int operator* ( const Zuint& a, double b );
+inline unsigned int operator/ ( const Zuint& a, double b );
+inline unsigned int operator+ ( double b, const Zuint& a );
+inline unsigned int operator- ( double b, const Zuint& a );
+inline unsigned int operator* ( double b, const Zuint& a );
+inline unsigned int operator/ ( double b, const Zuint& a );
 
 /// Zuint ////////////////////////////////////////////////////////////////////////////////////////// end
 
@@ -1085,19 +1118,19 @@ public:
 };
 
 // Mixed type operations
-double operator+ ( const Zdouble& a, const Zfloat& b );
-double operator+ ( const Zfloat& a, const Zdouble& b );
-double operator+ ( const Zdouble& a, const Zint& b );
-double operator+ ( const Zint& a, const Zdouble& b );
-double operator* ( const Zdouble& a, const Zfloat& b );
-double operator* ( const Zfloat& a, const Zdouble& b );
-double operator* ( const Zdouble& a, const Zint& b );
-double operator* ( const Zint& a, const Zdouble& b );
+inline double operator+ ( const Zdouble& a, const Zfloat& b );
+inline double operator+ ( const Zfloat& a, const Zdouble& b );
+inline double operator+ ( const Zdouble& a, const Zint& b );
+inline double operator+ ( const Zint& a, const Zdouble& b );
+inline double operator* ( const Zdouble& a, const Zfloat& b );
+inline double operator* ( const Zfloat& a, const Zdouble& b );
+inline double operator* ( const Zdouble& a, const Zint& b );
+inline double operator* ( const Zint& a, const Zdouble& b );
 // Zdouble and itself
-double operator+ ( const Zdouble& a, const Zdouble& b );
-double operator- ( const Zdouble& a, const Zdouble& b );
-double operator* ( const Zdouble& a, const Zdouble& b );
-double operator/ ( const Zdouble& a, const Zdouble& b );
+inline double operator+ ( const Zdouble& a, const Zdouble& b );
+inline double operator- ( const Zdouble& a, const Zdouble& b );
+inline double operator* ( const Zdouble& a, const Zdouble& b );
+inline double operator/ ( const Zdouble& a, const Zdouble& b );
 /* Creates C2593 for some reason...
 double operator+ ( Zdouble a, Zdouble b );
 double operator- ( Zdouble a, Zdouble b );
@@ -1105,75 +1138,75 @@ double operator* ( Zdouble a, Zdouble b );
 double operator/ ( Zdouble a, Zdouble b );
 */
 // Casted int operations
-double operator+ ( const Zdouble& a, int b );
-double operator- ( const Zdouble& a, int b );
-double operator* ( const Zdouble& a, int b );
-double operator/ ( const Zdouble& a, int b );
-double operator+ ( int b, const Zdouble& a );
-double operator- ( int b, const Zdouble& a );
-double operator* ( int b, const Zdouble& a );
-double operator/ ( int b, const Zdouble& a );
+inline double operator+ ( const Zdouble& a, int b );
+inline double operator- ( const Zdouble& a, int b );
+inline double operator* ( const Zdouble& a, int b );
+inline double operator/ ( const Zdouble& a, int b );
+inline double operator+ ( int b, const Zdouble& a );
+inline double operator- ( int b, const Zdouble& a );
+inline double operator* ( int b, const Zdouble& a );
+inline double operator/ ( int b, const Zdouble& a );
 // Float operations
-double operator+ ( const Zdouble& a, float b );
-double operator- ( const Zdouble& a, float b );
-double operator* ( const Zdouble& a, float b );
-double operator/ ( const Zdouble& a, float b );
-double operator+ ( float b, const Zdouble& a );
-double operator- ( float b, const Zdouble& a );
-double operator* ( float b, const Zdouble& a );
-double operator/ ( float b, const Zdouble& a );
+inline double operator+ ( const Zdouble& a, float b );
+inline double operator- ( const Zdouble& a, float b );
+inline double operator* ( const Zdouble& a, float b );
+inline double operator/ ( const Zdouble& a, float b );
+inline double operator+ ( float b, const Zdouble& a );
+inline double operator- ( float b, const Zdouble& a );
+inline double operator* ( float b, const Zdouble& a );
+inline double operator/ ( float b, const Zdouble& a );
 // Casted double operations (leans toward double precision)
-double operator+ ( const Zdouble& a, double b );
-double operator- ( const Zdouble& a, double b );
-double operator* ( const Zdouble& a, double b );
-double operator/ ( const Zdouble& a, double b );
-double operator+ ( double b, const Zdouble& a );
-double operator- ( double b, const Zdouble& a );
-double operator* ( double b, const Zdouble& a );
-double operator/ ( double b, const Zdouble& a );
+inline double operator+ ( const Zdouble& a, double b );
+inline double operator- ( const Zdouble& a, double b );
+inline double operator* ( const Zdouble& a, double b );
+inline double operator/ ( const Zdouble& a, double b );
+inline double operator+ ( double b, const Zdouble& a );
+inline double operator- ( double b, const Zdouble& a );
+inline double operator* ( double b, const Zdouble& a );
+inline double operator/ ( double b, const Zdouble& a );
 // Boolean operations
-bool operator>= ( const Zdouble& a, const Zdouble& b );
-bool operator>= ( const Zdouble& a, int b );
-bool operator>= ( const Zdouble& a, float b );
-bool operator>= ( const Zdouble& a, double b );
-bool operator>= ( int a, const Zdouble& b );
-bool operator>= ( float a, const Zdouble& b );
-bool operator>= ( double a, const Zdouble& b );
-bool operator== ( const Zdouble& a, const Zdouble& b );
-bool operator== ( const Zdouble& a, int b );
-bool operator== ( const Zdouble& a, float b );
-bool operator== ( const Zdouble& a, double b );
-bool operator== ( int a, const Zdouble& b );
-bool operator== ( float a, const Zdouble& b );
-bool operator== ( double a, const Zdouble& b );
-bool operator!= ( const Zdouble& a, const Zdouble& b );
-bool operator!= ( const Zdouble& a, int b );
-bool operator!= ( const Zdouble& a, float b );
-bool operator!= ( const Zdouble& a, double b );
-bool operator!= ( int a, const Zdouble& b );
-bool operator!= ( float a, const Zdouble& b );
-bool operator!= ( double a, const Zdouble& b );
-bool operator<= ( const Zdouble& a, const Zdouble& b );
-bool operator<= ( const Zdouble& a, int b );
-bool operator<= ( const Zdouble& a, float b );
-bool operator<= ( const Zdouble& a, double b );
-bool operator<= ( int a, const Zdouble& b );
-bool operator<= ( float a, const Zdouble& b );
-bool operator<= ( double a, const Zdouble& b );
-bool operator> ( const Zdouble& a, const Zdouble& b );
-bool operator> ( const Zdouble& a, int b );
-bool operator> ( const Zdouble& a, float b );
-bool operator> ( const Zdouble& a, double b );
-bool operator> ( int a, const Zdouble& b );
-bool operator> ( float a, const Zdouble& b );
-bool operator> ( double a, const Zdouble& b );
-bool operator< ( const Zdouble& a, const Zdouble& b );
-bool operator< ( const Zdouble& a, int b );
-bool operator< ( const Zdouble& a, float b );
-bool operator< ( const Zdouble& a, double b );
-bool operator< ( int a, const Zdouble& b );
-bool operator< ( float a, const Zdouble& b );
-bool operator< ( double a, const Zdouble& b );
+inline bool operator>= ( const Zdouble& a, const Zdouble& b );
+inline bool operator>= ( const Zdouble& a, int b );
+inline bool operator>= ( const Zdouble& a, float b );
+inline bool operator>= ( const Zdouble& a, double b );
+inline bool operator>= ( int a, const Zdouble& b );
+inline bool operator>= ( float a, const Zdouble& b );
+inline bool operator>= ( double a, const Zdouble& b );
+inline bool operator== ( const Zdouble& a, const Zdouble& b );
+inline bool operator== ( const Zdouble& a, int b );
+inline bool operator== ( const Zdouble& a, float b );
+inline bool operator== ( const Zdouble& a, double b );
+inline bool operator== ( int a, const Zdouble& b );
+inline bool operator== ( float a, const Zdouble& b );
+inline bool operator== ( double a, const Zdouble& b );
+inline bool operator!= ( const Zdouble& a, const Zdouble& b );
+inline bool operator!= ( const Zdouble& a, int b );
+inline bool operator!= ( const Zdouble& a, float b );
+inline bool operator!= ( const Zdouble& a, double b );
+inline bool operator!= ( int a, const Zdouble& b );
+inline bool operator!= ( float a, const Zdouble& b );
+inline bool operator!= ( double a, const Zdouble& b );
+inline bool operator<= ( const Zdouble& a, const Zdouble& b );
+inline bool operator<= ( const Zdouble& a, int b );
+inline bool operator<= ( const Zdouble& a, float b );
+inline bool operator<= ( const Zdouble& a, double b );
+inline bool operator<= ( int a, const Zdouble& b );
+inline bool operator<= ( float a, const Zdouble& b );
+inline bool operator<= ( double a, const Zdouble& b );
+inline bool operator> ( const Zdouble& a, const Zdouble& b );
+inline bool operator> ( const Zdouble& a, int b );
+inline bool operator> ( const Zdouble& a, float b );
+inline bool operator> ( const Zdouble& a, double b );
+inline bool operator> ( int a, const Zdouble& b );
+inline bool operator> ( float a, const Zdouble& b );
+inline bool operator> ( double a, const Zdouble& b );
+inline bool operator< ( const Zdouble& a, const Zdouble& b );
+inline bool operator< ( const Zdouble& a, int b );
+inline bool operator< ( const Zdouble& a, float b );
+inline bool operator< ( const Zdouble& a, double b );
+inline bool operator< ( int a, const Zdouble& b );
+inline bool operator< ( float a, const Zdouble& b );
+inline bool operator< ( double a, const Zdouble& b );
 
 
 /// Zfloat ////////////////////////////////////////////////////////////////////////////////////////// end
@@ -1666,7 +1699,9 @@ public:
 #define UMAX(a, b)                 ((a) > (b) ? (a) : (b))
 #define URANGE(less, b, more)            ((b) < (less) ? (less) : ((b) > (more) ? (more) : (b))) // clamp B between A and C
 #define INRANGE(x,ra,rb,yes,no)    ((x) >= (ra) && (x) <= (rb) ? (yes) : (no))
+#ifndef CLAMP
 #define CLAMP(a,b)                 ( (a) < 0 ? 0 : (a) > (b) ? (b) : (a) )
+#endif
 #define CLAMPTO(v,a,b)             ( (v) < (a) ? (a) : ( (v) > (b) ? (b) : (v) ) )
 #define UWRAP(a,b,c)               ((b) > (c) ? (b)-(c) : (b) < (a) ? (b)+(c))
 #define SQ(a)                      ((a)*(a))
@@ -1701,9 +1736,30 @@ class Strings;
 // To keep within stacksize, we must remove bytes, so we'll remove 8k (originally this was 16384)
 #define STRING_SIZE          (8192)
 
-extern char buf[STRING_SIZE];
-extern char buf2[STRING_SIZE];
-extern char buf3[STRING_SIZE];
+class ZeroTypesStringBuffers {
+public:
+	char buf[STRING_SIZE];
+	char buf2[STRING_SIZE];
+	char buf3[STRING_SIZE];
+	char tbuf[128];
+	ZeroTypesStringBuffers() {
+		for (int i = 0; i < STRING_SIZE; i++) {
+			buf[i] = '\0';
+			buf2[i] = '\0';
+			buf3[i] = '\0';
+			if ( i < 128 ) tbuf[i]='\0';
+		}
+	}
+	char *Buf() { return buf; }
+	char *Buf2() { return buf2; }
+	char *Buf3() { return buf3; }
+	char *Tbuf() { return tbuf; }
+};
+
+ZeroTypesStringBuffers &ZTSB() {
+	static ZeroTypesStringBuffers ztsb;
+	return ztsb;
+}
 
 // strings
 #define LOWER(c)                ((c) >= 'A' && (c) <= 'Z' ? (c)+'a'-'A' : (c))
@@ -1738,105 +1794,106 @@ extern char buf3[STRING_SIZE];
 #define F42S2(f) (FMT("%1.4f",(float)f))
 #define D42S2(d) (FMT("%1.4f",(double)d))
 
-extern const char string_error;
-
-void rtrim(string& s, const string& delimiters = " \f\n\r\t\v");
-void ltrim(string& s, const string& delimiters = " \f\n\r\t\v"); 
-void  trim(string& s, const string& delimiters = " \f\n\r\t\v");
+inline void rtrim(string& s, const string& delimiters = " \f\n\r\t\v");
+inline void ltrim(string& s, const string& delimiters = " \f\n\r\t\v");
+inline void  trim(string& s, const string& delimiters = " \f\n\r\t\v");
 // Gather until next substring match or end of string (returns the point right after the substring)
-const char *gather_to(const char *argument, const char *substr, string *buf);
+inline const char *gather_to(const char *argument, const char *substr, string *buf);
 // Replace search with substitute one time
-void replaceOnce(string& in, string const &search, string const &substitute);
+inline void replaceOnce(string& in, string const &search, string const &substitute);
 // Replace all with substitute
-void replaceAll(string& in, string const &search, string const &substitute);
+inline void replaceAll(string& in, string const &search, string const &substitute);
 // Replace all with substitute
-string replace_all(const string& in, const string& search, const string& substitute);
+inline string replace_all(const string& in, const string& search, const string& substitute);
 // Does the string end with the ending?
-bool endsWith(string const &fullString, string const &ending);
+inline bool endsWith(string const &fullString, string const &ending);
 // Does the string end with the ending?
-bool endsWith(const char *searching, const char *find, bool removePadding);
+inline bool endsWith(const char *searching, const char *find, bool removePadding);
 // Counts the number of "words" (strings of non-spaces separated by spaces) in a string.     Not the best way (should use one_arg)?
-int words(const char *argument);
+inline int words(const char *argument);
 // Compare strings, case insensitive.   * Return true if different (compatibility with historical functions).
-bool str_cmp(const char *astr, const char *bstr);
+inline bool str_cmp(const char *astr, const char *bstr);
 // Compare strings, case insensitive.   * Return true if different (compatibility with historical functions).
-bool str_cmp(string astr, string bstr);
+inline bool str_cmp(string astr, string bstr);
 // Is the char a digit?
 inline bool is_digit(char c);
 // Is character in this list of characters
-bool char_in(char c, const char *list);
+inline bool char_in(char c, const char *list);
 // Compare strings, case sensitive. * Return true if different (compatibility with historical functions).
-bool str_cmp_case(const char *astr, const char *bstr);
+inline bool str_cmp_case(const char *astr, const char *bstr);
 // Convert to lower case
-string lower(string a);
+inline string lower(string a);
 // Return true if an argument is completely numeric.
-bool is_integer(const char *arg);
+inline bool is_integer(const char *arg);
 // Return true if an argument is completely numeric.
-bool is_decimal(const char *arg);
+inline bool is_decimal(const char *arg);
 // Checks for integer using atoi error handling, decimal only (base-10, no floats).  Does not return the value if valid (tiny inefficiency). Source: http://www.gidforums.com/t-17778.html
-bool is_int(string k);
+inline bool is_int(string k);
 // Checks for hexidecimal
-bool is_hex(string k);
+inline bool is_hex(string k);
 // checks for float
-bool is_float(string k);
+inline bool is_float(string k);
 // Converts from hex to int
-int from_hex(string hex);
+inline int from_hex(string hex);
 // Converts to hex from int
-string to_hexidecimal(int i);
+inline string to_hexidecimal(int i);
 // Pick off one argument from a string and return the rest. * Understands quotes and {}=[], treats interim commas and equal signs as space. Uses the stack so not recommended for large strings (use string_argument);
-const char *one_argument(const char *args, char *arg_first);
+inline const char *one_argument(const char *args, char *arg_first);
 // Pick off one argument from a string and return the rest. * Understands quotes and {}=[], treats interim commas and equal signs as space. Uses the stack so not recommended for large strings (use string_argument);
-const char *one_argument_case(const char *args, char *arg_first);
+inline const char *one_argument_case(const char *args, char *arg_first);
 // Pick off one argument from a string and return the rest. * Uses std::string thus dynamic and doesn't use the stack. Understands quotes and {}=[](), treats interim commas and equal signs as space.
-const char *string_argument(const char *argument, string *arg_first, bool slash_comments=true, bool pound_comments=true);
+inline const char *string_argument(const char *argument, string *arg_first, bool slash_comments=true, bool pound_comments=true);
 // Pick off one argument from a string and return the rest. * Uses std::string thus dynamic and doesn't use the stack. Understands quotes and {}=[](), treats interim commas and equal signs as space.
-const char *string_argument(const char *argument, Zstring *arg_firstz);
+inline const char *string_argument(const char *argument, Zstring *arg_firstz);
 // Pick off one argument from a string and return the rest without lowering case. * Uses std::string thus dynamic and doesn't use the stack. Understands quotes and {}=[](), treats interim commas and equal signs as space.
-const char *string_argument_case(const char *argument, string *arg_first);
+inline const char *string_argument_case(const char *argument, string *arg_first);
 // Pick off one argument from a string and return the rest without lowering case. * Uses std::string thus dynamic and doesn't use the stack. Understands quotes and {}=[](), treats interim commas and equal signs as space.
-const char *string_argument_case(Zstring &sep, const char *argument, string *arg_first);
+inline const char *string_argument_case(Zstring &sep, const char *argument, string *arg_first);
 // Pick off one argument from a string and return the rest. * Uses std::string thus dynamic and doesn't use the stack. Understands quotes and {}=[](), treats interim commas and equal signs as space.
-const char *string_argument_end(const char *argument, string *arg_first, char *sep);
+inline const char *string_argument_end(const char *argument, string *arg_first, char *sep);
 // Compare strings, case insensitive, for prefix matching. * Return true if hay not a prefix of haystack (compatibility with historical functions).
-bool str_prefix(const char *astr, const char *bstr);
+inline bool str_prefix(const char *astr, const char *bstr);
 // Compare strings, case sensitive, for prefix matching. * Return true if astr not a prefix of bstr (compatibility with historical functions).
-bool str_prefix_case(const char *astr, const char *bstr);
+inline bool str_prefix_case(const char *astr, const char *bstr);
 // Makes a string into its lower-case counterpart
-string strtolower(const char *input);
+inline string strtolower(const char *input);
 // Compare strings, case insensitive, for match anywhere. * Returns true if shorter string not part of longer string. (compatibility with historical functions).
-bool str_infix(const char *astr, const char *bstr);
+inline bool str_infix(const char *astr, const char *bstr);
 // Compare strings, case insensitive, for match anywhere. * Returns true if shorter string not part of longer string. (compatibility with historical functions).
-bool string_infix(string astr, string bstr);
+inline bool string_infix(string astr, string bstr);
 // Compare strings, case insensitive, for match anywhere. * Returns true if shorter string not part of longer string. (compatibility with historical functions).
-bool str_infix_case(const char *astr, const char *bstr);
+inline bool str_infix_case(const char *astr, const char *bstr);
 // Compare strings, case insensitive, for suffix matching. * Return true if astr not a suffix of bstr (compatibility with historical functions).
-bool str_suffix(const char *astr, const char *bstr);
+inline bool str_suffix(const char *astr, const char *bstr);
 // Return a random character from this list, uses uniform()
-char randomChar(const char *list);
+inline char randomChar(const char *list);
 // Indentation state
-extern string indention;
+std::string &indention() {
+	static Zstring _indention;
+	return _indention.value;
+}
 // Increase indentation
-void incdent();
+inline void incdent();
 // Decrease indentation
-void decdent();
+inline void decdent();
 // Reset indentation
-void nodent();
+inline void nodent();
 // Low-brow alphanumeric hash.
-string Hash(int len);
+inline string Hash(int len);
 // Low-brow hash compare
-bool HashCompare5(string *a, string *b);
+inline bool HashCompare5(string *a, string *b);
 // Pseudo-
-string RomanNumerals(int v);
+inline string RomanNumerals(int v);
 // Convert forward to back slash
-string slash_to_backslash(const char * s);
+inline string slash_to_backslash(const char * s);
 // Convert backslash to forward slash
-string backslash_to_slash(const char * s);
+inline string backslash_to_slash(const char * s);
 // Make sure there is a trailing forward slash
-string trailing_slash(const char *s);
+inline string trailing_slash(const char *s);
 // Make sure there is a trailing back-slash
-string trailing_backslash(const char *s);
+inline string trailing_backslash(const char *s);
 // Break down a path/filename and get the basename of the deepest element
-string basename(const char *path, char sep);
+inline string basename(const char *path, char sep);
 
 
 class Zstring {
@@ -1888,7 +1945,6 @@ public:
   return tolower(c);
   });
   */
-
   if ( haystack.find(needle.c_str()) != std::string::npos ) return true;
   return false;
  }	
@@ -2039,6 +2095,18 @@ public:
   if (is_decimal(value.c_str())) return (int)(atof(value.c_str()));  // rounding?
   else return (int)atoi(value.c_str());
  }
+ bool isExactly( const char *b ) {  
+  const char *p,*q;
+  p=value.c_str();
+  q=b;
+  while ( *p != '\0' && *q != '\0' ) {
+   if (*p != *q) return false;
+   p++;
+   q++;
+  }
+  if (*p != *q) return false;
+  return true;
+ }
  int Compare( const char *b ) {  
   const char *p,*q;
   p=value.c_str(); while ( *p != '\0' && !IS_ALPHA(*p) ) p++;
@@ -2118,77 +2186,77 @@ public:
  }
 };
 
-bool operator==( const Zstring& a, const Zstring& b );
-bool operator==( const Zstring& a, const char *b );
-bool operator==( const char *b , const Zstring& a );
-bool operator!=( const Zstring& a, const Zstring& b );
-bool operator!=( const Zstring& a, const char *b );
-bool operator!=( const char *b , const Zstring& a );
-string operator+ ( const Zstring& a, const Zstring& b );
-string operator+ ( const Zstring& a, const string& b );
-string operator+ ( const string& a, const Zstring& b );
-string operator+ ( const Zstring& a, const int& b );
-string operator+ ( const Zstring& a, const unsigned int& b );
-string operator+ ( const Zstring& a, const float& b );
-string operator+ ( const Zstring& a, const double& b );
-string operator+ ( const int& a, const Zstring& b );
-string operator+ ( const unsigned int& a, const Zstring& b );
-string operator+ ( const float& a, const Zstring& b );
-string operator+ ( const double& a, const Zstring& b );
-string operator+ ( string a, Zint& b );
-string operator+ ( string a, Zuint& b );
-string operator+ ( string a, Zfloat& b );
-string operator+ ( string a, Zdouble& b );
+inline bool operator==( const Zstring& a, const Zstring& b );
+inline bool operator==( const Zstring& a, const char *b );
+inline bool operator==( const char *b , const Zstring& a );
+inline bool operator!=( const Zstring& a, const Zstring& b );
+inline bool operator!=( const Zstring& a, const char *b );
+inline bool operator!=( const char *b , const Zstring& a );
+inline string operator+ ( const Zstring& a, const Zstring& b );
+inline string operator+ ( const Zstring& a, const string& b );
+inline string operator+ ( const string& a, const Zstring& b );
+inline string operator+ ( const Zstring& a, const int& b );
+inline string operator+ ( const Zstring& a, const unsigned int& b );
+inline string operator+ ( const Zstring& a, const float& b );
+inline string operator+ ( const Zstring& a, const double& b );
+inline string operator+ ( const int& a, const Zstring& b );
+inline string operator+ ( const unsigned int& a, const Zstring& b );
+inline string operator+ ( const float& a, const Zstring& b );
+inline string operator+ ( const double& a, const Zstring& b );
+inline string operator+ ( string a, Zint& b );
+inline string operator+ ( string a, Zuint& b );
+inline string operator+ ( string a, Zfloat& b );
+inline string operator+ ( string a, Zdouble& b );
 /* Creates C2593
 string operator+ ( Zint& a, string b );
 string operator+ ( Zuint& a, string b );
 string operator+ ( Zfloat& a, string b );
 string operator+ ( Zdouble& a, string b );
 */
-int operator+ ( Zint& a, Zint& b );
-float operator+ ( Zfloat& a, Zfloat& b );
-double operator+ ( Zdouble& a, Zdouble& b );
-string operator+ ( const Zstring& a, char c );
-string operator+ ( char c, const Zstring& a );
-string operator- ( const Zstring& a, const Zstring& b );
-string operator- ( const Zstring& a, const string& b );
-string operator- ( const string& b, const Zstring& a );
-string operator- ( const Zstring& a, const char *b );
+inline int operator+ ( Zint& a, Zint& b );
+inline float operator+ ( Zfloat& a, Zfloat& b );
+inline double operator+ ( Zdouble& a, Zdouble& b );
+inline string operator+ ( const Zstring& a, char c );
+inline string operator+ ( char c, const Zstring& a );
+inline string operator- ( const Zstring& a, const Zstring& b );
+inline string operator- ( const Zstring& a, const string& b );
+inline string operator- ( const string& b, const Zstring& a );
+inline string operator- ( const Zstring& a, const char *b );
 //string operator- ( const char *b, const Zstring& a );
-string operator/ ( const Zstring& a, const Zstring& b );
-string operator/ ( const Zstring& a, const string& b );
-string operator/ ( const string& b, const Zstring& a );
-string operator/ ( const Zstring& a, const char *b );
-string operator/ ( const char *b, const Zstring& a );
-string operator* ( const Zstring& a, unsigned int i );
-int operator* ( const Zstring& a, string b );
-int operator* ( string a, const Zstring& b );
-int operator* ( const Zstring& a, const char *B );
-int operator* ( const Zstring& a, const Zstring& b );
-
+inline string operator/ ( const Zstring& a, const Zstring& b );
+inline string operator/ ( const Zstring& a, const string& b );
+inline string operator/ ( const string& b, const Zstring& a );
+inline string operator/ ( const Zstring& a, const char *b );
+inline string operator/ ( const char *b, const Zstring& a );
+inline string operator* ( const Zstring& a, unsigned int i );
+inline int operator* ( const Zstring& a, string b );
+inline int operator* ( string a, const Zstring& b );
+inline int operator* ( const Zstring& a, const char *B );
+inline int operator* ( const Zstring& a, const Zstring& b );
+	   
 /// Zstring ///////////////////////////////////////////////////////////////////////////////////////// end
 
 // Random Number Stuff, needed for lists to return random elements
 
-void init_seeder(void); // called by InitZeroTypesLibrary();
-void reseed(void);
-double uniform (void);
-double uniform ( bool reseed );
+inline void init_seeder(void); // called by InitZeroTypesLibrary();
+inline void reseed(void);
+inline double uniform (void);
+inline double uniform ( bool reseed );
 #define PSEUDORAND_MAX 0x7fff
-int pseudorandom( unsigned int s, unsigned int x );
-double random(double x);
-int iround ( float f );
-int iround ( double d );
-int ilerp( int start, int end, float percent );
-int ilerpw( int start, int end, float percent );
-int ilerp( int start, int end, double percent );
-int ilerpw( int start, int end, double percent );
-double double_range( double L, double H );
-float float_range( float L, float H );
-int number_range( int L, int H );
-int upto( int M );
-int upto( int M, int seed );
-float Gauss();
+inline int zpseudorandom( unsigned int s, unsigned int x );
+inline double zrandom(double x);
+inline int iround ( float f );
+inline int iround ( double d );
+inline int ilerp( int start, int end, float percent );
+inline int ilerpw( int start, int end, float percent );
+inline int ilerp( int start, int end, double percent );
+inline int ilerpw( int start, int end, double percent );
+inline double double_range( double L, double H );
+inline float float_range( float L, float H );
+inline int number_range( int L, int H );
+inline int upto( int M );
+inline int upto( int M, int seed );
+inline float Gauss();
 
 //////////////////////////////////////////////////////////////////
 
@@ -2259,7 +2327,7 @@ public:
 
 
 // These are just renamings of the of the referenced ones below.
-// Anonymous
+// Anonymous   
 #define _ONE(type_name,code1)        SINGLE(type_name,code1)    
 #define _MANY(single,plural,code2)   PLURAL(single,plural,code2)
 #define _DONE(type_name)             ENDSET(type_name)          
@@ -2267,6 +2335,8 @@ public:
 #define ONE(type_name,code1)                                           SINGLE_NAMED(type_name,code1)
 #define MANY(single,singleHandle,singleHandles,keyname,plural,code2)   PLURAL_NAMED(single,singleHandle,singleHandles,keyname,plural,code2)
 #define DONE(type_name)                                                ENDSET_NAMED(type_name)    
+
+#define ZMANY(single,plural,code2,keyname) MANY(single,single##Handle,single##Handles,keyname,plural,code2)
 
 #define VERYMANY(single,singleHandle,singleHandles,singleHandlesHandle,singleHandlesHandles,keyname,plural,code2)  \
  ENDITEM(single); HANDLES(single,singleHandle,singleHandles,keyname); \
@@ -2304,6 +2374,10 @@ public:
 #define SINGLE_NAMED(type_name,code1)      ITEM(type_name,code1) Zstring name; type_name( const char *n ) { name=n; {code1} } 
 #define PLURAL_NAMED(single,singleHandle,singleHandles,keyname,plural,code2)  ENDITEM(single); HANDLES(single,singleHandle,singleHandles,keyname); LIST(plural,code2) single *named(const char *k) { FOREACH(single,s) if ( !str_cmp(s->name.c_str(),k) ) return s; return null; } single *firstNamed( const char *k ) { FOREACH(single,s) if ( s->name.inside(k) ) return s; return null; } void nameSearch( singleHandles *out, const char *k ) { FOREACH(single,s) if ( s->name.inside(k) ) out->Add(s); } void nameMatches( singleHandles *out, const char *k ) { FOREACH(single,s) if ( !str_cmp(k,s->name.c_str()) ) out->Add(s); } void nameGroup( singleHandles *out, const char *k ) { FOREACH(single,s) if ( s->name.begins(k) ) out->Add(s); }
 #define ENDSET_NAMED(type_name)            ENDLIST(type_name)
+// No default constructor
+#define _ONE_(type_name)       SINGLE_(type_name) 
+#define ITEM_(type_name)  class type_name : public ListItem { public: 
+#define SINGLE_(type_name)     ITEM_(type_name)
 
 // These are used to expedite override of fromString() code, WORD and TAG are strung together with elses
 #define KEYWORDS(code)                  void fromString( const char *s, const char *path_prefix="" ) { OUTPUT("in[%s] ",(typeid(*this).name()) ); Zstring _in(s); const char *w=_in.Next(); while ( *w != '\0' ) { {code} NEXTWORD } }
@@ -2732,8 +2806,8 @@ HANDLES(ListItem,ListItemHandle,ListItemHandles,"ListItem");
 
 //////////////////////////////////////////////////////////////////////// String/Strings collection class
 
-string UnStringSpecialCodes( string k );
-string StringSpecialCodes( string k );
+inline string UnStringSpecialCodes( string k );
+inline string StringSpecialCodes( string k );
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -2810,7 +2884,7 @@ public:
  }
  virtual string toString() {
   string out=string("");
-  out+=indention+string("{")+StringSpecialCodes(this->s)+string("}");
+  out+=indention()+string("{")+StringSpecialCodes(this->s)+string("}");
   if ( integer != 0 ) {
    char buf[80];
    FMT(buf,80," %d",(int) integer);
@@ -2887,6 +2961,15 @@ public:
   return new KeyValuePair( this );
  }
 };
+
+#ifndef va_start
+#include <varargs.h>
+#endif
+
+const char *string_error() {
+	static const char _string_error = '\0';
+	return &_string_error;
+}
 
 class Strings : public LinkedList {
 public:
@@ -2971,11 +3054,11 @@ public:
    string classname=typeid(*s).name();
    string discard;
    const char *q=string_argument(classname.c_str(),&discard); // discards the words "class or struct"
-   if ( !str_cmp(q,"String") ) out+=indention+string("string {\n")+s->toString()+string("}\n");
+   if ( !str_cmp(q,"String") ) out+=indention()+string("string {\n")+s->toString()+string("}\n");
    else
     if ( !str_cmp(q,"KeyValuePair") ) {
      KeyValuePair *kv=(KeyValuePair *)s;
-     out+=indention+string("kv {\n")+kv->toString()+string("}\n");
+     out+=indention()+string("kv {\n")+kv->toString()+string("}\n");
     }
   }
   decdent();
@@ -3116,13 +3199,20 @@ public:
  const char *Chars( int i ) {
   FOREACH(String,s) if ( s->integer==i ) return s->s.c_str();
   OUTPUT("Strings:Chars(%d) reports no such element in list, returning empty string\n", (int) i);
-  return &string_error;
+  return string_error();
  }
  // Gets the value or empty string if none
  string Get( int i ) {
   String *s=(String *) Element(i);
   if ( s ) return s->s;
   return string("");
+ }
+ // Gets the value, then tests if the value matches the expected caseless comparison
+ bool Is( int i, std::string caselessMatch ) {
+  String *s=(String *) Element(i);
+  Zstring test;
+  if (s) test = s->s;
+  return test == caselessMatch;
  }
  // Gets the value or empty string if none, wraps
  string Get( int i, having modulo ) {
@@ -3180,9 +3270,9 @@ public:
  void printf( const char * fmt, ...) {
   static char buf [32768];
   va_list args;
-  va_start (args, fmt);
+  va_start(args, fmt);
   vsprintf_s(buf, fmt, args);
-  va_end (args);
+  va_end(args);
   Push(buf);
  }
  SORTING(String,SortAZ,{},{
@@ -3208,8 +3298,8 @@ public:
  ~Strings(void) { Clear(); }
 };
 
-Strings *ls( const char *targetPath, bool listFiles=true, bool prependPath=true, bool filterOSFiles=true );
-Strings *ls( const char *targetPath, bool listFiles, bool prependPath, Strings *filters );
+inline Strings *ls( const char *targetPath, bool listFiles=true, bool prependPath=true, bool filterOSFiles=true );
+inline Strings *ls( const char *targetPath, bool listFiles, bool prependPath, Strings *filters );
 
 /**
 * \class Cartesian
@@ -3774,28 +3864,250 @@ public:
   };
 
 
-  string file_as_string(const char *filename);
-  string file_as_string_streams(const char *filename);
+  // Implements a string packing algorithm for hashing strings for the HashStore.  
+class PackedString : private ZIndexed<uint32_t> {
+public:
+ inline uint32_t PACK(unsigned char c0, unsigned char c1, unsigned char c2, unsigned char c3) {
+  return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3;
+ } 
+ inline uint32_t PACK(char c0, char c1, char c2, char c3) {
+  return PACK((unsigned char)c0, (unsigned char)c1, (unsigned char)c2, (unsigned char)c3);
+ }
+ PackedString() {}
+ PackedString( const char *s, bool lowercase=true ) {
+  Set(s,lowercase);
+ }
+ size_t Length() { return this->length; }
+ size_t W() { return this->w; }
+ size_t H() { return this->h; }
+ uint32_t Get( unsigned int idx ) { return (*this)(idx); }
+ void Set( const char *s, bool lowercase=true ) {
+  size_t len=strlen(s);
+  this->Size(len/4 + (len%4 == 0 ? 0 : 1));
+  const char *p=s;
+  char c[4];
+  memset(c,0,sizeof(char)*4);
+  int i=0,j=0;
+  while ( *p != '\0' ) {
+   c[i]=lowercase ? LOWER(*p) : (*p);
+   i++;
+   if ( *(p+1) == '\0' || i > 3 ) {
+    i=0;
+    this->list[j]=PACK(c[0],c[1],c[2],c[3]);
+    memset(c,0,sizeof(char)*4);
+    j++;
+   }
+   p++;
+  }
+ }
+ bool exactly( const PackedString *in ) {
+  if ( in->length != length ) return false;
+  for ( size_t i=0; i<length; i++ ) if ( this->list[i] != in->list[i] ) return false;
+  return true;
+ }
+ PackedString& operator= ( const char *s ) { Set(s,true);  return *this; }
+ PackedString& operator&=( const char *s ) { Set(s,false); return *this; }
+};
 
-  bool string_as_file(const char *text, const char *fn);
-  bool file_exists(const char *fn);
+
+inline bool operator == (PackedString& a, PackedString& b);
+inline bool operator != (PackedString& a, PackedString& b);
+  
+
+inline bool operator == (PackedString& a, PackedString& b) {
+ return a.exactly(&b);
+}
+
+inline bool operator != (PackedString& a, PackedString& b) {
+ return !a.exactly(&b);
+}
+
+// Implements a 2D hash store of packed strings templated to the ListItem and LinkedList ecosystem,
+// using ZIndexed for the table.
+template<class ITEM, class LIST>
+class HashStore : public ListItem {
+public:
+ ZIndexed<LIST> store;
+ size_t depth;
+ HashStore( size_t depth=1024 ) : ListItem() {
+  this->depth=depth;
+  store.Size(depth,depth);
+  Init();
+ }
+ virtual void Init() {}
+ LIST *Bucket( PackedString *packed ) {
+  unsigned int x=packed->Length() > 0 ? packed->Get(0) : 0;
+  unsigned int y=packed->Length() > 1 ? packed->Get(1) : 0;
+  x %= (int)depth;
+  y %= (int)depth;
+  return &store(x,y);
+ }
+ LIST *Get( unsigned int x ) { return &store(x); }
+ LIST *Get( unsigned int x, unsigned int y ) { return &store(x,y); }
+ void Append( ITEM *I, PackedString *packed ) {
+  LIST *L=Bucket(packed);
+  L->Append(I);
+ }
+ bool Append( ITEM *I, PackedString *packed, bool check_if_stored ) {
+  LIST *L=Bucket(packed);
+  if ( !L->inList(I) ) {
+   L->Append(I);
+   return true;
+  }
+  return false;
+ }
+ void Prepend( ITEM *I, PackedString *packed ) {
+  LIST *L=Bucket(packed);
+  L->Prepend(I);
+ }
+ bool Prepend( ITEM *I, PackedString *packed, bool check_if_stored ) {
+  LIST *L=Bucket(packed);
+  if ( !L->inList(I) ) {
+   L->Prepend(I);
+   return true;
+  }
+  return false;
+ }
+ bool Stored( ITEM *I, PackedString *packed ) {
+  LIST *L=Bucket(packed);
+  return ( L->inList(I) );
+ }
+ ITEM *Extract( ITEM *I, PackedString *packed ) {
+  LIST *L=Bucket(packed);
+  L->Remove(I);
+  return I;
+ }
+ void Restore( ITEM *I, PackedString *packed ) {
+  Extract(I);
+  Append(I,packed);
+ }
+ void RestorePrepend( ITEM *I, PackedString *packed ) {
+  Extract(I);
+  Prepend(I,packed);
+ }
+ /* To be used in the template instantiation:
+ int Total() {
+  int total=0;
+  size_t length=SQ(depth);
+  for ( unsigned int i=0; i<length; i++ ) total+=store(i).count.value;
+  return total;
+ }
+ */
+};
+
+ // String Indexer
+ // (String hashing template based on ZIndexed)
+
+template<class LISTITEMCHILD>
+class StringIndexed {
+public:
+ ZIndexed<LinkedList> lists;
+ Zint last_index;
+ Zint index_iterator;
+ Zp<LinkedList> lists_iterator;
+ Zp<ListItem> list_iterator;
+ StringIndexed() {
+  Init();
+ }
+ void Init( size_t depth=256 ) {
+  Depth(depth);
+  Rewind();
+ }
+ void Rewind() {
+  index_iterator=0;
+  lists_iterator=&lists[index_iterator];
+  list_iterator=lists_iterator->first;
+ }
+ LISTITEMCHILD *Next() {
+  if ( !lists_iterator ) Rewind();
+  else {
+   if ( list_iterator ) list_iterator=list_iterator->next;
+   if ( !list_iterator ) {
+    index_iterator++;
+    if ( index_iterator >= lists.length ) { Rewind(); return (LISTITEMCHILD *) list_iterator.pointer; }
+    lists_iterator=&lists[index_iterator];
+    list_iterator=lists_iterator->first;
+   }
+  }
+  return (LISTITEMCHILD *) list_iterator.pointer;
+ }
+ void Remove() { if ( lists_iterator && list_iterator ) lists_iterator->Remove(list_iterator.pointer); }
+ void Depth( size_t depth=256 ) { lists.Size(depth); }
+ int Encode( const char *s ) {
+  int index=0;
+  int len=strlen(s);
+  if ( len <= 0 ) return 0;
+  int a=len/4;        if ( a > len-1 ) a=len; int c_a=(int)s[a];
+  int b=len/2;        if ( b > len-1 ) b=len; int c_b=(int)s[b];
+  int c=len/2+len/4;  if ( c > len-1 ) c=len; int c_c=(int)s[c];
+  int d=len/3;        if ( d > len-1 ) d=len; int c_d=(int)s[d];
+  int e=len/3*2;      if ( e > len-1 ) e=len; int c_e=(int)s[e];
+  int f=len-1;        if ( f > len-1 ) f=len; int c_f=(int)s[f];
+  return (int)(last_index=((c_a+c_b+c_c+c_d+c_e+c_f)%(int)lists.length));
+ }
+ LinkedList *GetList( const char * s ) {
+  Encode(s);
+  return &lists[(size_t)(int)last_index];
+ }
+ void Store( const char *s, ListItem *single ) {
+  LinkedList *list=GetList(s);
+  list->Append(single);
+ }
+ ListItem *SimpleGet( const char *s ) {
+  LinkedList *list=GetList(s);
+  Zstring test;
+  EACH(list->first,ListItem,i) {
+   i->GetThisStringIndex(test.self());
+   if ( test == s ) return i;
+  }
+  return null;
+ }
+ LISTITEMCHILD *Get( const char *s ) {
+  LinkedList *list=GetList(s);
+  Zstring test;
+  EACH(list->first,ListItem,i) {
+   i->GetThisStringIndex(test.self());
+   if ( test == s ) return (LISTITEMCHILD *)i;
+  }
+  return null;
+ }
+ LISTITEMCHILD *Remove( const char *s ) {
+  ListItem *got=SimpleGet(s);
+  if ( !got ) return null;
+  if ( list_iterator == (ListItem *) got ) Next();
+  if ( got ) lists[last_index].Remove(got);
+  return (LISTITEMCHILD *)got;
+ }
+ ListItem &operator() ( const char *s ) { return *Get(s); }
+};
+
+
+  // -----
+
+inline string file_as_string(const char *filename);
+inline string file_as_string_streams(const char *filename);
+
+inline bool string_as_file(const char *text, const char *fn);
+inline bool file_exists(const char *fn);
 
   //----------------------------------------------------------------------------------
 
 
   /// Temporary buffer for int->string conversions
-  char tbuf[128];
-
+#ifndef va_start
 #include <varargs.h>
+#endif
 
+#ifndef NEW
 #define NEW(v,t) try { v= new t; } catch (bad_alloc& ba) { OUTPUT("NEW: bad_alloc caught: %s\n", ba.what()); v=null; }
+#endif
 #define CREATE(v,t) t *v=null; try { v= new t; } catch (bad_alloc& ba) { OUTPUT("NEW: bad_alloc caught: %s\n", ba.what()); v=null; }
 
 #ifndef no_init_all
 #define no_init_all deprecated
 #endif
 #include <Windows.h> // for OutputDebugString
-  void output__(const char * fmt, ...) {
+  inline void output__(const char * fmt, ...) {
    static char OUT_buf[32768];
    memset(OUT_buf, 0, sizeof(char) * 32768);
    va_list args;
@@ -3812,7 +4124,7 @@ public:
 
 #define FORMAT_STRING_SIZE 65536
 
-  string FMT(const char*fmt, ...) {
+  inline string FMT(const char*fmt, ...) {
    string s;
    static char FMT_buf[FORMAT_STRING_SIZE];
    va_list args;
@@ -3827,20 +4139,20 @@ public:
 
   /// Zfloat operator= overloads for forward declared types
 
-  Zfloat& Zfloat::operator= ( const Zbyte& b   ) { value=(float)b.value; return *this; }
-  Zfloat& Zfloat::operator= ( const Zuint& i   ) { value=(float)i.value; return *this; }
-  Zfloat& Zfloat::operator= ( const Zint& i    ) { value=(float)i.value; return *this; }
-  Zfloat& Zfloat::operator= ( const Zdouble& d ) { value=(float)d.value; return *this; }
-  Zfloat& Zfloat::operator= ( const std::string& s ) { value=(float)atof(s.c_str()); return *this; }
-  float Zfloat::operator()( Zbyte &b )   { return value=(float)b.value; }
-  float Zfloat::operator()( Zuint &i )   { return value=(float)i.value; }
-  float Zfloat::operator()( Zint &i )    { return value=(float)i.value; }
-  float Zfloat::operator()( Zfloat &f )  { return value; }
-  float Zfloat::operator()( Zdouble &d ) { return value=(float)d.value; }
-  Zfloat& Zfloat::operator+= ( const Zint& i ) { value+=(float)i.value; return *this; }
-  Zfloat& Zfloat::operator-= ( const Zint& i ) { value-=(float)i.value; return *this; }
-  Zfloat& Zfloat::operator*= ( const Zint& i ) { value*=(float)i.value; return *this; }
-  Zfloat& Zfloat::operator/= ( const Zint& i ) {
+  inline Zfloat& Zfloat::operator= ( const Zbyte& b   ) { value=(float)b.value; return *this; }
+  inline Zfloat& Zfloat::operator= ( const Zuint& i   ) { value=(float)i.value; return *this; }
+  inline Zfloat& Zfloat::operator= ( const Zint& i    ) { value=(float)i.value; return *this; }
+  inline Zfloat& Zfloat::operator= ( const Zdouble& d ) { value=(float)d.value; return *this; }
+  inline Zfloat& Zfloat::operator= ( const std::string& s ) { value=(float)atof(s.c_str()); return *this; }
+  inline float Zfloat::operator()( Zbyte &b )   { return value=(float)b.value; }
+  inline float Zfloat::operator()( Zuint &i )   { return value=(float)i.value; }
+  inline float Zfloat::operator()( Zint &i )    { return value=(float)i.value; }
+  inline float Zfloat::operator()( Zfloat &f )  { return value; }
+  inline float Zfloat::operator()( Zdouble &d ) { return value=(float)d.value; }
+  inline Zfloat& Zfloat::operator+= ( const Zint& i ) { value+=(float)i.value; return *this; }
+  inline Zfloat& Zfloat::operator-= ( const Zint& i ) { value-=(float)i.value; return *this; }
+  inline Zfloat& Zfloat::operator*= ( const Zint& i ) { value*=(float)i.value; return *this; }
+  inline Zfloat& Zfloat::operator/= ( const Zint& i ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( (float) i.value == 0.0f ) {  
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -3856,55 +4168,55 @@ public:
 
   /// Zbyte operator= overloads for forward declared types
 
-  Zbyte& Zbyte::operator= ( const Zuint& i )   { value=(unsigned char)i.value; return *this; }
-  Zbyte& Zbyte::operator= ( const Zint& i )    { value=(unsigned char)i.value; return *this; }
-  Zbyte& Zbyte::operator= ( const Zfloat& f )  { value=(unsigned char)f.value; return *this; }
-  Zbyte& Zbyte::operator= ( const Zdouble& d ) { value=(unsigned char)d.value; return *this; }
-  Zbyte& Zbyte::operator= ( const std::string& s ) { value=(unsigned char)atof(s.c_str()); return *this; }
-  unsigned char Zbyte::operator()( Zuint &i )   { return value=(unsigned char)i.value; }
-  unsigned char Zbyte::operator()( Zint &i )    { return value=(unsigned char)i.value; }
-  unsigned char Zbyte::operator()( Zfloat &f )  { return value=(unsigned char)f.value; }
-  unsigned char Zbyte::operator()( Zdouble &d ) { return value=(unsigned char)d.value; }
+  inline Zbyte& Zbyte::operator= ( const Zuint& i )   { value=(unsigned char)i.value; return *this; }
+  inline Zbyte& Zbyte::operator= ( const Zint& i )    { value=(unsigned char)i.value; return *this; }
+  inline Zbyte& Zbyte::operator= ( const Zfloat& f )  { value=(unsigned char)f.value; return *this; }
+  inline Zbyte& Zbyte::operator= ( const Zdouble& d ) { value=(unsigned char)d.value; return *this; }
+  inline Zbyte& Zbyte::operator= ( const std::string& s ) { value=(unsigned char)atof(s.c_str()); return *this; }
+  inline unsigned char Zbyte::operator()( Zuint &i )   { return value=(unsigned char)i.value; }
+  inline unsigned char Zbyte::operator()( Zint &i )    { return value=(unsigned char)i.value; }
+  inline unsigned char Zbyte::operator()( Zfloat &f )  { return value=(unsigned char)f.value; }
+  inline unsigned char Zbyte::operator()( Zdouble &d ) { return value=(unsigned char)d.value; }
 
   /// Zushort operator= overloads for forward declared types
 
-  Zushort& Zushort::operator= ( const Zuint& i )   { value=(unsigned short)i.value; return *this; }
-  Zushort& Zushort::operator= ( const Zint& i )    { value=(unsigned short)i.value; return *this; }
-  Zushort& Zushort::operator= ( const Zfloat& f )  { value=(unsigned short)f.value; return *this; }
-  Zushort& Zushort::operator= ( const Zdouble& d ) { value=(unsigned short)d.value; return *this; }
-  Zushort& Zushort::operator= ( const std::string& s ) { value=(unsigned short)atof(s.c_str()); return *this; }
-  unsigned short Zushort::operator()( Zuint &i )   { return value=(unsigned short)i.value; }
-  unsigned short Zushort::operator()( Zint &i )    { return value=(unsigned short)i.value; }
-  unsigned short Zushort::operator()( Zfloat &f )  { return value=(unsigned short)f.value; }
-  unsigned short Zushort::operator()( Zdouble &d ) { return value=(unsigned short)d.value; }
+  inline Zushort& Zushort::operator= ( const Zuint& i )   { value=(unsigned short)i.value; return *this; }
+  inline Zushort& Zushort::operator= ( const Zint& i )    { value=(unsigned short)i.value; return *this; }
+  inline Zushort& Zushort::operator= ( const Zfloat& f )  { value=(unsigned short)f.value; return *this; }
+  inline Zushort& Zushort::operator= ( const Zdouble& d ) { value=(unsigned short)d.value; return *this; }
+  inline Zushort& Zushort::operator= ( const std::string& s ) { value=(unsigned short)atof(s.c_str()); return *this; }
+  inline unsigned short Zushort::operator()( Zuint &i )   { return value=(unsigned short)i.value; }
+  inline unsigned short Zushort::operator()( Zint &i )    { return value=(unsigned short)i.value; }
+  inline unsigned short Zushort::operator()( Zfloat &f )  { return value=(unsigned short)f.value; }
+  inline unsigned short Zushort::operator()( Zdouble &d ) { return value=(unsigned short)d.value; }
 
   /// Zuint operator= overloads for forward declared types
 
-  Zuint& Zuint::operator= ( const Zbyte& b )   { value=(unsigned int)b.value; return *this; }
-  Zuint& Zuint::operator= ( const Zint& i )    { value=(unsigned int)i.value; return *this; }
-  Zuint& Zuint::operator= ( const Zfloat& f )  { value=(unsigned int)f.value; return *this; }
-  Zuint& Zuint::operator= ( const Zdouble& d ) { value=(unsigned int)d.value; return *this; }
-  Zuint& Zuint::operator= ( const std::string& s ) { value=(unsigned int)atof(s.c_str()); return *this; }
-  unsigned int Zuint::operator()( Zbyte &b )   { return value=(unsigned int)b.value; }
-  unsigned int Zuint::operator()( Zint &i )    { return value=(unsigned int)i.value; }
-  unsigned int Zuint::operator()( Zfloat &f )  { return value=(unsigned int)f.value; }
-  unsigned int Zuint::operator()( Zdouble &d ) { return value=(unsigned int)d.value; }
+  inline Zuint& Zuint::operator= ( const Zbyte& b )   { value=(unsigned int)b.value; return *this; }
+  inline Zuint& Zuint::operator= ( const Zint& i )    { value=(unsigned int)i.value; return *this; }
+  inline Zuint& Zuint::operator= ( const Zfloat& f )  { value=(unsigned int)f.value; return *this; }
+  inline Zuint& Zuint::operator= ( const Zdouble& d ) { value=(unsigned int)d.value; return *this; }
+  inline Zuint& Zuint::operator= ( const std::string& s ) { value=(unsigned int)atof(s.c_str()); return *this; }
+  inline unsigned int Zuint::operator()( Zbyte &b )   { return value=(unsigned int)b.value; }
+  inline unsigned int Zuint::operator()( Zint &i )    { return value=(unsigned int)i.value; }
+  inline unsigned int Zuint::operator()( Zfloat &f )  { return value=(unsigned int)f.value; }
+  inline unsigned int Zuint::operator()( Zdouble &d ) { return value=(unsigned int)d.value; }
 
   /// Zint operator= overloads for forward declared types
 
-  Zint& Zint::operator= ( const Zbyte& b )   { value=(int)b.value; return *this; }
-  Zint& Zint::operator= ( const Zuint& i )   { value=(int)i.value; return *this; }
-  Zint& Zint::operator= ( const Zfloat& f )  { value=(int)f.value; return *this; }
-  Zint& Zint::operator= ( const Zdouble& d ) { value=(int)d.value; return *this; }
-  Zint& Zint::operator= ( const std::string& s ) { value=(int)atof(s.c_str()); return *this; }
-  int Zint::operator()( Zbyte &b )   { return (value=(int)b.value); }
-  int Zint::operator()( Zuint &i )   { return (value=(int)i.value); }
-  int Zint::operator()( Zfloat &f )  { return (value=(int)f.value); }
-  int Zint::operator()( Zdouble &d ) { return (value=(int)d.value); }
-  Zint& Zint::operator+= ( const Zfloat& f ) { value+=(int)f.value; return *this; }
-  Zint& Zint::operator-= ( const Zfloat& f ) { value-=(int)f.value; return *this; }
-  Zint& Zint::operator*= ( const Zfloat& f ) { value*=(int)f.value; return *this; }
-  Zint& Zint::operator/= ( const Zfloat& f ) {
+  inline Zint& Zint::operator= ( const Zbyte& b )   { value=(int)b.value; return *this; }
+  inline Zint& Zint::operator= ( const Zuint& i )   { value=(int)i.value; return *this; }
+  inline Zint& Zint::operator= ( const Zfloat& f )  { value=(int)f.value; return *this; }
+  inline Zint& Zint::operator= ( const Zdouble& d ) { value=(int)d.value; return *this; }
+  inline Zint& Zint::operator= ( const std::string& s ) { value=(int)atof(s.c_str()); return *this; }
+  inline int Zint::operator()( Zbyte &b )   { return (value=(int)b.value); }
+  inline int Zint::operator()( Zuint &i )   { return (value=(int)i.value); }
+  inline int Zint::operator()( Zfloat &f )  { return (value=(int)f.value); }
+  inline int Zint::operator()( Zdouble &d ) { return (value=(int)d.value); }
+  inline Zint& Zint::operator+= ( const Zfloat& f ) { value+=(int)f.value; return *this; }
+  inline Zint& Zint::operator-= ( const Zfloat& f ) { value-=(int)f.value; return *this; }
+  inline Zint& Zint::operator*= ( const Zfloat& f ) { value*=(int)f.value; return *this; }
+  inline Zint& Zint::operator/= ( const Zfloat& f ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( (int) f.value == 0.0f ) {  
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -3920,29 +4232,29 @@ public:
 
   /// Zdouble operator= overloads for forward declared types
 
-  Zdouble& Zdouble::operator= ( const Zbyte& b )   { value=(double)b.value; return *this; }
-  Zdouble& Zdouble::operator= ( const Zuint& i )   { value=(double)i.value; return *this; }
-  Zdouble& Zdouble::operator= ( const Zint& i )    { value=(double)i.value; return *this; }
-  Zdouble& Zdouble::operator= ( const Zfloat& f )  { value=(double)f.value; return *this; }
-  Zdouble& Zdouble::operator= ( const std::string& s ) { value=(double)atof(s.c_str()); return *this; }
-  double Zdouble::operator()( Zbyte &b )  { return value=(double)b.value; }
-  double Zdouble::operator()( Zuint &i )  { return value=(double)i.value; }
-  double Zdouble::operator()( Zint &i )   { return value=(double)i.value; }
-  double Zdouble::operator()( Zfloat &f ) { return value=(double)f.value; }
+  inline Zdouble& Zdouble::operator= ( const Zbyte& b )   { value=(double)b.value; return *this; }
+  inline Zdouble& Zdouble::operator= ( const Zuint& i )   { value=(double)i.value; return *this; }
+  inline Zdouble& Zdouble::operator= ( const Zint& i )    { value=(double)i.value; return *this; }
+  inline Zdouble& Zdouble::operator= ( const Zfloat& f )  { value=(double)f.value; return *this; }
+  inline Zdouble& Zdouble::operator= ( const std::string& s ) { value=(double)atof(s.c_str()); return *this; }
+  inline double Zdouble::operator()( Zbyte &b )  { return value=(double)b.value; }
+  inline double Zdouble::operator()( Zuint &i )  { return value=(double)i.value; }
+  inline double Zdouble::operator()( Zint &i )   { return value=(double)i.value; }
+  inline double Zdouble::operator()( Zfloat &f ) { return value=(double)f.value; }
 
   /// Zfloat ////////////////////////////////////////////////////////////////////////////////////////// start
 
   // Mixed type operations
-  float operator+ ( const Zfloat& a, const Zint& b ) { return (float) b.value + a.value; }
-  float operator+ ( const Zint& a, const Zfloat& b ) { return (float) a.value + b.value; }
-  float operator* ( const Zfloat& a, const Zint& b ) { return (float) b.value * a.value; }
-  float operator* ( const Zint& a, const Zfloat& b ) { return (float) a.value * b.value; }
+  inline float operator+ ( const Zfloat& a, const Zint& b ) { return (float) b.value + a.value; }
+  inline float operator+ ( const Zint& a, const Zfloat& b ) { return (float) a.value + b.value; }
+  inline float operator* ( const Zfloat& a, const Zint& b ) { return (float) b.value * a.value; }
+  inline float operator* ( const Zint& a, const Zfloat& b ) { return (float) a.value * b.value; }
 
   // Zfloat and itself
-  float operator+ ( const Zfloat& a, const Zfloat& b ) { return a.value+b.value; }
-  float operator- ( const Zfloat& a, const Zfloat& b ) { return a.value-b.value; }
-  float operator* ( const Zfloat& a, const Zfloat& b ) { return a.value*b.value; }
-  float operator/ ( const Zfloat& a, const Zfloat& b ) {
+  inline float operator+ ( const Zfloat& a, const Zfloat& b ) { return a.value+b.value; }
+  inline float operator- ( const Zfloat& a, const Zfloat& b ) { return a.value-b.value; }
+  inline float operator* ( const Zfloat& a, const Zfloat& b ) { return a.value*b.value; }
+  inline float operator/ ( const Zfloat& a, const Zfloat& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -3954,10 +4266,10 @@ public:
    return a.value/b.value;
   }
   /* Creates C2593 for some reason...
-  float operator+ ( Zfloat a, Zfloat b ) { return a.value+b.value; }
-  float operator- ( Zfloat a, Zfloat b ) { return a.value-b.value; }
-  float operator* ( Zfloat a, Zfloat b ) { return a.value*b.value; }
-  float operator/ ( Zfloat a, Zfloat b ) {
+  inline float operator+ ( Zfloat a, Zfloat b ) { return a.value+b.value; }
+  inline float operator- ( Zfloat a, Zfloat b ) { return a.value-b.value; }
+  inline float operator* ( Zfloat a, Zfloat b ) { return a.value*b.value; }
+  inline float operator/ ( Zfloat a, Zfloat b ) {
   #if defined(DIV_BY_ZERO_PROTECTION)
   if ( b.value == 0.0f ) {
   #if defined(DIV_BY_ZERO_REPORTING)
@@ -3973,10 +4285,10 @@ public:
   /// Zfloat and int
 
   // Casted int operations
-  float operator+ ( const Zfloat& a, int b ) { return a.value+(float)b; }
-  float operator- ( const Zfloat& a, int b ) { return a.value-(float)b; }
-  float operator* ( const Zfloat& a, int b ) { return a.value*(float)b; }
-  float operator/ ( const Zfloat& a, int b ) {
+  inline float operator+ ( const Zfloat& a, int b ) { return a.value+(float)b; }
+  inline float operator- ( const Zfloat& a, int b ) { return a.value-(float)b; }
+  inline float operator* ( const Zfloat& a, int b ) { return a.value*(float)b; }
+  inline float operator/ ( const Zfloat& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -3988,10 +4300,10 @@ public:
    return a.value/(float)b;
   }
   // Casted int operations reversed
-  float operator+ ( int b, const Zfloat& a ) { return a.value+(float)b; }
-  float operator- ( int b, const Zfloat& a ) { return (float)b-a.value; }
-  float operator* ( int b, const Zfloat& a ) { return a.value*(float)b; }
-  float operator/ ( int b, const Zfloat& a ) {
+  inline float operator+ ( int b, const Zfloat& a ) { return a.value+(float)b; }
+  inline float operator- ( int b, const Zfloat& a ) { return (float)b-a.value; }
+  inline float operator* ( int b, const Zfloat& a ) { return a.value*(float)b; }
+  inline float operator/ ( int b, const Zfloat& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4006,10 +4318,10 @@ public:
   /// Zfloat and float
 
   // Float operations
-  float operator+ ( float b, const Zfloat& a ) { return a.value+b; }
-  float operator- ( float b, const Zfloat& a ) { return b-a.value; }
-  float operator* ( float b, const Zfloat& a ) { return a.value*b; }
-  float operator/ ( float b, const Zfloat& a ) {
+  inline float operator+ ( float b, const Zfloat& a ) { return a.value+b; }
+  inline float operator- ( float b, const Zfloat& a ) { return b-a.value; }
+  inline float operator* ( float b, const Zfloat& a ) { return a.value*b; }
+  inline float operator/ ( float b, const Zfloat& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4021,10 +4333,10 @@ public:
    return b/a.value;
   }
   // Float operations reversed
-  float operator+ ( const Zfloat& a, float b ) { return a.value+b; }
-  float operator- ( const Zfloat& a, float b ) { return a.value-b; }
-  float operator* ( const Zfloat& a, float b ) { return a.value*b; }
-  float operator/ ( const Zfloat& a, float b ) {
+  inline float operator+ ( const Zfloat& a, float b ) { return a.value+b; }
+  inline float operator- ( const Zfloat& a, float b ) { return a.value-b; }
+  inline float operator* ( const Zfloat& a, float b ) { return a.value*b; }
+  inline float operator/ ( const Zfloat& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4039,10 +4351,10 @@ public:
   /// Zfloat and double
 
   // Casted double operations (leans toward double precision)
-  float operator+ ( double b, const Zfloat& a ) { return (float)((double)a.value+b); }
-  float operator- ( double b, const Zfloat& a ) { return (float)(b-(double)a.value); }
-  float operator* ( double b, const Zfloat& a ) { return (float)((double)a.value*b); }
-  float operator/ ( double b, const Zfloat& a ) {
+  inline float operator+ ( double b, const Zfloat& a ) { return (float)((double)a.value+b); }
+  inline float operator- ( double b, const Zfloat& a ) { return (float)(b-(double)a.value); }
+  inline float operator* ( double b, const Zfloat& a ) { return (float)((double)a.value*b); }
+  inline float operator/ ( double b, const Zfloat& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0f) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4054,10 +4366,10 @@ public:
    return (float)(b/(double)a.value);
   }
   // Casted double operations reversed (leans toward double precision)
-  float operator+ ( const Zfloat& a, double b ) { return (float)((double)a.value+b); }
-  float operator- ( const Zfloat& a, double b ) { return (float)((double)a.value-b); }
-  float operator* ( const Zfloat& a, double b ) { return (float)((double)a.value*b); }
-  float operator/ ( const Zfloat& a, double b ) {
+  inline float operator+ ( const Zfloat& a, double b ) { return (float)((double)a.value+b); }
+  inline float operator- ( const Zfloat& a, double b ) { return (float)((double)a.value-b); }
+  inline float operator* ( const Zfloat& a, double b ) { return (float)((double)a.value*b); }
+  inline float operator/ ( const Zfloat& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4070,119 +4382,119 @@ public:
   }
 
   // Zfloat boolean operations
-  bool operator>= ( const Zfloat& a, const Zfloat& b ) { return ( a.value >= b.value );    }
-  bool operator>= ( const Zfloat& a, const Zbyte& b ) { return ( a.value >= (float) b.value );    }
-  bool operator>= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value >= b.value ); }
-  bool operator>= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value >= b.value ); }
-  bool operator>= ( const Zfloat& a, const Zint& b )    { return ((int) a.value >= b.value ); }
-  bool operator>= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value >= b.value ); }
-  bool operator>= ( const Zbyte& a, const Zfloat& b )   { return (a.value >= (unsigned char) b.value ); }
-  bool operator>= ( const Zushort& a, const Zfloat& b ) { return (a.value >= (unsigned short) b.value ); }
-  bool operator>= ( const Zuint& a, const Zfloat& b )   { return (a.value >= (unsigned int) b.value ); }
-  bool operator>= ( const Zint& a, const Zfloat& b )    { return (a.value >= (int) b.value ); }
-  bool operator>= ( const Zdouble& a, const Zfloat& b ) { return (a.value >= (double) b.value ); }
-  bool operator>= ( const Zfloat& a, int b )           { return ( (int) a.value >= b );    }
-  bool operator>= ( const Zfloat& a, float b )         { return ( a.value >= b );          }
-  bool operator>= ( const Zfloat& a, double b )        { return ( (double) a.value >= b ); }
-  bool operator>= ( int a, const Zfloat& b )           { return ( a >= (int) b.value );    }
-  bool operator>= ( float a, const Zfloat& b )         { return ( a >= b.value );          }
-  bool operator>= ( double a, const Zfloat& b )        { return ( a >= (double) b.value ); }
-  bool operator== ( const Zfloat& a, const Zbyte& b )   { return ((unsigned char) a.value == b.value ); }
-  bool operator== ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value == b.value ); }
-  bool operator== ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value == b.value ); }
-  bool operator== ( const Zfloat& a, const Zint& b )    { return ((int) a.value == b.value ); }
-  bool operator== ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value == b.value ); }
-  bool operator== ( const Zbyte& a, const Zfloat& b )   { return (a.value == (unsigned char) b.value ); }
-  bool operator== ( const Zushort& a, const Zfloat& b ) { return (a.value == (unsigned short) b.value ); }
-  bool operator== ( const Zuint& a, const Zfloat& b )   { return (a.value == (unsigned int) b.value ); }
-  bool operator== ( const Zint& a, const Zfloat& b )    { return (a.value == (int) b.value ); }
-  bool operator== ( const Zdouble& a, const Zfloat& b ) { return (a.value == (double) b.value ); }
-  bool operator== ( const Zfloat& a, const Zfloat& b ) { return ( a.value == b.value );    }
-  bool operator== ( const Zfloat& a, int b )           { return ( (int) a.value == b );    }
-  bool operator== ( const Zfloat& a, float b )         { return ( a.value == b );          }
-  bool operator== ( const Zfloat& a, double b )        { return ( (double) a.value == b ); }
-  bool operator== ( int a, const Zfloat& b )           { return ( a == (int) b.value );    }
-  bool operator== ( float a, const Zfloat& b )         { return ( a == b.value );          }
-  bool operator== ( double a, const Zfloat& b )        { return ( a == (double) b.value ); }
-  bool operator!= ( const Zfloat& a, const Zfloat& b ) { return ( a.value != b.value );    }
-  bool operator!= ( const Zfloat& a, const Zbyte& b ) { return ( a.value != (float)b.value );    }
-  bool operator!= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value != b.value ); }
-  bool operator!= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value != b.value ); }
-  bool operator!= ( const Zfloat& a, const Zint& b )    { return ((int) a.value != b.value ); }
-  bool operator!= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value != b.value ); }
-  bool operator!= ( const Zbyte& a, const Zfloat& b )   { return (a.value != (unsigned char) b.value ); }
-  bool operator!= ( const Zushort& a, const Zfloat& b ) { return (a.value != (unsigned short) b.value ); }
-  bool operator!= ( const Zuint& a, const unsigned int b )  { return (a.value != b ); }
-  bool operator!= ( const Zuint& a, const int b )       { return (a.value != (unsigned int) b ); }
-  bool operator!= ( const Zuint& a, const Zfloat& b )   { return (a.value != (unsigned int) b.value ); }
-  bool operator!= ( const Zint& a, const Zfloat& b )    { return (a.value != (int) b.value ); }
-  bool operator!= ( const Zdouble& a, const Zfloat& b ) { return (a.value != (double) b.value ); }
-  bool operator!= ( const Zfloat& a, int b )           { return ( (int) a.value != b );    }
-  bool operator!= ( const Zfloat& a, float b )         { return ( a.value != b );          }
-  bool operator!= ( const Zfloat& a, double b )        { return ( (double) a.value != b ); }
-  bool operator!= ( int a, const Zfloat& b )           { return ( a != (int) b.value );    }
-  bool operator!= ( float a, const Zfloat& b )         { return ( a != b.value );          }
-  bool operator!= ( double a, const Zfloat& b )        { return ( a != (double) b.value ); }
-  bool operator<= ( const Zfloat& a, const Zfloat& b ) { return ( a.value <= b.value );    }
-  bool operator<= ( const Zfloat& a, const Zbyte& b )  { return ( a.value <= (float) b.value ); }
-  bool operator<= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value <= b.value ); }
-  bool operator<= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value <= b.value ); }
-  bool operator<= ( const Zfloat& a, const Zint& b )    { return ((int) a.value <= b.value ); }
-  bool operator<= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value <= b.value ); }
-  bool operator<= ( const Zbyte& a, const Zfloat& b )   { return (a.value <= (unsigned char) b.value ); }
-  bool operator<= ( const Zushort& a, const Zfloat& b ) { return (a.value <= (unsigned short) b.value ); }
-  bool operator<= ( const Zuint& a, const Zfloat& b )   { return (a.value <= (unsigned int) b.value ); }
-  bool operator<= ( const Zint& a, const Zfloat& b )    { return (a.value <= (int) b.value ); }
-  bool operator<= ( const Zdouble& a, const Zfloat& b ) { return (a.value <= (double) b.value ); }
-  bool operator<= ( const Zfloat& a, int b )           { return ( (int) a.value <= b );    }
-  bool operator<= ( const Zfloat& a, float b )         { return ( a.value <= b );          }
-  bool operator<= ( const Zfloat& a, double b )        { return ( (double) a.value <= b ); }
-  bool operator<= ( int a, const Zfloat& b )           { return ( a <= (int) b.value );    }
-  bool operator<= ( float a, const Zfloat& b )         { return ( a <= b.value );          }
-  bool operator<= ( double a, const Zfloat& b )        { return ( a <= (double) b.value ); }
-  bool operator> ( const Zfloat& a, const Zfloat& b )  { return ( a.value > b.value );    }
-  bool operator> ( const Zfloat& a, const Zbyte& b )   { return ( a.value > (float) b.value ); }
-  bool operator> ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value > b.value ); }
-  bool operator> ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value > b.value ); }
-  bool operator> ( const Zfloat& a, const Zint& b )    { return ((int) a.value > b.value ); }
-  bool operator> ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value > b.value ); }
-  bool operator> ( const Zbyte& a, const Zfloat& b )   { return (a.value > (unsigned char) b.value ); }
-  bool operator> ( const Zushort& a, const Zfloat& b ) { return (a.value > (unsigned short) b.value ); }
-  bool operator> ( const Zuint& a, const Zfloat& b )   { return (a.value > (unsigned int) b.value ); }
-  bool operator> ( const Zint& a, const Zfloat& b )    { return (a.value > (int) b.value ); }
-  bool operator> ( const Zdouble& a, const Zfloat& b ) { return (a.value > (double) b.value ); }
-  bool operator> ( const Zfloat& a, int b )            { return ( (int) a.value > b );    }
-  bool operator> ( const Zfloat& a, float b )          { return ( a.value > b );          }
-  bool operator> ( const Zfloat& a, double b )         { return ( (double) a.value > b ); }
-  bool operator> ( int a, const Zfloat& b )            { return ( a > (int) b.value );    }
-  bool operator> ( float a, const Zfloat& b )          { return ( a > b.value );          }
-  bool operator> ( double a, const Zfloat& b )         { return ( a > (double) b.value ); }
-  bool operator< ( const Zfloat& a, const Zfloat& b )  { return ( a.value < b.value );    }
-  bool operator< ( const Zfloat& a, const Zbyte& b )   { return ( a.value < (float) b.value ); }
-  bool operator< ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value < b.value ); }
-  bool operator< ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value < b.value ); }
-  bool operator< ( const Zfloat& a, const Zint& b )    { return ((int) a.value < b.value ); }
-  bool operator< ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value < b.value ); }
-  bool operator< ( const Zbyte& a, const Zfloat& b )   { return (a.value < (unsigned char) b.value ); }
-  bool operator< ( const Zushort& a, const Zfloat& b ) { return (a.value < (unsigned short) b.value ); }
-  bool operator< ( const Zuint& a, const Zfloat& b )   { return (a.value < (unsigned int) b.value ); }
-  bool operator< ( const Zint& a, const Zfloat& b )    { return (a.value < (int) b.value ); }
-  bool operator< ( const Zdouble& a, const Zfloat& b ) { return (a.value < (double) b.value ); }
-  bool operator< ( const Zfloat& a, int b )            { return ( (int) a.value < b );    }
-  bool operator< ( const Zfloat& a, float b )          { return ( a.value < b );          }
-  bool operator< ( const Zfloat& a, double b )         { return ( (double) a.value < b ); }
-  bool operator< ( int a, const Zfloat& b )            { return ( a < (int) b.value );    }
-  bool operator< ( float a, const Zfloat& b )          { return ( a < b.value );          }
-  bool operator< ( double a, const Zfloat& b )         { return ( a < (double) b.value ); }
+  inline bool operator>= ( const Zfloat& a, const Zfloat& b ) { return ( a.value >= b.value );    }
+  inline bool operator>= ( const Zfloat& a, const Zbyte& b ) { return ( a.value >= (float) b.value );    }
+  inline bool operator>= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value >= b.value ); }
+  inline bool operator>= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value >= b.value ); }
+  inline bool operator>= ( const Zfloat& a, const Zint& b )    { return ((int) a.value >= b.value ); }
+  inline bool operator>= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value >= b.value ); }
+  inline bool operator>= ( const Zbyte& a, const Zfloat& b )   { return (a.value >= (unsigned char) b.value ); }
+  inline bool operator>= ( const Zushort& a, const Zfloat& b ) { return (a.value >= (unsigned short) b.value ); }
+  inline bool operator>= ( const Zuint& a, const Zfloat& b )   { return (a.value >= (unsigned int) b.value ); }
+  inline bool operator>= ( const Zint& a, const Zfloat& b )    { return (a.value >= (int) b.value ); }
+  inline bool operator>= ( const Zdouble& a, const Zfloat& b ) { return (a.value >= (double) b.value ); }
+  inline bool operator>= ( const Zfloat& a, int b )           { return ( (int) a.value >= b );    }
+  inline bool operator>= ( const Zfloat& a, float b )         { return ( a.value >= b );          }
+  inline bool operator>= ( const Zfloat& a, double b )        { return ( (double) a.value >= b ); }
+  inline bool operator>= ( int a, const Zfloat& b )           { return ( a >= (int) b.value );    }
+  inline bool operator>= ( float a, const Zfloat& b )         { return ( a >= b.value );          }
+  inline bool operator>= ( double a, const Zfloat& b )        { return ( a >= (double) b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zbyte& b )   { return ((unsigned char) a.value == b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value == b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value == b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zint& b )    { return ((int) a.value == b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value == b.value ); }
+  inline bool operator== ( const Zbyte& a, const Zfloat& b )   { return (a.value == (unsigned char) b.value ); }
+  inline bool operator== ( const Zushort& a, const Zfloat& b ) { return (a.value == (unsigned short) b.value ); }
+  inline bool operator== ( const Zuint& a, const Zfloat& b )   { return (a.value == (unsigned int) b.value ); }
+  inline bool operator== ( const Zint& a, const Zfloat& b )    { return (a.value == (int) b.value ); }
+  inline bool operator== ( const Zdouble& a, const Zfloat& b ) { return (a.value == (double) b.value ); }
+  inline bool operator== ( const Zfloat& a, const Zfloat& b ) { return ( a.value == b.value );    }
+  inline bool operator== ( const Zfloat& a, int b )           { return ( (int) a.value == b );    }
+  inline bool operator== ( const Zfloat& a, float b )         { return ( a.value == b );          }
+  inline bool operator== ( const Zfloat& a, double b )        { return ( (double) a.value == b ); }
+  inline bool operator== ( int a, const Zfloat& b )           { return ( a == (int) b.value );    }
+  inline bool operator== ( float a, const Zfloat& b )         { return ( a == b.value );          }
+  inline bool operator== ( double a, const Zfloat& b )        { return ( a == (double) b.value ); }
+  inline bool operator!= ( const Zfloat& a, const Zfloat& b ) { return ( a.value != b.value );    }
+  inline bool operator!= ( const Zfloat& a, const Zbyte& b ) { return ( a.value != (float)b.value );    }
+  inline bool operator!= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value != b.value ); }
+  inline bool operator!= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value != b.value ); }
+  inline bool operator!= ( const Zfloat& a, const Zint& b )    { return ((int) a.value != b.value ); }
+  inline bool operator!= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value != b.value ); }
+  inline bool operator!= ( const Zbyte& a, const Zfloat& b )   { return (a.value != (unsigned char) b.value ); }
+  inline bool operator!= ( const Zushort& a, const Zfloat& b ) { return (a.value != (unsigned short) b.value ); }
+  inline bool operator!= ( const Zuint& a, const unsigned int b )  { return (a.value != b ); }
+  inline bool operator!= ( const Zuint& a, const int b )       { return (a.value != (unsigned int) b ); }
+  inline bool operator!= ( const Zuint& a, const Zfloat& b )   { return (a.value != (unsigned int) b.value ); }
+  inline bool operator!= ( const Zint& a, const Zfloat& b )    { return (a.value != (int) b.value ); }
+  inline bool operator!= ( const Zdouble& a, const Zfloat& b ) { return (a.value != (double) b.value ); }
+  inline bool operator!= ( const Zfloat& a, int b )           { return ( (int) a.value != b );    }
+  inline bool operator!= ( const Zfloat& a, float b )         { return ( a.value != b );          }
+  inline bool operator!= ( const Zfloat& a, double b )        { return ( (double) a.value != b ); }
+  inline bool operator!= ( int a, const Zfloat& b )           { return ( a != (int) b.value );    }
+  inline bool operator!= ( float a, const Zfloat& b )         { return ( a != b.value );          }
+  inline bool operator!= ( double a, const Zfloat& b )        { return ( a != (double) b.value ); }
+  inline bool operator<= ( const Zfloat& a, const Zfloat& b ) { return ( a.value <= b.value );    }
+  inline bool operator<= ( const Zfloat& a, const Zbyte& b )  { return ( a.value <= (float) b.value ); }
+  inline bool operator<= ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value <= b.value ); }
+  inline bool operator<= ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value <= b.value ); }
+  inline bool operator<= ( const Zfloat& a, const Zint& b )    { return ((int) a.value <= b.value ); }
+  inline bool operator<= ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value <= b.value ); }
+  inline bool operator<= ( const Zbyte& a, const Zfloat& b )   { return (a.value <= (unsigned char) b.value ); }
+  inline bool operator<= ( const Zushort& a, const Zfloat& b ) { return (a.value <= (unsigned short) b.value ); }
+  inline bool operator<= ( const Zuint& a, const Zfloat& b )   { return (a.value <= (unsigned int) b.value ); }
+  inline bool operator<= ( const Zint& a, const Zfloat& b )    { return (a.value <= (int) b.value ); }
+  inline bool operator<= ( const Zdouble& a, const Zfloat& b ) { return (a.value <= (double) b.value ); }
+  inline bool operator<= ( const Zfloat& a, int b )           { return ( (int) a.value <= b );    }
+  inline bool operator<= ( const Zfloat& a, float b )         { return ( a.value <= b );          }
+  inline bool operator<= ( const Zfloat& a, double b )        { return ( (double) a.value <= b ); }
+  inline bool operator<= ( int a, const Zfloat& b )           { return ( a <= (int) b.value );    }
+  inline bool operator<= ( float a, const Zfloat& b )         { return ( a <= b.value );          }
+  inline bool operator<= ( double a, const Zfloat& b )        { return ( a <= (double) b.value ); }
+  inline bool operator> ( const Zfloat& a, const Zfloat& b )  { return ( a.value > b.value );    }
+  inline bool operator> ( const Zfloat& a, const Zbyte& b )   { return ( a.value > (float) b.value ); }
+  inline bool operator> ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value > b.value ); }
+  inline bool operator> ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value > b.value ); }
+  inline bool operator> ( const Zfloat& a, const Zint& b )    { return ((int) a.value > b.value ); }
+  inline bool operator> ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value > b.value ); }
+  inline bool operator> ( const Zbyte& a, const Zfloat& b )   { return (a.value > (unsigned char) b.value ); }
+  inline bool operator> ( const Zushort& a, const Zfloat& b ) { return (a.value > (unsigned short) b.value ); }
+  inline bool operator> ( const Zuint& a, const Zfloat& b )   { return (a.value > (unsigned int) b.value ); }
+  inline bool operator> ( const Zint& a, const Zfloat& b )    { return (a.value > (int) b.value ); }
+  inline bool operator> ( const Zdouble& a, const Zfloat& b ) { return (a.value > (double) b.value ); }
+  inline bool operator> ( const Zfloat& a, int b )            { return ( (int) a.value > b );    }
+  inline bool operator> ( const Zfloat& a, float b )          { return ( a.value > b );          }
+  inline bool operator> ( const Zfloat& a, double b )         { return ( (double) a.value > b ); }
+  inline bool operator> ( int a, const Zfloat& b )            { return ( a > (int) b.value );    }
+  inline bool operator> ( float a, const Zfloat& b )          { return ( a > b.value );          }
+  inline bool operator> ( double a, const Zfloat& b )         { return ( a > (double) b.value ); }
+  inline bool operator< ( const Zfloat& a, const Zfloat& b )  { return ( a.value < b.value );    }
+  inline bool operator< ( const Zfloat& a, const Zbyte& b )   { return ( a.value < (float) b.value ); }
+  inline bool operator< ( const Zfloat& a, const Zushort& b ) { return ((unsigned short) a.value < b.value ); }
+  inline bool operator< ( const Zfloat& a, const Zuint& b )   { return ((unsigned int) a.value < b.value ); }
+  inline bool operator< ( const Zfloat& a, const Zint& b )    { return ((int) a.value < b.value ); }
+  inline bool operator< ( const Zfloat& a, const Zdouble& b ) { return ((double) a.value < b.value ); }
+  inline bool operator< ( const Zbyte& a, const Zfloat& b )   { return (a.value < (unsigned char) b.value ); }
+  inline bool operator< ( const Zushort& a, const Zfloat& b ) { return (a.value < (unsigned short) b.value ); }
+  inline bool operator< ( const Zuint& a, const Zfloat& b )   { return (a.value < (unsigned int) b.value ); }
+  inline bool operator< ( const Zint& a, const Zfloat& b )    { return (a.value < (int) b.value ); }
+  inline bool operator< ( const Zdouble& a, const Zfloat& b ) { return (a.value < (double) b.value ); }
+  inline bool operator< ( const Zfloat& a, int b )            { return ( (int) a.value < b );    }
+  inline bool operator< ( const Zfloat& a, float b )          { return ( a.value < b );          }
+  inline bool operator< ( const Zfloat& a, double b )         { return ( (double) a.value < b ); }
+  inline bool operator< ( int a, const Zfloat& b )            { return ( a < (int) b.value );    }
+  inline bool operator< ( float a, const Zfloat& b )          { return ( a < b.value );          }
+  inline bool operator< ( double a, const Zfloat& b )         { return ( a < (double) b.value ); }
 
   /// Zfloat ////////////////////////////////////////////////////////////////////////////////////////// end
 
   /// Zbyte ////////////////////////////////////////////////////////////////////////////////////////// start
 
-  unsigned char operator+ ( const Zbyte& a, const Zbyte& b ) { return a.value+b.value; }
-  unsigned char operator- ( const Zbyte& a, const Zbyte& b ) { return a.value-b.value; }
-  unsigned char operator* ( const Zbyte& a, const Zbyte& b ) { return a.value*b.value; }
-  unsigned char operator/ ( const Zbyte& a, const Zbyte& b ) {
+  inline unsigned char operator+ ( const Zbyte& a, const Zbyte& b ) { return a.value+b.value; }
+  inline unsigned char operator- ( const Zbyte& a, const Zbyte& b ) { return a.value-b.value; }
+  inline unsigned char operator* ( const Zbyte& a, const Zbyte& b ) { return a.value*b.value; }
+  inline unsigned char operator/ ( const Zbyte& a, const Zbyte& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4193,10 +4505,10 @@ public:
 #endif
    return a.value/b.value;
   }
-  unsigned char operator+ ( Zbyte a, Zbyte b ) { return a.value+b.value; }
-  unsigned char operator- ( Zbyte a, Zbyte b ) { return a.value-b.value; }
-  unsigned char operator* ( Zbyte a, Zbyte b ) { return a.value*b.value; }
-  unsigned char operator/ ( Zbyte a, Zbyte b ) {
+  inline unsigned char operator+ ( Zbyte a, Zbyte b ) { return a.value+b.value; }
+  inline unsigned char operator- ( Zbyte a, Zbyte b ) { return a.value-b.value; }
+  inline unsigned char operator* ( Zbyte a, Zbyte b ) { return a.value*b.value; }
+  inline unsigned char operator/ ( Zbyte a, Zbyte b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4211,16 +4523,12 @@ public:
   /// Zbyte and uint
 
   // Casted int operations
-  unsigned char operator+ ( const Zbyte& a, unsigned char b ) {
-   return a.value+b;
-  }
-  unsigned char operator- ( const Zbyte& a, unsigned char b ) {
-   return a.value-b;
-  }
-  unsigned char operator* ( const Zbyte& a, unsigned char b ) {
+  inline unsigned char operator+ ( const Zbyte& a, unsigned char b ) { return a.value+b; }
+  inline unsigned char operator- ( const Zbyte& a, unsigned char b ) { return a.value-b; }
+  inline unsigned char operator* ( const Zbyte& a, unsigned char b ) {
    return a.value*b;
   }
-  unsigned char operator/ ( const Zbyte& a, unsigned char b ) {
+  inline unsigned char operator/ ( const Zbyte& a, unsigned char b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4232,15 +4540,9 @@ public:
    return a.value/b;
   }
   // Casted int operations reversed
-  unsigned char operator+ ( unsigned char b, const Zbyte& a ) {
-   return a.value+b;
-  }
-  unsigned char operator- ( unsigned char b, const Zbyte& a ) {
-   return b-a.value;
-  }
-  unsigned char operator* ( unsigned char b, const Zbyte& a ) {
-   return a.value*b;
-  }
+  inline unsigned char operator+ ( unsigned char b, const Zbyte& a ) { return a.value+b; }
+  inline unsigned char operator- ( unsigned char b, const Zbyte& a ) { return b-a.value; }
+  inline unsigned char operator* ( unsigned char b, const Zbyte& a ) { return a.value*b; }
   unsigned char operator/ ( unsigned char b, const Zbyte& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
@@ -4256,16 +4558,10 @@ public:
   /// Zuint and int
 
   // Casted int operations
-  unsigned char operator+ ( const Zbyte& a, int b ) {
-   return a.value+(unsigned char) b;
-  }
-  unsigned char operator- ( const Zbyte& a, int b ) {
-   return a.value-(unsigned char) b;
-  }
-  unsigned char operator* ( const Zbyte& a, int b ) {
-   return a.value*(unsigned char) b;
-  }
-  unsigned char operator/ ( const Zbyte& a, int b ) {
+  inline unsigned char operator+ ( const Zbyte& a, int b ) { return a.value+(unsigned char) b; }
+  inline unsigned char operator- ( const Zbyte& a, int b ) { return a.value-(unsigned char) b; }
+  inline unsigned char operator* ( const Zbyte& a, int b ) { return a.value*(unsigned char) b; }
+  inline unsigned char operator/ ( const Zbyte& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4277,16 +4573,10 @@ public:
    return a.value/(unsigned char) b;
   }
   // Casted int operations reversed
-  unsigned char operator+ ( int b, const Zbyte& a ) {
-   return a.value+(unsigned char) b;
-  }
-  unsigned char operator- ( int b, const Zbyte& a ) {
-   return (unsigned char) b-a.value;
-  }
-  unsigned char operator* ( int b, const Zbyte& a ) {
-   return a.value*(unsigned char) b;
-  }
-  unsigned char operator/ ( int b, const Zbyte& a ) {
+  inline unsigned char operator+ ( int b, const Zbyte& a ) { return a.value+(unsigned char) b; }
+  inline unsigned char operator- ( int b, const Zbyte& a ) { return (unsigned char) b-a.value; }
+  inline unsigned char operator* ( int b, const Zbyte& a ) { return a.value*(unsigned char) b; }
+  inline unsigned char operator/ ( int b, const Zbyte& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4301,16 +4591,10 @@ public:
   /// Zbyte and float
 
   // Float operations (leans toward float precision)
-  unsigned char operator+ ( float b, const Zbyte& a ) {
-   return (unsigned char)((float)a.value+b);
-  }
-  unsigned char operator- ( float b, const Zbyte& a ) {
-   return (unsigned char)(b-(float)a.value);
-  }
-  unsigned char operator* ( float b, const Zbyte& a ) {
-   return (unsigned char)((float)a.value*b);
-  }
-  unsigned char operator/ ( float b, const Zbyte& a ) {
+  inline unsigned char operator+ ( float b, const Zbyte& a ) { return (unsigned char)((float)a.value+b); }
+  inline unsigned char operator- ( float b, const Zbyte& a ) { return (unsigned char)(b-(float)a.value); }
+  inline unsigned char operator* ( float b, const Zbyte& a ) { return (unsigned char)((float)a.value*b); }
+  inline unsigned char operator/ ( float b, const Zbyte& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4322,16 +4606,10 @@ public:
    return (unsigned char)(b/(float)a.value);
   }
   // Float operations reversed (leans toward float precision)
-  unsigned char operator+ ( const Zbyte& a, float b ) {
-   return (unsigned char)((float)a.value+b);
-  }
-  unsigned char operator- ( const Zbyte& a, float b ) {
-   return (unsigned char)((float)a.value-b);
-  }
-  unsigned char operator* ( const Zbyte& a, float b ) {
-   return (unsigned char)((float)a.value*b);
-  }
-  unsigned char operator/ ( const Zbyte& a, float b ) {
+  inline unsigned char operator+ ( const Zbyte& a, float b ) { return (unsigned char)((float)a.value+b); }
+  inline unsigned char operator- ( const Zbyte& a, float b ) { return (unsigned char)((float)a.value-b); }
+  inline unsigned char operator* ( const Zbyte& a, float b ) { return (unsigned char)((float)a.value*b); }
+  inline unsigned char operator/ ( const Zbyte& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4347,16 +4625,10 @@ public:
   /// Zbyte and double
 
   // Casted double operations (leans toward double precision)
-  unsigned char operator+ ( double b, const Zbyte& a ) {
-   return (unsigned char)((double)a.value+b);
-  }
-  unsigned char operator- ( double b, const Zbyte& a ) {
-   return (unsigned char)(b-(double)a.value);
-  }
-  unsigned char operator* ( double b, const Zbyte& a ) {
-   return (unsigned char)((double)a.value*b);
-  }
-  unsigned char operator/ ( double b, const Zbyte& a ) {
+  inline unsigned char operator+ ( double b, const Zbyte& a ) { return (unsigned char)((double)a.value+b); }
+  inline unsigned char operator- ( double b, const Zbyte& a ) { return (unsigned char)(b-(double)a.value); }
+  inline unsigned char operator* ( double b, const Zbyte& a ) { return (unsigned char)((double)a.value*b); }
+  inline unsigned char operator/ ( double b, const Zbyte& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4368,16 +4640,10 @@ public:
    return (unsigned char)(b/(double)a.value);
   }
   // Casted double operations reversed (leans toward double precision)
-  unsigned char operator+ ( const Zbyte& a, double b ) {
-   return (unsigned char)((double)a.value+b);
-  }
-  unsigned char operator- ( const Zbyte& a, double b ) {
-   return (unsigned char)((double)a.value-b);
-  }
-  unsigned char operator* ( const Zbyte& a, double b ) {
-   return (unsigned char)((double)a.value*b);
-  }
-  unsigned char operator/ ( const Zbyte& a, double b ) {
+  inline unsigned char operator+ ( const Zbyte& a, double b ) { return (unsigned char)((double)a.value+b); }
+  inline unsigned char operator- ( const Zbyte& a, double b ) { return (unsigned char)((double)a.value-b); }
+  inline unsigned char operator* ( const Zbyte& a, double b ) { return (unsigned char)((double)a.value*b); }
+  inline unsigned char operator/ ( const Zbyte& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4391,58 +4657,58 @@ public:
 
 
   // Boolean operations
-  bool operator>= ( const Zbyte& a, const Zbyte& b ) { return ( a.value >= b.value );    }
-  bool operator>= ( const Zbyte& a, int b )            { return ( a.value >= (unsigned char) b ); }
-  bool operator>= ( const Zbyte& a, float b )          { return ( a.value >= (unsigned char) b ); }
-  bool operator>= ( const Zbyte& a, double b )         { return ( a.value >= (unsigned char) b ); }
-  bool operator>= ( int a, const Zbyte& b )            { return ( (unsigned char) a >= b.value ); }
-  bool operator>= ( float a, const Zbyte& b )          { return ( (unsigned char) a >= b.value ); }
-  bool operator>= ( double a, const Zbyte& b )         { return ( (unsigned char) a >= b.value ); }
-  bool operator== ( const Zbyte& a, const Zbyte& b ) { return ( a.value == b.value );    }
-  bool operator== ( const Zbyte& a, int b )            { return ( a.value == (unsigned char) b ); }
-  bool operator== ( const Zbyte& a, float b )          { return ( a.value == (unsigned char) b ); }
-  bool operator== ( const Zbyte& a, double b )         { return ( a.value == (unsigned char) b ); }
-  bool operator== ( int a, const Zbyte& b )            { return ( (unsigned char) a == b.value ); }
-  bool operator== ( float a, const Zbyte& b )          { return ( (unsigned char) a == b.value ); }
-  bool operator== ( double a, const Zbyte& b )         { return ( (unsigned char) a == b.value ); }
-  bool operator!= ( const Zbyte& a, const Zbyte& b ) { return ( a.value != b.value );    }
-  bool operator!= ( const Zbyte& a, int b )            { return ( a.value != (unsigned char) b ); }
-  bool operator!= ( const Zbyte& a, float b )          { return ( a.value != (unsigned char) b ); }
-  bool operator!= ( const Zbyte& a, double b )         { return ( a.value != (unsigned char) b ); }
-  bool operator!= ( int a, const Zbyte& b )            { return ( (unsigned char) a != b.value ); }
-  bool operator!= ( float a, const Zbyte& b )          { return ( (unsigned char) a != b.value ); }
-  bool operator!= ( double a, const Zbyte& b )         { return ( (unsigned char) a != b.value ); }
-  bool operator<= ( const Zbyte& a, const Zbyte& b ) { return ( a.value <= b.value );    }
-  bool operator<= ( const Zbyte& a, int b )            { return ( a.value <= (unsigned char) b ); }
-  bool operator<= ( const Zbyte& a, float b )          { return ( a.value <= (unsigned char) b ); }
-  bool operator<= ( const Zbyte& a, double b )         { return ( a.value <= (unsigned char) b ); }
-  bool operator<= ( int a, const Zbyte& b )            { return ( (unsigned char) a <= b.value ); }
-  bool operator<= ( float a, const Zbyte& b )          { return ( (unsigned char) a <= b.value ); }
-  bool operator<= ( double a, const Zbyte& b )         { return ( (unsigned char) a <= b.value ); }
-  bool operator> ( const Zbyte& a, const Zbyte& b )  { return ( a.value > b.value );    }
-  bool operator> ( const Zbyte& a, int b )             { return ( a.value > (unsigned char) b ); }
-  bool operator> ( const Zbyte& a, float b )           { return ( a.value > (unsigned char) b ); }
-  bool operator> ( const Zbyte& a, double b )          { return ( a.value > (unsigned char) b ); }
-  bool operator> ( int a, const Zbyte& b )             { return ( (unsigned char) a > b.value ); }
-  bool operator> ( float a, const Zbyte& b )           { return ( (unsigned char) a > b.value ); }
-  bool operator> ( double a, const Zbyte& b )          { return ( (unsigned char) a > b.value ); }
-  bool operator< ( const Zbyte& a, const Zbyte& b )  { return ( a.value < b.value );    }
-  bool operator< ( const Zbyte& a, int b )             { return ( a.value < (unsigned char) b ); }
-  bool operator< ( const Zbyte& a, float b )           { return ( a.value < (unsigned char) b ); }
-  bool operator< ( const Zbyte& a, double b )          { return ( a.value < (unsigned char) b ); }
-  bool operator< ( int a, const Zbyte& b )             { return ( (unsigned char) a < b.value ); }
-  bool operator< ( float a, const Zbyte& b )           { return ( (unsigned char) a < b.value ); }
-  bool operator< ( double a, const Zbyte& b )          { return ( (unsigned char) a < b.value ); }
+  inline bool operator>= ( const Zbyte& a, const Zbyte& b ) { return ( a.value >= b.value );    }
+  inline bool operator>= ( const Zbyte& a, int b )            { return ( a.value >= (unsigned char) b ); }
+  inline bool operator>= ( const Zbyte& a, float b )          { return ( a.value >= (unsigned char) b ); }
+  inline bool operator>= ( const Zbyte& a, double b )         { return ( a.value >= (unsigned char) b ); }
+  inline bool operator>= ( int a, const Zbyte& b )            { return ( (unsigned char) a >= b.value ); }
+  inline bool operator>= ( float a, const Zbyte& b )          { return ( (unsigned char) a >= b.value ); }
+  inline bool operator>= ( double a, const Zbyte& b )         { return ( (unsigned char) a >= b.value ); }
+  inline bool operator== ( const Zbyte& a, const Zbyte& b ) { return ( a.value == b.value );    }
+  inline bool operator== ( const Zbyte& a, int b )            { return ( a.value == (unsigned char) b ); }
+  inline bool operator== ( const Zbyte& a, float b )          { return ( a.value == (unsigned char) b ); }
+  inline bool operator== ( const Zbyte& a, double b )         { return ( a.value == (unsigned char) b ); }
+  inline bool operator== ( int a, const Zbyte& b )            { return ( (unsigned char) a == b.value ); }
+  inline bool operator== ( float a, const Zbyte& b )          { return ( (unsigned char) a == b.value ); }
+  inline bool operator== ( double a, const Zbyte& b )         { return ( (unsigned char) a == b.value ); }
+  inline bool operator!= ( const Zbyte& a, const Zbyte& b ) { return ( a.value != b.value );    }
+  inline bool operator!= ( const Zbyte& a, int b )            { return ( a.value != (unsigned char) b ); }
+  inline bool operator!= ( const Zbyte& a, float b )          { return ( a.value != (unsigned char) b ); }
+  inline bool operator!= ( const Zbyte& a, double b )         { return ( a.value != (unsigned char) b ); }
+  inline bool operator!= ( int a, const Zbyte& b )            { return ( (unsigned char) a != b.value ); }
+  inline bool operator!= ( float a, const Zbyte& b )          { return ( (unsigned char) a != b.value ); }
+  inline bool operator!= ( double a, const Zbyte& b )         { return ( (unsigned char) a != b.value ); }
+  inline bool operator<= ( const Zbyte& a, const Zbyte& b ) { return ( a.value <= b.value );    }
+  inline bool operator<= ( const Zbyte& a, int b )            { return ( a.value <= (unsigned char) b ); }
+  inline bool operator<= ( const Zbyte& a, float b )          { return ( a.value <= (unsigned char) b ); }
+  inline bool operator<= ( const Zbyte& a, double b )         { return ( a.value <= (unsigned char) b ); }
+  inline bool operator<= ( int a, const Zbyte& b )            { return ( (unsigned char) a <= b.value ); }
+  inline bool operator<= ( float a, const Zbyte& b )          { return ( (unsigned char) a <= b.value ); }
+  inline bool operator<= ( double a, const Zbyte& b )         { return ( (unsigned char) a <= b.value ); }
+  inline bool operator> ( const Zbyte& a, const Zbyte& b )  { return ( a.value > b.value );    }
+  inline bool operator> ( const Zbyte& a, int b )             { return ( a.value > (unsigned char) b ); }
+  inline bool operator> ( const Zbyte& a, float b )           { return ( a.value > (unsigned char) b ); }
+  inline bool operator> ( const Zbyte& a, double b )          { return ( a.value > (unsigned char) b ); }
+  inline bool operator> ( int a, const Zbyte& b )             { return ( (unsigned char) a > b.value ); }
+  inline bool operator> ( float a, const Zbyte& b )           { return ( (unsigned char) a > b.value ); }
+  inline bool operator> ( double a, const Zbyte& b )          { return ( (unsigned char) a > b.value ); }
+  inline bool operator< ( const Zbyte& a, const Zbyte& b )  { return ( a.value < b.value );    }
+  inline bool operator< ( const Zbyte& a, int b )             { return ( a.value < (unsigned char) b ); }
+  inline bool operator< ( const Zbyte& a, float b )           { return ( a.value < (unsigned char) b ); }
+  inline bool operator< ( const Zbyte& a, double b )          { return ( a.value < (unsigned char) b ); }
+  inline bool operator< ( int a, const Zbyte& b )             { return ( (unsigned char) a < b.value ); }
+  inline bool operator< ( float a, const Zbyte& b )           { return ( (unsigned char) a < b.value ); }
+  inline bool operator< ( double a, const Zbyte& b )          { return ( (unsigned char) a < b.value ); }
 
   /// Zbyte ////////////////////////////////////////////////////////////////////////////////////////// end
 
 
   /// Zushort ////////////////////////////////////////////////////////////////////////////////////////// start
 
-  unsigned short operator+ ( const Zushort& a, const Zushort& b ) { return a.value+b.value; }
-  unsigned short operator- ( const Zushort& a, const Zushort& b ) { return a.value-b.value; }
-  unsigned short operator* ( const Zushort& a, const Zushort& b ) { return a.value*b.value; }
-  unsigned short operator/ ( const Zushort& a, const Zushort& b ) {
+  inline unsigned short operator+ ( const Zushort& a, const Zushort& b ) { return a.value+b.value; }
+  inline unsigned short operator- ( const Zushort& a, const Zushort& b ) { return a.value-b.value; }
+  inline unsigned short operator* ( const Zushort& a, const Zushort& b ) { return a.value*b.value; }
+  inline unsigned short operator/ ( const Zushort& a, const Zushort& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4453,10 +4719,10 @@ public:
 #endif
    return a.value/b.value;
   }
-  unsigned short operator+ ( Zushort a, Zushort b ) { return a.value+b.value; }
-  unsigned short operator- ( Zushort a, Zushort b ) { return a.value-b.value; }
-  unsigned short operator* ( Zushort a, Zushort b ) { return a.value*b.value; }
-  unsigned short operator/ ( Zushort a, Zushort b ) {
+  inline unsigned short operator+ ( Zushort a, Zushort b ) { return a.value+b.value; }
+  inline unsigned short operator- ( Zushort a, Zushort b ) { return a.value-b.value; }
+  inline unsigned short operator* ( Zushort a, Zushort b ) { return a.value*b.value; }
+  inline unsigned short operator/ ( Zushort a, Zushort b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4468,10 +4734,10 @@ public:
    return a.value/b.value;
   }
 
-  unsigned short operator+ ( const Zushort& a, unsigned char b ) { return a.value+b; }
-  unsigned short operator- ( const Zushort& a, unsigned char b ) { return a.value-b; }
-  unsigned short operator* ( const Zushort& a, unsigned char b ) { return a.value*b; }
-  unsigned short operator/ ( const Zushort& a, unsigned char b ) {
+  inline unsigned short operator+ ( const Zushort& a, unsigned char b ) { return a.value+b; }
+  inline unsigned short operator- ( const Zushort& a, unsigned char b ) { return a.value-b; }
+  inline unsigned short operator* ( const Zushort& a, unsigned char b ) { return a.value*b; }
+  inline unsigned short operator/ ( const Zushort& a, unsigned char b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4482,10 +4748,10 @@ public:
 #endif
    return a.value/b;
   }
-  unsigned short operator+ ( unsigned char b, const Zushort& a ) { return b+a.value; }
-  unsigned short operator- ( unsigned char b, const Zushort& a ) { return b-a.value; }
-  unsigned short operator* ( unsigned char b, const Zushort& a ) { return b*a.value; }
-  unsigned short operator/ ( unsigned char b, const Zushort& a ) {
+  inline unsigned short operator+ ( unsigned char b, const Zushort& a ) { return b+a.value; }
+  inline unsigned short operator- ( unsigned char b, const Zushort& a ) { return b-a.value; }
+  inline unsigned short operator* ( unsigned char b, const Zushort& a ) { return b*a.value; }
+  inline unsigned short operator/ ( unsigned char b, const Zushort& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4500,16 +4766,10 @@ public:
   /// Zbyte and uint
 
   // Casted int operations
-  unsigned short operator+ ( const Zushort& a, unsigned short b ) {
-   return a.value+b;
-  }
-  unsigned short operator- ( const Zushort& a, unsigned short b ) {
-   return a.value-b;
-  }
-  unsigned short operator* ( const Zushort& a, unsigned short b ) {
-   return a.value*b;
-  }
-  unsigned short operator/ ( const Zushort& a, unsigned short b ) {
+  inline unsigned short operator+ ( const Zushort& a, unsigned short b ) { return a.value+b; }
+  inline unsigned short operator- ( const Zushort& a, unsigned short b ) { return a.value-b; }
+  inline unsigned short operator* ( const Zushort& a, unsigned short b ) { return a.value*b; }
+  inline unsigned short operator/ ( const Zushort& a, unsigned short b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4521,16 +4781,10 @@ public:
    return a.value/b;
   }
   // Casted int operations reversed
-  unsigned short operator+ ( unsigned short b, const Zushort& a ) {
-   return a.value+b;
-  }
-  unsigned short operator- ( unsigned short b, const Zushort& a ) {
-   return b-a.value;
-  }
-  unsigned short operator* ( unsigned short b, const Zushort& a ) {
-   return a.value*b;
-  }
-  unsigned short operator/ ( unsigned short b, const Zushort& a ) {
+  inline unsigned short operator+ ( unsigned short b, const Zushort& a ) { return a.value+b; }
+  inline unsigned short operator- ( unsigned short b, const Zushort& a ) { return b-a.value; }
+  inline unsigned short operator* ( unsigned short b, const Zushort& a ) { return a.value*b; }
+  inline unsigned short operator/ ( unsigned short b, const Zushort& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4545,16 +4799,10 @@ public:
   /// Zushort and int
 
   // Casted int operations
-  unsigned short operator+ ( const Zushort& a, int b ) {
-   return a.value+(unsigned short) b;
-  }
-  unsigned short operator- ( const Zushort& a, int b ) {
-   return a.value-(unsigned short) b;
-  }
-  unsigned short operator* ( const Zushort& a, int b ) {
-   return a.value*(unsigned short) b;
-  }
-  unsigned short operator/ ( const Zushort& a, int b ) {
+  inline unsigned short operator+ ( const Zushort& a, int b ) { return a.value+(unsigned short) b; }
+  inline unsigned short operator- ( const Zushort& a, int b ) { return a.value-(unsigned short) b; }
+  inline unsigned short operator* ( const Zushort& a, int b ) { return a.value*(unsigned short) b; }
+  inline unsigned short operator/ ( const Zushort& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4566,16 +4814,10 @@ public:
    return a.value/(unsigned short) b;
   }
   // Casted int operations reversed
-  unsigned short operator+ ( int b, const Zushort& a ) {
-   return a.value+(unsigned short) b;
-  }
-  unsigned short operator- ( int b, const Zushort& a ) {
-   return (unsigned short) b-a.value;
-  }
-  unsigned short operator* ( int b, const Zushort& a ) {
-   return a.value*(unsigned short) b;
-  }
-  unsigned short operator/ ( int b, const Zushort& a ) {
+  inline unsigned short operator+ ( int b, const Zushort& a ) { return a.value+(unsigned short) b; }
+  inline unsigned short operator- ( int b, const Zushort& a ) { return (unsigned short) b-a.value; }
+  inline unsigned short operator* ( int b, const Zushort& a ) { return a.value*(unsigned short) b; }
+  inline unsigned short operator/ ( int b, const Zushort& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4590,16 +4832,10 @@ public:
   /// Zbyte and float
 
   // Float operations (leans toward float precision)
-  unsigned short operator+ ( float b, const Zushort& a ) {
-   return (unsigned short)((float)a.value+b);
-  }
-  unsigned short operator- ( float b, const Zushort& a ) {
-   return (unsigned short)(b-(float)a.value);
-  }
-  unsigned short operator* ( float b, const Zushort& a ) {
-   return (unsigned short)((float)a.value*b);
-  }
-  unsigned short operator/ ( float b, const Zushort& a ) {
+  inline unsigned short operator+ ( float b, const Zushort& a ) { return (unsigned short)((float)a.value+b); }
+  inline unsigned short operator- ( float b, const Zushort& a ) { return (unsigned short)(b-(float)a.value); }
+  inline unsigned short operator* ( float b, const Zushort& a ) { return (unsigned short)((float)a.value*b); }
+  inline unsigned short operator/ ( float b, const Zushort& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4611,16 +4847,10 @@ public:
    return (unsigned char)(b/(float)a.value);
   }
   // Float operations reversed (leans toward float precision)
-  unsigned short operator+ ( const Zushort& a, float b ) {
-   return (unsigned short)((float)a.value+b);
-  }
-  unsigned short operator- ( const Zushort& a, float b ) {
-   return (unsigned short)((float)a.value-b);
-  }
-  unsigned short operator* ( const Zushort& a, float b ) {
-   return (unsigned short)((float)a.value*b);
-  }
-  unsigned short operator/ ( const Zushort& a, float b ) {
+  inline unsigned short operator+ ( const Zushort& a, float b ) { return (unsigned short)((float)a.value+b); }
+  inline unsigned short operator- ( const Zushort& a, float b ) { return (unsigned short)((float)a.value-b); }
+  inline unsigned short operator* ( const Zushort& a, float b ) { return (unsigned short)((float)a.value*b); }
+  inline unsigned short operator/ ( const Zushort& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4636,16 +4866,10 @@ public:
   /// Zbyte and double
 
   // Casted double operations (leans toward double precision)
-  unsigned short operator+ ( double b, const Zushort& a ) {
-   return (unsigned short)((double)a.value+b);
-  }
-  unsigned short operator- ( double b, const Zushort& a ) {
-   return (unsigned short)(b-(double)a.value);
-  }
-  unsigned short operator* ( double b, const Zushort& a ) {
-   return (unsigned short)((double)a.value*b);
-  }
-  unsigned short operator/ ( double b, const Zushort& a ) {
+  inline unsigned short operator+ ( double b, const Zushort& a ) { return (unsigned short)((double)a.value+b); }
+  inline unsigned short operator- ( double b, const Zushort& a ) { return (unsigned short)(b-(double)a.value); }
+  inline unsigned short operator* ( double b, const Zushort& a ) { return (unsigned short)((double)a.value*b); }
+  inline unsigned short operator/ ( double b, const Zushort& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4657,16 +4881,10 @@ public:
    return (unsigned short)(b/(double)a.value);
   }
   // Casted double operations reversed (leans toward double precision)
-  unsigned short operator+ ( const Zushort& a, double b ) {
-   return (unsigned short)((double)a.value+b);
-  }
-  unsigned short operator- ( const Zushort& a, double b ) {
-   return (unsigned short)((double)a.value-b);
-  }
-  unsigned short operator* ( const Zushort& a, double b ) {
-   return (unsigned short)((double)a.value*b);
-  }
-  unsigned short operator/ ( const Zushort& a, double b ) {
+  inline unsigned short operator+ ( const Zushort& a, double b ) { return (unsigned short)((double)a.value+b); }
+  inline unsigned short operator- ( const Zushort& a, double b ) { return (unsigned short)((double)a.value-b); }
+  inline unsigned short operator* ( const Zushort& a, double b ) { return (unsigned short)((double)a.value*b); }
+  inline unsigned short operator/ ( const Zushort& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4682,10 +4900,10 @@ public:
 
   /// Zint ////////////////////////////////////////////////////////////////////////////////////////// start
 
-  int operator+ ( const Zint& a, const Zint& b ) { return a.value+b.value; }
-  int operator- ( const Zint& a, const Zint& b ) { return a.value-b.value; }
-  int operator* ( const Zint& a, const Zint& b ) { return a.value*b.value; }
-  int operator/ ( const Zint& a, const Zint& b ) {
+  inline int operator+ ( const Zint& a, const Zint& b ) { return a.value+b.value; }
+  inline int operator- ( const Zint& a, const Zint& b ) { return a.value-b.value; }
+  inline int operator* ( const Zint& a, const Zint& b ) { return a.value*b.value; }
+  inline int operator/ ( const Zint& a, const Zint& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4716,10 +4934,10 @@ public:
   /// Zint and int
 
   // Casted int operations
-  int operator+ ( const Zint& a, int b ) { return a.value+b; }
-  int operator- ( const Zint& a, int b ) { return a.value-b; }
-  int operator* ( const Zint& a, int b ) { return a.value*b; }
-  int operator/ ( const Zint& a, int b ) {
+  inline int operator+ ( const Zint& a, int b ) { return a.value+b; }
+  inline int operator- ( const Zint& a, int b ) { return a.value-b; }
+  inline int operator* ( const Zint& a, int b ) { return a.value*b; }
+  inline int operator/ ( const Zint& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4742,10 +4960,10 @@ public:
    return a.value%b;
   }
   // Casted int operations reversed
-  int operator+ ( int b, const Zint& a ) { return a.value+b; }
-  int operator- ( int b, const Zint& a ) { return b-a.value; }
-  int operator* ( int b, const Zint& a ) { return a.value*b; }
-  int operator/ ( int b, const Zint& a ) {
+  inline int operator+ ( int b, const Zint& a ) { return a.value+b; }
+  inline int operator- ( int b, const Zint& a ) { return b-a.value; }
+  inline int operator* ( int b, const Zint& a ) { return a.value*b; }
+  inline int operator/ ( int b, const Zint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4771,10 +4989,10 @@ public:
   /// Zint and float
 
   // Float operations (leans toward float precision)
-  int operator+ ( float b, const Zint& a ) { return (int)((float)a.value+b); }
-  int operator- ( float b, const Zint& a ) { return (int)(b-(float)a.value); }
-  int operator* ( float b, const Zint& a ) { return (int)((float)a.value*b); }
-  int operator/ ( float b, const Zint& a ) {
+  inline int operator+ ( float b, const Zint& a ) { return (int)((float)a.value+b); }
+  inline int operator- ( float b, const Zint& a ) { return (int)(b-(float)a.value); }
+  inline int operator* ( float b, const Zint& a ) { return (int)((float)a.value*b); }
+  inline int operator/ ( float b, const Zint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4786,10 +5004,10 @@ public:
    return (int)(b/(float)a.value);
   }
   // Float operations reversed (leans toward float precision)
-  int operator+ ( const Zint& a, float b ) { return (int)((float)a.value+b); }
-  int operator- ( const Zint& a, float b ) { return (int)((float)a.value-b); }
-  int operator* ( const Zint& a, float b ) { return (int)((float)a.value*b); }
-  int operator/ ( const Zint& a, float b ) {
+  inline int operator+ ( const Zint& a, float b ) { return (int)((float)a.value+b); }
+  inline int operator- ( const Zint& a, float b ) { return (int)((float)a.value-b); }
+  inline int operator* ( const Zint& a, float b ) { return (int)((float)a.value*b); }
+  inline int operator/ ( const Zint& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4805,10 +5023,10 @@ public:
   /// Zint and double
 
   // Casted double operations (leans toward double precision)
-  int operator+ ( double b, const Zint& a ) { return (int)((double)a.value+b); }
-  int operator- ( double b, const Zint& a ) { return (int)(b-(double)a.value); }
-  int operator* ( double b, const Zint& a ) { return (int)((double)a.value*b); }
-  int operator/ ( double b, const Zint& a ) {
+  inline int operator+ ( double b, const Zint& a ) { return (int)((double)a.value+b); }
+  inline int operator- ( double b, const Zint& a ) { return (int)(b-(double)a.value); }
+  inline int operator* ( double b, const Zint& a ) { return (int)((double)a.value*b); }
+  inline int operator/ ( double b, const Zint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4820,10 +5038,10 @@ public:
    return (int)(b/(double)a.value);
   }
   // Casted double operations reversed (leans toward double precision)
-  int operator+ ( const Zint& a, double b ) { return (int)((double)a.value+b); }
-  int operator- ( const Zint& a, double b ) { return (int)((double)a.value-b); }
-  int operator* ( const Zint& a, double b ) { return (int)((double)a.value*b); }
-  int operator/ ( const Zint& a, double b ) {
+  inline int operator+ ( const Zint& a, double b ) { return (int)((double)a.value+b); }
+  inline int operator- ( const Zint& a, double b ) { return (int)((double)a.value-b); }
+  inline int operator* ( const Zint& a, double b ) { return (int)((double)a.value*b); }
+  inline int operator/ ( const Zint& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4837,7 +5055,7 @@ public:
 
   // Modulo
 
-  int operator% ( const Zint& b, const Zint& a ) {
+  inline int operator% ( const Zint& b, const Zint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4850,83 +5068,83 @@ public:
   }
 
   // Zint boolean operations
-  bool operator>= ( const Zint& a, const Zint& b ) { return ( a.value >= b.value ); }
-  bool operator>= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value >= b ); }
-  bool operator>= ( const Zint& a, int b )         { return ( a.value >= b );       }
-  bool operator>= ( const Zint& a, float b )       { return ( a.value >= (int) b ); }
-  bool operator>= ( const Zint& a, double b )      { return ( a.value >= (int) b ); }
-  bool operator>= ( unsigned int a, const Zint& b ) { return ( a >= (unsigned int) b.value ); }
-  bool operator>= ( int a, const Zint& b )         { return ( a >= b.value );       }
-  bool operator>= ( float a, const Zint& b )       { return ( (int) a >= b.value ); }
-  bool operator>= ( double a, const Zint& b )      { return ( (int) a >= b.value ); }
-  bool operator== ( const Zint& a, const Zbyte& b )   { return ((unsigned char) a.value == b.value ); }
-  bool operator== ( const Zint& a, const Zushort& b ) { return ((unsigned short) a.value == b.value ); }
-  bool operator== ( const Zint& a, const Zuint& b )   { return ((unsigned int) a.value == b.value ); }
-  bool operator== ( const Zint& a, const Zdouble& b ) { return ((double) a.value == b.value ); }
-  bool operator== ( const Zbyte& a, const Zint& b )   { return (a.value == (unsigned char) b.value ); }
-  bool operator== ( const Zushort& a, const Zint& b ) { return (a.value == (unsigned short) b.value ); }
-  bool operator== ( const Zuint& a, const Zint& b )   { return (a.value == (unsigned int) b.value ); }
-  bool operator== ( const Zdouble& a, const Zint& b ) { return (a.value == (double) b.value ); }
-  bool operator== ( const Zint& a, const Zint& b ) { return ( a.value == b.value ); }
-  bool operator== ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value >= b ); }
-  bool operator== ( const Zint& a, int b )         { return ( a.value == b );       }
-  bool operator== ( const Zint& a, float b )       { return ( a.value == (int) b ); }
-  bool operator== ( const Zint& a, double b )      { return ( a.value == (int) b ); }
-  bool operator== ( unsigned int a, const Zint& b ) { return ( a == (unsigned int) b.value ); }
-  bool operator== ( int a, const Zint& b )         { return ( a == b.value );       }
-  bool operator== ( float a, const Zint& b )       { return ( (int) a == b.value ); }
-  bool operator== ( double a, const Zint& b )      { return ( (int) a == b.value ); }
-  bool operator!= ( const Zint& a, const Zint& b ) { return ( a.value != b.value ); }
-  bool operator!= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value != b ); }
-  bool operator!= ( const Zint& a, int b )         { return ( a.value != b );       }
-  bool operator!= ( const Zint& a, float b )       { return ( a.value != (int) b ); }
-  bool operator!= ( const Zint& a, double b )      { return ( a.value != (int) b ); }
-  bool operator!= ( unsigned int a, const Zint& b ) { return ( a != (unsigned int) b.value ); }
-  bool operator!= ( int a, const Zint& b )         { return ( a != b.value );       }
-  bool operator!= ( float a, const Zint& b )       { return ( (int) a != b.value ); }
-  bool operator!= ( double a, const Zint& b )      { return ( (int) a != b.value ); }
-  bool operator<= ( const Zint& a, const Zint& b ) { return ( a.value <= b.value ); }
-  bool operator<= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value <= b ); }
-  bool operator<= ( const Zint& a, int b )         { return ( a.value <= b );       }
-  bool operator<= ( const Zint& a, float b )       { return ( a.value <= (int) b ); }
-  bool operator<= ( const Zint& a, double b )      { return ( a.value <= (int) b ); }
-  bool operator<= ( unsigned int a, const Zint& b ) { return ( a <= (unsigned int) b.value ); }
-  bool operator<= ( int a, const Zint& b )         { return ( a <= b.value );       }
-  bool operator<= ( float a, const Zint& b )       { return ( (int) a <= b.value ); }
-  bool operator<= ( double a, const Zint& b )      { return ( (int) a <= b.value ); }
-  bool operator> ( const Zint& a, const Zint& b )  { return ( a.value > b.value ); }
-  bool operator> ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value > b ); }
-  bool operator> ( const Zint& a, int b )          { return ( a.value > b );       }
-  bool operator> ( const Zint& a, float b )        { return ( a.value > (int) b ); }
-  bool operator> ( const Zint& a, double b )       { return ( a.value > (int) b ); }
-  bool operator> ( unsigned int a, const Zint& b ) { return ( a > (unsigned int) b.value ); }
-  bool operator> ( int a, const Zint& b )          { return ( a > b.value );       }
-  bool operator> ( float a, const Zint& b )        { return ( (int) a > b.value ); }
-  bool operator> ( double a, const Zint& b )       { return ( (int) a > b.value ); }
-  bool operator< ( const Zint& a, const Zint& b )  { return ( a.value < b.value ); }
-  bool operator< ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value < b ); }
-  bool operator< ( const Zint& a, int b )          { return ( a.value < b );       }
-  bool operator< ( const Zint& a, float b )        { return ( a.value < (int) b ); }
-  bool operator< ( const Zint& a, double b )       { return ( a.value < (int) b ); }
-  bool operator< ( unsigned int a, const Zint& b ) { return ( a < (unsigned int) b.value ); }
-  bool operator< ( int a, const Zint& b )          { return ( a < b.value );       }
-  bool operator< ( float a, const Zint& b )        { return ( (int) a < b.value ); }
-  bool operator< ( double a, const Zint& b )       { return ( (int) a < b.value ); }
+  inline bool operator>= ( const Zint& a, const Zint& b ) { return ( a.value >= b.value ); }
+  inline bool operator>= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value >= b ); }
+  inline bool operator>= ( const Zint& a, int b )         { return ( a.value >= b );       }
+  inline bool operator>= ( const Zint& a, float b )       { return ( a.value >= (int) b ); }
+  inline bool operator>= ( const Zint& a, double b )      { return ( a.value >= (int) b ); }
+  inline bool operator>= ( unsigned int a, const Zint& b ) { return ( a >= (unsigned int) b.value ); }
+  inline bool operator>= ( int a, const Zint& b )         { return ( a >= b.value );       }
+  inline bool operator>= ( float a, const Zint& b )       { return ( (int) a >= b.value ); }
+  inline bool operator>= ( double a, const Zint& b )      { return ( (int) a >= b.value ); }
+  inline bool operator== ( const Zint& a, const Zbyte& b )   { return ((unsigned char) a.value == b.value ); }
+  inline bool operator== ( const Zint& a, const Zushort& b ) { return ((unsigned short) a.value == b.value ); }
+  inline bool operator== ( const Zint& a, const Zuint& b )   { return ((unsigned int) a.value == b.value ); }
+  inline bool operator== ( const Zint& a, const Zdouble& b ) { return ((double) a.value == b.value ); }
+  inline bool operator== ( const Zbyte& a, const Zint& b )   { return (a.value == (unsigned char) b.value ); }
+  inline bool operator== ( const Zushort& a, const Zint& b ) { return (a.value == (unsigned short) b.value ); }
+  inline bool operator== ( const Zuint& a, const Zint& b )   { return (a.value == (unsigned int) b.value ); }
+  inline bool operator== ( const Zdouble& a, const Zint& b ) { return (a.value == (double) b.value ); }
+  inline bool operator== ( const Zint& a, const Zint& b ) { return ( a.value == b.value ); }
+  inline bool operator== ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value >= b ); }
+  inline bool operator== ( const Zint& a, int b )         { return ( a.value == b );       }
+  inline bool operator== ( const Zint& a, float b )       { return ( a.value == (int) b ); }
+  inline bool operator== ( const Zint& a, double b )      { return ( a.value == (int) b ); }
+  inline bool operator== ( unsigned int a, const Zint& b ) { return ( a == (unsigned int) b.value ); }
+  inline bool operator== ( int a, const Zint& b )         { return ( a == b.value );       }
+  inline bool operator== ( float a, const Zint& b )       { return ( (int) a == b.value ); }
+  inline bool operator== ( double a, const Zint& b )      { return ( (int) a == b.value ); }
+  inline bool operator!= ( const Zint& a, const Zint& b ) { return ( a.value != b.value ); }
+  inline bool operator!= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value != b ); }
+  inline bool operator!= ( const Zint& a, int b )         { return ( a.value != b );       }
+  inline bool operator!= ( const Zint& a, float b )       { return ( a.value != (int) b ); }
+  inline bool operator!= ( const Zint& a, double b )      { return ( a.value != (int) b ); }
+  inline bool operator!= ( unsigned int a, const Zint& b ) { return ( a != (unsigned int) b.value ); }
+  inline bool operator!= ( int a, const Zint& b )         { return ( a != b.value );       }
+  inline bool operator!= ( float a, const Zint& b )       { return ( (int) a != b.value ); }
+  inline bool operator!= ( double a, const Zint& b )      { return ( (int) a != b.value ); }
+  inline bool operator<= ( const Zint& a, const Zint& b ) { return ( a.value <= b.value ); }
+  inline bool operator<= ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value <= b ); }
+  inline bool operator<= ( const Zint& a, int b )         { return ( a.value <= b );       }
+  inline bool operator<= ( const Zint& a, float b )       { return ( a.value <= (int) b ); }
+  inline bool operator<= ( const Zint& a, double b )      { return ( a.value <= (int) b ); }
+  inline bool operator<= ( unsigned int a, const Zint& b ) { return ( a <= (unsigned int) b.value ); }
+  inline bool operator<= ( int a, const Zint& b )         { return ( a <= b.value );       }
+  inline bool operator<= ( float a, const Zint& b )       { return ( (int) a <= b.value ); }
+  inline bool operator<= ( double a, const Zint& b )      { return ( (int) a <= b.value ); }
+  inline bool operator> ( const Zint& a, const Zint& b )  { return ( a.value > b.value ); }
+  inline bool operator> ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value > b ); }
+  inline bool operator> ( const Zint& a, int b )          { return ( a.value > b );       }
+  inline bool operator> ( const Zint& a, float b )        { return ( a.value > (int) b ); }
+  inline bool operator> ( const Zint& a, double b )       { return ( a.value > (int) b ); }
+  inline bool operator> ( unsigned int a, const Zint& b ) { return ( a > (unsigned int) b.value ); }
+  inline bool operator> ( int a, const Zint& b )          { return ( a > b.value );       }
+  inline bool operator> ( float a, const Zint& b )        { return ( (int) a > b.value ); }
+  inline bool operator> ( double a, const Zint& b )       { return ( (int) a > b.value ); }
+  inline bool operator< ( const Zint& a, const Zint& b )  { return ( a.value < b.value ); }
+  inline bool operator< ( const Zint& a, unsigned int b ) { return ( (unsigned int) a.value < b ); }
+  inline bool operator< ( const Zint& a, int b )          { return ( a.value < b );       }
+  inline bool operator< ( const Zint& a, float b )        { return ( a.value < (int) b ); }
+  inline bool operator< ( const Zint& a, double b )       { return ( a.value < (int) b ); }
+  inline bool operator< ( unsigned int a, const Zint& b ) { return ( a < (unsigned int) b.value ); }
+  inline bool operator< ( int a, const Zint& b )          { return ( a < b.value );       }
+  inline bool operator< ( float a, const Zint& b )        { return ( (int) a < b.value ); }
+  inline bool operator< ( double a, const Zint& b )       { return ( (int) a < b.value ); }
 
   /// Zint ////////////////////////////////////////////////////////////////////////////////////////// end
 
   /// Zuint ////////////////////////////////////////////////////////////////////////////////////////// start
 
-  unsigned int operator+ ( const Zuint& a, const Zuint& b ) {
+  inline unsigned int operator+ ( const Zuint& a, const Zuint& b ) {
    return a.value+b.value;
   }
-  unsigned int operator- ( const Zuint& a, const Zuint& b ) {
+  inline unsigned int operator- ( const Zuint& a, const Zuint& b ) {
    return a.value-b.value;
   }
-  unsigned int operator* ( const Zuint& a, const Zuint& b ) {
+  inline unsigned int operator* ( const Zuint& a, const Zuint& b ) {
    return a.value*b.value;
   }
-  unsigned int operator/ ( const Zuint& a, const Zuint& b ) {
+  inline unsigned int operator/ ( const Zuint& a, const Zuint& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4941,16 +5159,16 @@ public:
   /// Zuint and uint
 
   // Casted int operations
-  unsigned int operator+ ( const Zuint& a, unsigned int b ) {
+  inline unsigned int operator+ ( const Zuint& a, unsigned int b ) {
    return a.value+b;
   }
-  unsigned int operator- ( const Zuint& a, unsigned int b ) {
+  inline unsigned int operator- ( const Zuint& a, unsigned int b ) {
    return a.value-b;
   }
-  unsigned int operator* ( const Zuint& a, unsigned int b ) {
+  inline unsigned int operator* ( const Zuint& a, unsigned int b ) {
    return a.value*b;
   }
-  unsigned int operator/ ( const Zuint& a, unsigned int b ) {
+  inline unsigned int operator/ ( const Zuint& a, unsigned int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4961,18 +5179,18 @@ public:
 #endif
    return a.value/b;
   }
-  bool operator< ( unsigned int a, const Zuint& b ) { return ( a < b.value ); }
+  inline bool operator< ( unsigned int a, const Zuint& b ) { return ( a < b.value ); }
   // Casted int operations reversed
-  unsigned int operator+ ( unsigned int b, const Zuint& a ) {
+  inline unsigned int operator+ ( unsigned int b, const Zuint& a ) {
    return a.value+b;
   }
-  unsigned int operator- ( unsigned int b, const Zuint& a ) {
+  inline unsigned int operator- ( unsigned int b, const Zuint& a ) {
    return b-a.value;
   }
-  unsigned int operator* ( unsigned int b, const Zuint& a ) {
+  inline unsigned int operator* ( unsigned int b, const Zuint& a ) {
    return a.value*b;
   }
-  unsigned int operator/ ( unsigned int b, const Zuint& a ) {
+  inline unsigned int operator/ ( unsigned int b, const Zuint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -4987,16 +5205,16 @@ public:
   /// Zuint and int
 
   // Casted int operations
-  unsigned int operator+ ( const Zuint& a, int b ) {
+  inline unsigned int operator+ ( const Zuint& a, int b ) {
    return a.value+(unsigned int) b;
   }
-  unsigned int operator- ( const Zuint& a, int b ) {
+  inline unsigned int operator- ( const Zuint& a, int b ) {
    return a.value-(unsigned int) b;
   }
-  unsigned int operator* ( const Zuint& a, int b ) {
+  inline unsigned int operator* ( const Zuint& a, int b ) {
    return a.value*(unsigned int) b;
   }
-  unsigned int operator/ ( const Zuint& a, int b ) {
+  inline unsigned int operator/ ( const Zuint& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5008,16 +5226,16 @@ public:
    return a.value/(unsigned int) b;
   }
   // Casted int operations reversed
-  unsigned int operator+ ( int b, const Zuint& a ) {
+  inline unsigned int operator+ ( int b, const Zuint& a ) {
    return a.value+(unsigned int) b;
   }
-  unsigned int operator- ( int b, const Zuint& a ) {
+  inline unsigned int operator- ( int b, const Zuint& a ) {
    return (unsigned int) b-a.value;
   }
-  unsigned int operator* ( int b, const Zuint& a ) {
+  inline unsigned int operator* ( int b, const Zuint& a ) {
    return a.value*(unsigned int) b;
   }
-  unsigned int operator/ ( int b, const Zuint& a ) {
+  inline unsigned int operator/ ( int b, const Zuint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5032,16 +5250,16 @@ public:
   /// Zuint and float
 
   // Float operations (leans toward float precision)
-  unsigned int operator+ ( float b, const Zuint& a ) {
+  inline unsigned int operator+ ( float b, const Zuint& a ) {
    return (unsigned int)((float)a.value+b);
   }
-  unsigned int operator- ( float b, const Zuint& a ) {
+  inline unsigned int operator- ( float b, const Zuint& a ) {
    return (unsigned int)(b-(float)a.value);
   }
-  unsigned int operator* ( float b, const Zuint& a ) {
+  inline unsigned int operator* ( float b, const Zuint& a ) {
    return (unsigned int)((float)a.value*b);
   }
-  unsigned int operator/ ( float b, const Zuint& a ) {
+  inline unsigned int operator/ ( float b, const Zuint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5053,16 +5271,16 @@ public:
    return (unsigned int)(b/(float)a.value);
   }
   // Float operations reversed (leans toward float precision)
-  unsigned int operator+ ( const Zuint& a, float b ) {
+  inline unsigned int operator+ ( const Zuint& a, float b ) {
    return (unsigned int)((float)a.value+b);
   }
-  unsigned int operator- ( const Zuint& a, float b ) {
+  inline unsigned int operator- ( const Zuint& a, float b ) {
    return (unsigned int)((float)a.value-b);
   }
-  unsigned int operator* ( const Zuint& a, float b ) {
+  inline unsigned int operator* ( const Zuint& a, float b ) {
    return (unsigned int)((float)a.value*b);
   }
-  unsigned int operator/ ( const Zuint& a, float b ) {
+  inline unsigned int operator/ ( const Zuint& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5078,16 +5296,16 @@ public:
   /// Zuint and double
 
   // Casted double operations (leans toward double precision)
-  unsigned int operator+ ( double b, const Zuint& a ) {
+  inline unsigned int operator+ ( double b, const Zuint& a ) {
    return (unsigned int)((double)a.value+b);
   }
-  unsigned int operator- ( double b, const Zuint& a ) {
+  inline unsigned int operator- ( double b, const Zuint& a ) {
    return (unsigned int)(b-(double)a.value);
   }
-  unsigned int operator* ( double b, const Zuint& a ) {
+  inline unsigned int operator* ( double b, const Zuint& a ) {
    return (unsigned int)((double)a.value*b);
   }
-  unsigned int operator/ ( double b, const Zuint& a ) {
+  inline unsigned int operator/ ( double b, const Zuint& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5099,16 +5317,16 @@ public:
    return (unsigned int)(b/(double)a.value);
   }
   // Casted double operations reversed (leans toward double precision)
-  unsigned int operator+ ( const Zuint& a, double b ) {
+  inline unsigned int operator+ ( const Zuint& a, double b ) {
    return (unsigned int)((double)a.value+b);
   }
-  unsigned int operator- ( const Zuint& a, double b ) {
+  inline unsigned int operator- ( const Zuint& a, double b ) {
    return (unsigned int)((double)a.value-b);
   }
-  unsigned int operator* ( const Zuint& a, double b ) {
+  inline unsigned int operator* ( const Zuint& a, double b ) {
    return (unsigned int)((double)a.value*b);
   }
-  unsigned int operator/ ( const Zuint& a, double b ) {
+  inline unsigned int operator/ ( const Zuint& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5125,19 +5343,19 @@ public:
   /// Zdouble ////////////////////////////////////////////////////////////////////////////////////////// start
 
   // Mixed type operations
-  double operator+ ( const Zdouble& a, const Zfloat& b ) { return a.value + (double) b.value; }
-  double operator+ ( const Zfloat& a, const Zdouble& b ) { return (double) a.value + b.value; }
-  double operator+ ( const Zdouble& a, const Zint& b )   { return a.value + (double) b.value; }
-  double operator+ ( const Zint& a, const Zdouble& b )   { return (double) a.value + b.value; }
-  double operator* ( const Zdouble& a, const Zfloat& b ) { return a.value * (double) b.value; }
-  double operator* ( const Zfloat& a, const Zdouble& b ) { return (double) a.value * b.value; }
-  double operator* ( const Zdouble& a, const Zint& b )   { return a.value * (double) b.value; }
-  double operator* ( const Zint& a, const Zdouble& b )   { return (double) a.value * b.value; }
+  inline double operator+ ( const Zdouble& a, const Zfloat& b ) { return a.value + (double) b.value; }
+  inline double operator+ ( const Zfloat& a, const Zdouble& b ) { return (double) a.value + b.value; }
+  inline double operator+ ( const Zdouble& a, const Zint& b )   { return a.value + (double) b.value; }
+  inline double operator+ ( const Zint& a, const Zdouble& b )   { return (double) a.value + b.value; }
+  inline double operator* ( const Zdouble& a, const Zfloat& b ) { return a.value * (double) b.value; }
+  inline double operator* ( const Zfloat& a, const Zdouble& b ) { return (double) a.value * b.value; }
+  inline double operator* ( const Zdouble& a, const Zint& b )   { return a.value * (double) b.value; }
+  inline double operator* ( const Zint& a, const Zdouble& b )   { return (double) a.value * b.value; }
   // Zdouble and itself
-  double operator+ ( const Zdouble& a, const Zdouble& b ) { return a.value+b.value; }
-  double operator- ( const Zdouble& a, const Zdouble& b ) { return a.value-b.value; }
-  double operator* ( const Zdouble& a, const Zdouble& b ) { return a.value*b.value; }
-  double operator/ ( const Zdouble& a, const Zdouble& b ) {
+  inline double operator+ ( const Zdouble& a, const Zdouble& b ) { return a.value+b.value; }
+  inline double operator- ( const Zdouble& a, const Zdouble& b ) { return a.value-b.value; }
+  inline double operator* ( const Zdouble& a, const Zdouble& b ) { return a.value*b.value; }
+  inline double operator/ ( const Zdouble& a, const Zdouble& b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b.value == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5168,10 +5386,10 @@ public:
   /// Zdouble and int
 
   // Casted int operations (leans toward double precision)
-  double operator+ ( const Zdouble& a, int b ) { return a.value+(double)b; }
-  double operator- ( const Zdouble& a, int b ) { return a.value-(double)b; }
-  double operator* ( const Zdouble& a, int b ) { return a.value*(double)b; }
-  double operator/ ( const Zdouble& a, int b ) {
+  inline double operator+ ( const Zdouble& a, int b ) { return a.value+(double)b; }
+  inline double operator- ( const Zdouble& a, int b ) { return a.value-(double)b; }
+  inline double operator* ( const Zdouble& a, int b ) { return a.value*(double)b; }
+  inline double operator/ ( const Zdouble& a, int b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5183,10 +5401,10 @@ public:
    return a.value/(double)b;
   }
   // Casted int operations reversed (leans toward double precision)
-  double operator+ ( int b, const Zdouble& a ) { return a.value+(double)b; }
-  double operator- ( int b, const Zdouble& a ) { return (double)b-a.value; }
-  double operator* ( int b, const Zdouble& a ) { return a.value*(double)b; }
-  double operator/ ( int b, const Zdouble& a ) {
+  inline double operator+ ( int b, const Zdouble& a ) { return a.value+(double)b; }
+  inline double operator- ( int b, const Zdouble& a ) { return (double)b-a.value; }
+  inline double operator* ( int b, const Zdouble& a ) { return a.value*(double)b; }
+  inline double operator/ ( int b, const Zdouble& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5201,10 +5419,10 @@ public:
   /// Zdouble and float
 
   // Float operations (leans toward float precision)
-  double operator+ ( float b, const Zdouble& a ) { return a.value+(double)b; }
-  double operator- ( float b, const Zdouble& a ) { return (double)b-a.value; }
-  double operator* ( float b, const Zdouble& a ) { return a.value*(double)b; }
-  double operator/ ( float b, const Zdouble& a ) {
+  inline double operator+ ( float b, const Zdouble& a ) { return a.value+(double)b; }
+  inline double operator- ( float b, const Zdouble& a ) { return (double)b-a.value; }
+  inline double operator* ( float b, const Zdouble& a ) { return a.value*(double)b; }
+  inline double operator/ ( float b, const Zdouble& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5216,10 +5434,10 @@ public:
    return (double)b/a.value;
   }
   // Float operations reversed (leans toward float precision)
-  double operator+ ( const Zdouble& a, float b ) { return a.value+(double)b; }
-  double operator- ( const Zdouble& a, float b ) { return a.value-(double)b; }
-  double operator* ( const Zdouble& a, float b ) { return a.value*(double)b; }
-  double operator/ ( const Zdouble& a, float b ) {
+  inline double operator+ ( const Zdouble& a, float b ) { return a.value+(double)b; }
+  inline double operator- ( const Zdouble& a, float b ) { return a.value-(double)b; }
+  inline double operator* ( const Zdouble& a, float b ) { return a.value*(double)b; }
+  inline double operator/ ( const Zdouble& a, float b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0f ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5235,10 +5453,10 @@ public:
   /// Zdouble and double
 
   // Casted double operations
-  double operator+ ( double b, const Zdouble& a ) { return a.value+b; }
-  double operator- ( double b, const Zdouble& a ) { return b-a.value; }
-  double operator* ( double b, const Zdouble& a ) { return a.value*b; }
-  double operator/ ( double b, const Zdouble& a ) {
+  inline double operator+ ( double b, const Zdouble& a ) { return a.value+b; }
+  inline double operator- ( double b, const Zdouble& a ) { return b-a.value; }
+  inline double operator* ( double b, const Zdouble& a ) { return a.value*b; }
+  inline double operator/ ( double b, const Zdouble& a ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( a.value == 0.0) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5250,10 +5468,10 @@ public:
    return b/a.value;
   }
   // Casted double operations reversed
-  double operator+ ( const Zdouble& a, double b ) { return a.value+b; }
-  double operator- ( const Zdouble& a, double b ) { return a.value-b; }
-  double operator* ( const Zdouble& a, double b ) { return a.value*b; }
-  double operator/ ( const Zdouble& a, double b ) {
+  inline double operator+ ( const Zdouble& a, double b ) { return a.value+b; }
+  inline double operator- ( const Zdouble& a, double b ) { return a.value-b; }
+  inline double operator* ( const Zdouble& a, double b ) { return a.value*b; }
+  inline double operator/ ( const Zdouble& a, double b ) {
 #if defined(DIV_BY_ZERO_PROTECTION)
    if ( b == 0.0 ) {
 #if defined(DIV_BY_ZERO_REPORTING)
@@ -5266,48 +5484,48 @@ public:
   }
 
   // Boolean operations
-  bool operator>= ( const Zdouble& a, const Zdouble& b ) { return ( a.value >= b.value );    }
-  bool operator>= ( const Zdouble& a, int b )            { return ( a.value >= (double) b ); }
-  bool operator>= ( const Zdouble& a, float b )          { return ( a.value >= (double) b ); }
-  bool operator>= ( const Zdouble& a, double b )         { return ( a.value >= b );          }
-  bool operator>= ( int a, const Zdouble& b )            { return ( (double) a >= b.value ); }
-  bool operator>= ( float a, const Zdouble& b )          { return ( (double) a >= b.value ); }
-  bool operator>= ( double a, const Zdouble& b )         { return ( a >= b.value );          }
-  bool operator== ( const Zdouble& a, const Zdouble& b ) { return ( a.value == b.value );    }
-  bool operator== ( const Zdouble& a, int b )            { return ( a.value == (double) b ); }
-  bool operator== ( const Zdouble& a, float b )          { return ( a.value == (double) b ); }
-  bool operator== ( const Zdouble& a, double b )         { return ( a.value == b );          }
-  bool operator== ( int a, const Zdouble& b )            { return ( (double) a == b.value ); }
-  bool operator== ( float a, const Zdouble& b )          { return ( (double) a == b.value ); }
-  bool operator== ( double a, const Zdouble& b )         { return ( a == b.value );          }
-  bool operator!= ( const Zdouble& a, const Zdouble& b ) { return ( a.value != b.value );    }
-  bool operator!= ( const Zdouble& a, int b )            { return ( a.value != (double) b ); }
-  bool operator!= ( const Zdouble& a, float b )          { return ( a.value != (double) b ); }
-  bool operator!= ( const Zdouble& a, double b )         { return ( a.value != b );          }
-  bool operator!= ( int a, const Zdouble& b )            { return ( (double) a != b.value ); }
-  bool operator!= ( float a, const Zdouble& b )          { return ( (double) a != b.value ); }
-  bool operator!= ( double a, const Zdouble& b )         { return ( a != b.value );          }
-  bool operator<= ( const Zdouble& a, const Zdouble& b ) { return ( a.value <= b.value );    }
-  bool operator<= ( const Zdouble& a, int b )            { return ( a.value <= (double) b ); }
-  bool operator<= ( const Zdouble& a, float b )          { return ( a.value <= (double) b ); }
-  bool operator<= ( const Zdouble& a, double b )         { return ( a.value <= b );          }
-  bool operator<= ( int a, const Zdouble& b )            { return ( (double) a <= b.value ); }
-  bool operator<= ( float a, const Zdouble& b )          { return ( (double) a <= b.value ); }
-  bool operator<= ( double a, const Zdouble& b )         { return ( a <= b.value );          }
-  bool operator> ( const Zdouble& a, const Zdouble& b )  { return ( a.value > b.value );    }
-  bool operator> ( const Zdouble& a, int b )             { return ( a.value > (double) b ); }
-  bool operator> ( const Zdouble& a, float b )           { return ( a.value > (double) b ); }
-  bool operator> ( const Zdouble& a, double b )          { return ( a.value > b );          }
-  bool operator> ( int a, const Zdouble& b )             { return ( (double) a > b.value ); }
-  bool operator> ( float a, const Zdouble& b )           { return ( (double) a > b.value ); }
-  bool operator> ( double a, const Zdouble& b )          { return ( a > b.value );          }
-  bool operator< ( const Zdouble& a, const Zdouble& b )  { return ( a.value < b.value );    }
-  bool operator< ( const Zdouble& a, int b )             { return ( a.value < (double) b ); }
-  bool operator< ( const Zdouble& a, float b )           { return ( a.value < (double) b ); }
-  bool operator< ( const Zdouble& a, double b )          { return ( a.value < b );          }
-  bool operator< ( int a, const Zdouble& b )             { return ( (double) a < b.value ); }
-  bool operator< ( float a, const Zdouble& b )           { return ( (double) a < b.value ); }
-  bool operator< ( double a, const Zdouble& b )          { return ( a < b.value );          }
+  inline bool operator>= ( const Zdouble& a, const Zdouble& b ) { return ( a.value >= b.value );    }
+  inline bool operator>= ( const Zdouble& a, int b )            { return ( a.value >= (double) b ); }
+  inline bool operator>= ( const Zdouble& a, float b )          { return ( a.value >= (double) b ); }
+  inline bool operator>= ( const Zdouble& a, double b )         { return ( a.value >= b );          }
+  inline bool operator>= ( int a, const Zdouble& b )            { return ( (double) a >= b.value ); }
+  inline bool operator>= ( float a, const Zdouble& b )          { return ( (double) a >= b.value ); }
+  inline bool operator>= ( double a, const Zdouble& b )         { return ( a >= b.value );          }
+  inline bool operator== ( const Zdouble& a, const Zdouble& b ) { return ( a.value == b.value );    }
+  inline bool operator== ( const Zdouble& a, int b )            { return ( a.value == (double) b ); }
+  inline bool operator== ( const Zdouble& a, float b )          { return ( a.value == (double) b ); }
+  inline bool operator== ( const Zdouble& a, double b )         { return ( a.value == b );          }
+  inline bool operator== ( int a, const Zdouble& b )            { return ( (double) a == b.value ); }
+  inline bool operator== ( float a, const Zdouble& b )          { return ( (double) a == b.value ); }
+  inline bool operator== ( double a, const Zdouble& b )         { return ( a == b.value );          }
+  inline bool operator!= ( const Zdouble& a, const Zdouble& b ) { return ( a.value != b.value );    }
+  inline bool operator!= ( const Zdouble& a, int b )            { return ( a.value != (double) b ); }
+  inline bool operator!= ( const Zdouble& a, float b )          { return ( a.value != (double) b ); }
+  inline bool operator!= ( const Zdouble& a, double b )         { return ( a.value != b );          }
+  inline bool operator!= ( int a, const Zdouble& b )            { return ( (double) a != b.value ); }
+  inline bool operator!= ( float a, const Zdouble& b )          { return ( (double) a != b.value ); }
+  inline bool operator!= ( double a, const Zdouble& b )         { return ( a != b.value );          }
+  inline bool operator<= ( const Zdouble& a, const Zdouble& b ) { return ( a.value <= b.value );    }
+  inline bool operator<= ( const Zdouble& a, int b )            { return ( a.value <= (double) b ); }
+  inline bool operator<= ( const Zdouble& a, float b )          { return ( a.value <= (double) b ); }
+  inline bool operator<= ( const Zdouble& a, double b )         { return ( a.value <= b );          }
+  inline bool operator<= ( int a, const Zdouble& b )            { return ( (double) a <= b.value ); }
+  inline bool operator<= ( float a, const Zdouble& b )          { return ( (double) a <= b.value ); }
+  inline bool operator<= ( double a, const Zdouble& b )         { return ( a <= b.value );          }
+  inline bool operator> ( const Zdouble& a, const Zdouble& b )  { return ( a.value > b.value );    }
+  inline bool operator> ( const Zdouble& a, int b )             { return ( a.value > (double) b ); }
+  inline bool operator> ( const Zdouble& a, float b )           { return ( a.value > (double) b ); }
+  inline bool operator> ( const Zdouble& a, double b )          { return ( a.value > b );          }
+  inline bool operator> ( int a, const Zdouble& b )             { return ( (double) a > b.value ); }
+  inline bool operator> ( float a, const Zdouble& b )           { return ( (double) a > b.value ); }
+  inline bool operator> ( double a, const Zdouble& b )          { return ( a > b.value );          }
+  inline bool operator< ( const Zdouble& a, const Zdouble& b )  { return ( a.value < b.value );    }
+  inline bool operator< ( const Zdouble& a, int b )             { return ( a.value < (double) b ); }
+  inline bool operator< ( const Zdouble& a, float b )           { return ( a.value < (double) b ); }
+  inline bool operator< ( const Zdouble& a, double b )          { return ( a.value < b );          }
+  inline bool operator< ( int a, const Zdouble& b )             { return ( (double) a < b.value ); }
+  inline bool operator< ( float a, const Zdouble& b )           { return ( (double) a < b.value ); }
+  inline bool operator< ( double a, const Zdouble& b )          { return ( a < b.value );          }
 
   /// Zdouble ////////////////////////////////////////////////////////////////////////////////////////// end
 
@@ -5315,10 +5533,8 @@ public:
 
   /// Zstring (UTF-8) ////////////////////////////////////////////////////////////////////////////////////////// end
 
-  const char string_error='\0';
-
 #define FORMAT_STRING_SIZE 65536
-  string FORMAT(char *b, int len, const char *fmt, ...)
+  inline string FORMAT(char *b, int len, const char *fmt, ...)
   {
    string s;
    static char buf [FORMAT_STRING_SIZE];
@@ -5342,7 +5558,7 @@ public:
    return s;
   }
 
-  string FORMAT(const char*fmt, ...) {
+  inline string FORMAT(const char*fmt, ...) {
    string s;
    static char buf[FORMAT_STRING_SIZE];
    va_list args;
@@ -5366,27 +5582,27 @@ public:
   char buf2[STRING_SIZE];
   char buf3[STRING_SIZE];
 
-  void InitZeroTypesLibrary() {
+  inline void InitZeroTypesLibrary() {
    for ( int i=0; i<STRING_SIZE; i++ ) buf[i]=buf2[i]=buf3[i]='\0';
    init_seeder();
   }
 
 
-  void rtrim(string& s, const string& delimiters ) {
+  inline void rtrim(string& s, const string& delimiters ) {
    s.erase( s.find_last_not_of( delimiters ) + 1 );
   }
 
-  void ltrim(string& s,  const string& delimiters ) {
+  inline void ltrim(string& s,  const string& delimiters ) {
    s.erase( 0, s.find_first_not_of( delimiters ) );
   }
 
-  void trim(string& s, const string& delimiters ) {
+  inline void trim(string& s, const string& delimiters ) {
    s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
   }
 
 
   // Gather until next substring match or end of string (returns the point right after the substring)
-  const char *gather_to( const char *argument, const char *substr, string *buf ) {
+  inline const char *gather_to( const char *argument, const char *substr, string *buf ) {
    *buf=string("");
    int substrlen=(int)strlen(substr);
    const char *p=argument;
@@ -5420,7 +5636,7 @@ public:
    return p;
   }
 
-  void replaceOnce(string& in, string const &search, string const &substitute) {
+  inline void replaceOnce(string& in, string const &search, string const &substitute) {
    int found=0;
    string::size_type pos=0;
    while((pos=in.find(search, pos))!=string::npos&&found<1)
@@ -5432,7 +5648,7 @@ public:
    }
   }
 
-  void replaceAll(string& in, string const &search, string const &substitute) {
+  inline void replaceAll(string& in, string const &search, string const &substitute) {
    string::size_type pos=0;
    while((pos=in.find(search, pos))!=string::npos)
    {
@@ -5442,7 +5658,7 @@ public:
    }
   }
 
-  string replace_all(const string& in, const string& search, const string& substitute) {
+  inline string replace_all(const string& in, const string& search, const string& substitute) {
    string::size_type pos=0;
    string out=in;
    while((pos=out.find(search, pos))!=string::npos)
@@ -5455,7 +5671,7 @@ public:
   }
 
 
-  bool endsWith(string const &fullString, string const &ending) {
+  inline bool endsWith(string const &fullString, string const &ending) {
    string a=fullString;
    trim(a);
    if (a.length() >= ending.length()) {
@@ -5465,7 +5681,7 @@ public:
    }
   }
 
-  bool endsWith( const char *searching, const char *find, bool removePadding ) {
+  inline bool endsWith( const char *searching, const char *find, bool removePadding ) {
    if ( searching == null ) {
     OUTPUT( "endsWith: null searching.\n" );
     return false;
@@ -5507,7 +5723,7 @@ public:
   * Counts the number of "words" (strings of non-spaces separated by spaces)
   * in a string.     Not the best way (should use one_arg)?
   */
-  int words(const char *argument )
+  inline int words(const char *argument )
   {
    int total;
    char *s = (char *) argument;
@@ -5525,7 +5741,7 @@ public:
   * Return true if different
   *   (compatibility with historical functions).
   */
-  bool str_cmp( const char *astr, const char *bstr )
+  inline bool str_cmp( const char *astr, const char *bstr )
   {
    if ( astr == null ) { 
     OUTPUT( "Str_cmp: null astr.\n" );
@@ -5541,7 +5757,7 @@ public:
    return false;
   }
 
-  bool str_cmp( string astr, string bstr ) {
+  inline bool str_cmp( string astr, string bstr ) {
    return str_cmp( astr.c_str(), bstr.c_str() );
   }
 
@@ -5549,7 +5765,7 @@ public:
    return (c =='0' || c == '1' || c == '2' || c == '3' || c == '4' || c =='5' || c =='6' || c=='7' || c == '8' || c == '9' );
   }
 
-  bool char_in(char c, const char *list ) {
+  inline bool char_in(char c, const char *list ) {
    int o,O;
    O=(int)strlen(list);
    for ( o=0; o<O; o++ ) if ( list[o] == c ) return true;
@@ -5561,7 +5777,7 @@ public:
   * Return true if different
   *   (compatibility with historical functions).
   */
-  bool str_cmp_case( const char *astr, const char *bstr )
+  inline bool str_cmp_case( const char *astr, const char *bstr )
   {
    if ( astr == null ) { 
     OUTPUT( "Str_cmp: null astr.\n" );
@@ -5575,18 +5791,24 @@ public:
    return false;
   }
 
-  string lower( string a ) {
+  inline string lower( string a ) {
    Zstring lowered;
    const char *p=a.c_str();
    while ( *p != '\0' ) { char b=LOWER(*p); lowered+=b; p++; }
    return lowered.value;
   }
 
+  inline string upper( string a ) {
+   Zstring uppered;
+   const char *p=a.c_str();
+   while ( *p != '\0' ) { char b=UPPER(*p); uppered+=b; p++; }
+   return uppered.value;
+  }
 
   /*
   * Return true if an argument is completely numeric.
   */
-  bool is_integer( const char *arg ) {
+  inline bool is_integer( const char *arg ) {
    const char *o=arg;
    bool foundspace=false;
    if ( *arg == '\0' ) return false;
@@ -5607,7 +5829,7 @@ public:
   /*
   * Return true if an argument is completely numeric.
   */
-  bool is_decimal( const char *arg ) {
+  inline bool is_decimal( const char *arg ) {
    const char *o=arg;
    int periods=0;
    bool foundspace=false;
@@ -5637,7 +5859,7 @@ public:
   * Does not return the value if valid (tiny inefficiency).
   * Source: http://www.gidforums.com/t-17778.html
   */
-  bool is_int( string k ) {
+  inline bool is_int( string k ) {
    const char *in=k.c_str();
    char * last = 0;
 
@@ -5653,7 +5875,7 @@ public:
   * Does not return the value if valid (tiny inefficiency).
   * Source: http://www.gidforums.com/t-17778.html
   */
-  bool is_hex( string k ) {
+  inline bool is_hex( string k ) {
    const char *in=k.c_str();
    char *last = null;
    int x1 = atoi(in);
@@ -5668,7 +5890,7 @@ public:
   * Does not return the value if valid (tiny inefficiency).
   * Source: http://www.gidforums.com/t-17778.html
   */
-  bool is_float( string k ) {
+  inline bool is_float( string k ) {
    char * last = 0;
    double x1 = atof(k.c_str());
    long x2 = strtol(k.c_str(), &last, 10);
@@ -5677,7 +5899,7 @@ public:
    return true;
   }
 
-  int from_hex( string hex ) {
+  inline int from_hex( string hex ) {
    int result;
 #if defined(_WINDOWS_)
    sscanf_s(hex.c_str(), "%x", &result);
@@ -5687,7 +5909,7 @@ public:
    return result;
   }
 
-  string to_hexidecimal( int i ) {
+  inline string to_hexidecimal( int i ) {
    char buf[80];
    FMT(buf,80,"%x", (int) i);
    string out=string(buf);
@@ -5699,11 +5921,11 @@ public:
   * Understands quotes and {}=[], treats interim commas and equal signs as space.
   * Uses the stack so not recommended for large strings (use string_argument);
   */
-  const char *one_argument( const char *args, char *arg_first )
+  inline const char *one_argument( const char *args, char *arg_first )
   {
    const char *argument=args;
    char cEnd = ' ';
-   if ( argument == null ) return &string_error;
+   if ( argument == null ) return string_error();
    // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || *argument == '#' ) {
     if ( *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -5761,11 +5983,11 @@ public:
   * Understands quotes and {}=[], treats interim commas and equal signs as space.
   * Uses the stack so not recommended for large strings (use string_argument);
   */
-  const char *one_argument_case( const char *args, char *arg_first )
+  inline const char *one_argument_case( const char *args, char *arg_first )
   {
    const char *argument=args;
    char cEnd = ' ';
-   if ( argument == null ) return &string_error;
+   if ( argument == null ) return string_error();
    // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || *argument == '#' ) {
     if ( *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -5823,12 +6045,12 @@ public:
   * Uses std::string thus dynamic and doesn't use the stack.
   * Understands quotes and {}=[](), treats interim commas and equal signs as space.
   */
-  const char *string_argument( const char *argument, string *arg_first, bool slash_comments, bool pound_comments )
+  inline const char *string_argument( const char *argument, string *arg_first, bool slash_comments, bool pound_comments )
   {
    char cEnd = ' ';
    // char buf[2];
    (*arg_first)=string("");
-   if ( argument == null ) return &string_error; // undef behavior? maybe "" is constant
+   if ( argument == null ) return string_error(); // undef behavior? maybe "" is constant
                                                  // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || (*argument == '#' && pound_comments) ) {
     if ( slash_comments && *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -5881,13 +6103,13 @@ public:
   * Uses std::string thus dynamic and doesn't use the stack.
   * Understands quotes and {}=[](), treats interim commas and equal signs as space.
   */
-  const char *string_argument( const char *argument, Zstring *arg_firstz )
+  inline const char *string_argument( const char *argument, Zstring *arg_firstz )
   {
    string *arg_first=&arg_firstz->value;
    char cEnd = ' ';
    // char buf[2];
    (*arg_first)=string("");
-   if ( argument == null ) return &string_error; // undef behavior? maybe "" is constant
+   if ( argument == null ) return string_error(); // undef behavior? maybe "" is constant
                                                  // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || *argument == '#' ) {
     if ( *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -5936,12 +6158,12 @@ public:
   * Uses std::string thus dynamic and doesn't use the stack.
   * Understands quotes and {}=[](), treats interim commas and equal signs as space.
   */
-  const char *string_argument_case( const char *argument, std::string *arg_first )
+  inline const char *string_argument_case( const char *argument, std::string *arg_first )
   {
    char cEnd = ' ';
    // char buf[2];
    (*arg_first)=string("");
-   if ( argument == null ) return &string_error; // undef behavior? maybe "" is constant
+   if ( argument == null ) return string_error(); // undef behavior? maybe "" is constant
                                                  // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || *argument == '#' ) {
     if ( *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -5990,13 +6212,13 @@ public:
   * Uses std::string thus dynamic and doesn't use the stack.
   * Understands quotes and {}=[](), treats interim commas and equal signs as space.
   */
-  const char *string_argument_case( Zstring &sep, const char *argument, std::string *arg_first )
+  inline const char *string_argument_case( Zstring &sep, const char *argument, std::string *arg_first )
   {
    char cEnd = ' ';
    sep = " ";
    // char buf[2];
    (*arg_first)=string("");
-   if ( argument == null ) return &string_error; // undef behavior? maybe "" is constant
+   if ( argument == null ) return string_error(); // undef behavior? maybe "" is constant
    while ( _FILLER(*argument) && *argument != '=' ) argument++;
    // Handle nested {} [] (), or quotes "" '' ``
    if ( _NESTERS(*argument) || _SEP(*argument) ) { // Delimiters
@@ -6051,12 +6273,12 @@ public:
   * Uses std::string thus dynamic and doesn't use the stack.
   * Understands quotes and {}=[](), treats interim commas and equal signs as space.
   */
-  const char *string_argument_end( const char *argument, string *arg_first, char *sep )
+  inline const char *string_argument_end( const char *argument, string *arg_first, char *sep )
   {
    char cEnd = ' ';
    // char buf[2];
    (*arg_first)=string("");
-   if ( argument == null ) return &string_error; // undef behavior? maybe "" is constant
+   if ( argument == null ) return string_error(); // undef behavior? maybe "" is constant
                                                  // Advance past spaces and interim commas, equal signs, newlines, skip //comments and #comments
    while ( _FILLER(*argument) || *argument == '#' ) {
     if ( *argument == '/' && *(argument+1) == '/' ) while ( *argument != '\n' && *argument != '\r' && *argument != '\0' ) argument++;
@@ -6110,7 +6332,7 @@ public:
   * Return true if hay not a prefix of haystack
   *   (compatibility with historical functions).
   */
-  bool str_prefix( const char *astr, const char *bstr )
+  inline bool str_prefix( const char *astr, const char *bstr )
   {
    if ( astr == null || *astr == '\0' ) {
     OUTPUT( "Str_prefix: null astr.\n" );
@@ -6134,7 +6356,7 @@ public:
   * Return true if astr not a prefix of bstr
   *   (compatibility with historical functions).
   */
-  bool str_prefix_case( const char *astr, const char *bstr )
+  inline bool str_prefix_case( const char *astr, const char *bstr )
   {
    if ( astr == null || *astr == '\0' ) {
     OUTPUT( "Str_prefix: null astr.\n" );
@@ -6152,7 +6374,7 @@ public:
    return false;
   }
 
-  string strtolower( const char *input ) {
+  inline string strtolower( const char *input ) {
    return lower(string(input));
   }
 
@@ -6161,7 +6383,7 @@ public:
   * Returns true if shorter string not part of longer string.
   *   (compatibility with historical functions).
   */
-  bool str_infix( const char *astr, const char *bstr ) {
+  inline bool str_infix( const char *astr, const char *bstr ) {
    if ( astr == null || *astr == '\0' ) {
     OUTPUT( "Str_infix: null astr (compared against '%s').\n", bstr );
     return true;
@@ -6200,7 +6422,7 @@ public:
   * Returns true if shorter string not part of longer string.
   *   (compatibility with historical functions).
   */
-  bool str_infix_case( const char *astr, const char *bstr ) {
+  inline bool str_infix_case( const char *astr, const char *bstr ) {
    if ( astr == null || *astr == '\0' ) {
     OUTPUT( "Str_infix_case: null astr (compared against '%s').\n", bstr );
     return true;
@@ -6233,7 +6455,7 @@ public:
    return !found;
   }
 
-  bool string_infix( string astr, string bstr ) {
+  inline bool string_infix( string astr, string bstr ) {
    string a=string(astr); std::transform(a.begin(), a.end(), a.begin(),(int(*)(int)) std::tolower);
    string b=string(bstr); std::transform(b.begin(), b.end(), b.begin(),(int(*)(int)) std::tolower);
    if ( b.find(a) != string::npos ) return false;
@@ -6245,7 +6467,7 @@ public:
   * Return true if astr not a suffix of bstr
   *   (compatibility with historical functions).
   */
-  bool str_suffix( const char *astr, const char *bstr )
+  inline bool str_suffix( const char *astr, const char *bstr )
   {
    size_t sstr1;
    size_t sstr2;
@@ -6259,7 +6481,7 @@ public:
 
 
   // Removes all newlines, limits all spaces to 1
-  string Zstring::Words() {
+  inline string Zstring::Words() {
    Zstring out;
    out=value;
    out("\n"," ");
@@ -6281,7 +6503,7 @@ public:
   }
 
   // Limits to a length or less without breaking words ex: LimitTo(dog cat fish ~ 6) = dog
-  string Zstring::LimitTo( int len ) {
+  inline string Zstring::LimitTo( int len ) {
    Strings words;
    words.SplitPush(Words().c_str(),' ');
    Zstring out;
@@ -6292,7 +6514,7 @@ public:
    return out.value;
   }
 
-  string Zstring::WordWrap( int linelen ) {
+  inline string Zstring::WordWrap( int linelen ) {
    Strings words;
    words.SplitPush(Words().c_str(),' ');
    Zstring out;
@@ -6311,7 +6533,7 @@ public:
    return out.value;
   }
 
-  bool Zstring:: is_inside( const char * cloud ) {
+  inline bool Zstring:: is_inside( const char * cloud ) {
    Zstring c(cloud);
    Strings it;
    it.SplitPush(cloud);
@@ -6320,7 +6542,7 @@ public:
    return it.includes(&us);
   }
 
-  bool operator== ( const Zstring& a, const Zstring& b ) {
+  inline bool operator== ( const Zstring& a, const Zstring& b ) {
    bool result= !str_cmp(a.value.c_str(),b.value.c_str());
    if ( !result ) {
     if ( is_decimal(a.value.c_str()) && is_decimal(b.value.c_str()) ) {
@@ -6332,15 +6554,15 @@ public:
    return result;
   }
 
-  bool operator== ( const Zstring& a, const char * b ) {
+  inline bool operator== ( const Zstring& a, const char * b ) {
    return !str_cmp(a.value.c_str(),b);
   }
 
-  bool operator== ( const char * b, const Zstring& a ) {
+  inline bool operator== ( const char * b, const Zstring& a ) {
    return !str_cmp(a.value.c_str(),b);
   }
 
-  bool operator!= ( const Zstring& a, const Zstring& b ) {
+  inline bool operator!= ( const Zstring& a, const Zstring& b ) {
    bool result= !str_cmp(a.value.c_str(),b.value.c_str());
    if ( !result ) {
     if ( is_decimal(a.value.c_str()) && is_decimal(b.value.c_str()) ) {
@@ -6352,62 +6574,62 @@ public:
    return !result;
   }
 
-  bool operator!= ( const Zstring& a, const char * b ) {
+  inline bool operator!= ( const Zstring& a, const char * b ) {
    return str_cmp(a.value.c_str(),b);
   }
 
-  bool operator!= ( const char * b, const Zstring& a ) {
+  inline bool operator!= ( const char * b, const Zstring& a ) {
    return str_cmp(a.value.c_str(),b);
   }
 
-  string operator+ ( const Zstring& a, const Zstring& b ) {
+  inline string operator+ ( const Zstring& a, const Zstring& b ) {
    return a.value+b.value;
   }
 
-  string operator+ ( const Zstring& a, const string& b ) {
+  inline string operator+ ( const Zstring& a, const string& b ) {
    return a.value+b;
   }
 
-  string operator+ ( const string& a, const Zstring& b ) {
+  inline string operator+ ( const string& a, const Zstring& b ) {
    return a+b.value;
   }
 
-  string operator+ ( const Zstring& a, const int& b ) {
-   return a.value+FORMAT(tbuf,128,"%d",(int)b);
+  inline string operator+ ( const Zstring& a, const int& b ) {
+   return a.value+FORMAT(ZTSB().tbuf,128,"%d",(int)b);
   }
 
-  string operator+ ( const Zstring& a, const unsigned int& b ) {
-   return a.value+FORMAT(tbuf,128,"%d",(int)b);
+  inline string operator+ ( const Zstring& a, const unsigned int& b ) {
+   return a.value+FORMAT(ZTSB().tbuf,128,"%d",(int)b);
   }
 
-  string operator+ ( const Zstring& a, const float& b ) {
-   return a.value+FORMAT(tbuf,128,"%f",(float)b);
+  inline string operator+ ( const Zstring& a, const float& b ) {
+   return a.value+FORMAT(ZTSB().tbuf,128,"%f",(float)b);
   }
 
-  string operator+ ( const Zstring& a, const double& b ) {
-   return a.value+FORMAT(tbuf,128,"%f",(double)b);
+  inline string operator+ ( const Zstring& a, const double& b ) {
+   return a.value+FORMAT(ZTSB().tbuf,128,"%f",(double)b);
   }
 
-  string operator+ ( const int& a, const Zstring& b ) {
-   return b.value+FORMAT(tbuf,128,"%d",(int)a);
+  inline string operator+ ( const int& a, const Zstring& b ) {
+   return b.value+FORMAT(ZTSB().tbuf,128,"%d",(int)a);
   }
 
-  string operator+ ( const unsigned int& a, const Zstring& b ) {
-   return b.value+FORMAT(tbuf,128,"%d",(int)a);
+  inline string operator+ ( const unsigned int& a, const Zstring& b ) {
+   return b.value+FORMAT(ZTSB().tbuf,128,"%d",(int)a);
   }
 
-  string operator+ ( const float& a, const Zstring& b ) {
-   return b.value+FORMAT(tbuf,128,"%f",(float)a);
+  inline string operator+ ( const float& a, const Zstring& b ) {
+   return b.value+FORMAT(ZTSB().tbuf,128,"%f",(float)a);
   }
 
-  string operator+ ( const double& a, const Zstring& b ) {
-   return b.value+FORMAT(tbuf,128,"%f",(double)a);
+  inline string operator+ ( const double& a, const Zstring& b ) {
+   return b.value+FORMAT(ZTSB().tbuf,128,"%f",(double)a);
   }
 
-  string operator+ ( string a, Zint& b )    { return a+b.toString(); }
-  string operator+ ( string a, Zuint& b )   { return a+b.toString(); }
-  string operator+ ( string a, Zfloat& b )  { return a+b.toString(); }
-  string operator+ ( string a, Zdouble& b ) { return a+b.toString(); }
+  inline string operator+ ( string a, Zint& b )    { return a+b.toString(); }
+  inline string operator+ ( string a, Zuint& b )   { return a+b.toString(); }
+  inline string operator+ ( string a, Zfloat& b )  { return a+b.toString(); }
+  inline string operator+ ( string a, Zdouble& b ) { return a+b.toString(); }
   /* Creates C2593
   string operator+ ( Zint& a, string b )    { return a.toString()+b; }
   string operator+ ( Zuint& a, string b )   { return a.toString()+b; }
@@ -6416,80 +6638,80 @@ public:
   */
 
 
-  int operator+ ( Zint& a, Zint& b ) { return a.value+b.value; }
-  float operator+ ( Zfloat& a, Zfloat& b ) { return a.value+b.value; }
-  double operator+ ( Zdouble& a, Zdouble& b ) { return a.value+b.value; }
+  inline int operator+ ( Zint& a, Zint& b ) { return a.value+b.value; }
+  inline float operator+ ( Zfloat& a, Zfloat& b ) { return a.value+b.value; }
+  inline double operator+ ( Zdouble& a, Zdouble& b ) { return a.value+b.value; }
 
-  string operator+ ( const Zstring& a, char c ) {
+  inline string operator+ ( const Zstring& a, char c ) {
    return a.value+c;
   }
 
-  string operator+ ( char c, const Zstring& a ) {
+  inline string operator+ ( char c, const Zstring& a ) {
    return a.value+c;
   }
 
-  string operator- ( const Zstring& a, const Zstring& b ) {
+  inline string operator- ( const Zstring& a, const Zstring& b ) {
    string result=a.value;
    replaceOnce(result,b.value,string(""));
    return result;
   }
 
-  string operator- ( const Zstring& a, const string& b ) {
+  inline string operator- ( const Zstring& a, const string& b ) {
    string result=a.value;
    replaceOnce(result,b,string(""));
    return result;
   }
 
-  string operator- ( const string& b, const Zstring& a ) {
+  inline string operator- ( const string& b, const Zstring& a ) {
    string result=b;
    replaceOnce(result,a.value,string(""));
    return result;
   }
 
-  string operator- ( const Zstring& a, const char *b ) {
+  inline string operator- ( const Zstring& a, const char *b ) {
    string result=a.value;
    replaceOnce(result,string(b),string(""));
    return result;
   }
 
   /*
-  string operator- ( const char *b, const Zstring& a ) {
+  inline string operator- ( const char *b, const Zstring& a ) {
   string result=string(b);
   replaceOnce(result,a.value,string(""));
   return result;
   }*/
 
-  string operator/ ( const Zstring& a, const Zstring& b ) {
+  inline string operator/ ( const Zstring& a, const Zstring& b ) {
    string result=a.value;
    replaceAll(result,b.value,string(""));
    return result;
   }
 
-  string operator/ ( const Zstring& a, const string& b ) {
+  inline string operator/ ( const Zstring& a, const string& b ) {
    string result=a.value;
    replaceAll(result,b,string(""));
    return result;
   }
 
-  string operator/ ( const string& b, const Zstring& a ) {
+  inline string operator/ ( const string& b, const Zstring& a ) {
    string result=b;
    replaceAll(result,a.value,string(""));
    return result;
   }
 
-  string operator/ ( const Zstring& a, const char *b ) {
+  inline string operator/ ( const Zstring& a, const char *b ) {
    string result=a.value;
    replaceAll(result,string(b),string(""));
    return result;
   }
 
-  string operator/ ( const char *b, const Zstring& a ) {
+  inline string operator/ ( const char *b, const Zstring& a ) {
    string result=string(b);
    replaceAll(result,a.value,string(""));
    return result;
   }
 
-  string operator* ( const Zstring& a, unsigned int i ) {
+  inline string operator* ( const Zstring& a, unsigned int i ) {
    string temp=string("");
    for ( unsigned int j=0; j<i; j++ ) {
     temp+=a.value;
@@ -6497,7 +6719,7 @@ public:
    return temp;
   }
 
-  int operator* ( const Zstring& a, string b ) {
+  inline int operator* ( const Zstring& a, string b ) {
    if (a.value.length() == 0) return 0;
    int count = 0;
    for (
@@ -6508,7 +6730,7 @@ public:
    return count;
   }
 
-  int operator* ( string a, const Zstring& b ) {
+  inline int operator* ( string a, const Zstring& b ) {
    if (a.length() == 0) return 0;
    int count = 0;
    for (
@@ -6519,7 +6741,7 @@ public:
    return count;
   }
 
-  int operator* ( const Zstring& a, const char *B ) {
+  inline int operator* ( const Zstring& a, const char *B ) {
    string b=string(B);
    if (a.value.length() == 0) return 0;
    int count = 0;
@@ -6531,7 +6753,7 @@ public:
    return count;
   }
 
-  int operator* ( const Zstring& a, const Zstring& b ) {
+  inline int operator* ( const Zstring& a, const Zstring& b ) {
    if (a.value.length() == 0) return 0;
    int count = 0;
    for (
@@ -6548,7 +6770,7 @@ public:
 
   // This is an up-to-date unit test for the ZIndexed template.
   // Do not define NEVER, simply remove the #if-def block.
-  void ZIndexed_Rigorous_Test() {
+  inline void ZIndexed_Rigorous_Test() {
 #if defined(NEVER)
    OUTPUT("ZIndexed_Rigorous_Test: Phase I: allocating, initializing and destroying.\n");
    for ( unsigned int i=0; i<100; i++ ) {
@@ -6607,13 +6829,13 @@ public:
   //////////////////////////////////////////// ListItem and LinkedList
 
   Zint anyReseed;
-  ListItem *LinkedList::Any( int seed ) {
+  inline ListItem *LinkedList::Any( int seed ) {
    if ( count == 0 ) return null;
    anyReseed++;
-   return Element(pseudorandom(count*2,anyReseed)%count);
+   return Element(zpseudorandom(count*2,anyReseed)%count);
   }
 
-  void LinkedList::sendUp(ListItem *L, bool wrap) 
+  inline void LinkedList::sendUp(ListItem *L, bool wrap)
   {
    if ( wrap ) {
     if ( L->prev ) {
@@ -6631,7 +6853,7 @@ public:
    }
   }
 
-  void LinkedList::sendDown(ListItem *L, bool wrap)
+  inline void LinkedList::sendDown(ListItem *L, bool wrap)
   {
    if ( wrap ) {
     if ( L->next ) {
@@ -6650,12 +6872,12 @@ public:
   }
 
   // Adds to end of list
-  void LinkedList::Append(ListItem *L) {
+  inline void LinkedList::Append(ListItem *L) {
    _Append(L);
   }
 
   // Adds to end of list
-  void LinkedList::_Append(ListItem *L) {
+  inline void LinkedList::_Append(ListItem *L) {
    count++;
    if ( last ) { 
     last->next=L;
@@ -6669,7 +6891,7 @@ public:
   }
 
   // Adds to beginning of list
-  void LinkedList::Prepend(ListItem *L) {
+  inline void LinkedList::Prepend(ListItem *L) {
    count++;
    if ( first ) {
     first->prev=L;
@@ -6684,7 +6906,7 @@ public:
 
   // Finds element at index i, if none returns null
   // 0=first
-  ListItem *LinkedList::Element(int i) {
+  inline ListItem *LinkedList::Element(int i) {
    ListItem *l;
    if ( count.value == 0 || i >= count.value ) return null;
    int c=0;
@@ -6698,7 +6920,7 @@ public:
    return null;
   }
 
-  ListItem *LinkedList::Element(int i, bool wrap) {
+  inline ListItem *LinkedList::Element(int i, bool wrap) {
    ListItem *l;
    if ( count.value == 0 ) return null;
    i%=count.value;
@@ -6713,7 +6935,7 @@ public:
    return null;
   }
 
-  int LinkedList::Element( ListItem *q ) {
+  inline int LinkedList::Element( ListItem *q ) {
    int i=0;
    FOREACH(ListItem,p) if ( p == q ) return i; else i++;
    OUTPUT("LinkedList::Element(item) returned -1 because the item was not found.\n");
@@ -6721,7 +6943,7 @@ public:
   }
 
   // Inserts element L before p ListItem in List
-  void LinkedList::InsertBefore(ListItem *insert, ListItem *before) {
+  inline void LinkedList::InsertBefore(ListItem *insert, ListItem *before) {
    if ( !before ) { Prepend(insert); return; }
    insert->prev=before->prev;
    if ( insert->prev ) insert->prev->next=insert;
@@ -6732,7 +6954,7 @@ public:
   }
 
   // Inserts element L after p ListItem in List
-  void LinkedList::InsertAfter(ListItem *insert, ListItem *after) {
+  inline void LinkedList::InsertAfter(ListItem *insert, ListItem *after) {
    if ( !after ) { Prepend(insert); return; }
    insert->next=after->next;
    if ( after->next ) after->next->prev=insert;
@@ -6743,13 +6965,13 @@ public:
   }
 
   // Inserts element at index i (before), if index i exists, otherwise returns false
-  void LinkedList::InsertAt(ListItem *insert, int i) {
+  inline void LinkedList::InsertAt(ListItem *insert, int i) {
    ListItem *p=Element(i);
    InsertBefore(insert,p);
   }
 
   // Removes element L from list
-  void LinkedList::_Remove(ListItem *L) {
+  inline void LinkedList::_Remove(ListItem *L) {
 #if defined(DEBUG)
    if ( !this->ListIteminList(L) ) {
     OUTPUT("Warning: attempted to remove something not in this list.\n\r");
@@ -6785,26 +7007,26 @@ public:
   }
 
   // Removes all elements from the list
-  void LinkedList::RemoveAll(void) {
+  inline void LinkedList::RemoveAll(void) {
    first=last=null;
    count=0;
   }
 
   // Deletes (frees) element L from list
-  void LinkedList::Delete(ListItem *L) {
+  inline void LinkedList::Delete(ListItem *L) {
    Remove(L);
    delete L;
   }
 
   // Deletes (frees) element L from list, clears incoming
-  void LinkedList::Delete(ListItem **L) {
+  inline void LinkedList::Delete(ListItem **L) {
    Remove(*L);
    delete (*L);
    *L=null;
   }
 
 
-  void LinkedList::RandomizeOrder() {
+  inline void LinkedList::RandomizeOrder() {
    LinkedList newList;
    EACHN(first,ListItem,i,{
     Remove(i);
@@ -6822,11 +7044,11 @@ public:
 
   //////////////////////////////////////////// Strings and precursor required math
 
-  string UnStringSpecialCodes( string k ) {
+  inline string UnStringSpecialCodes( string k ) {
    return replace_all(replace_all(k,string("#*$#-1-#$*#"),string("{")),string("#*$#-2-#$*#"),string("}"));
   }
 
-  string StringSpecialCodes( string k ) {
+  inline string StringSpecialCodes( string k ) {
    return replace_all(replace_all(k,string("{"),string("#*$#-1-#$*#")),string("}"),string("#*$#-2-#$*#"));
   }
 
@@ -6846,20 +7068,20 @@ public:
 
   // Integer SQRT
 #define MAX_SRT 10000
-  double SRT[MAX_SRT];
-  int SRT_initialized=0;
-  void init_isqrt( ) { 
+  static double SRT[MAX_SRT];
+  static int SRT_initialized=0;
+  inline void init_isqrt( ) { 
    int i; 
    for ( i =0; i< MAX_SRT; i++ ) SRT[i]=sqrt((double)i); 
    SRT_initialized=1; 
   }
-  float isqrt ( int i ) {
+  inline float isqrt ( int i ) {
    i=abs(i); 
    if ( i > MAX_SRT-1 ) return (float) sqrt((float) i); 
    return (float) SRT[i]; 
   }
 
-  double uniform ()
+  inline double uniform ()
   {
    long t, lo, hi;
    double u;
@@ -6876,7 +7098,7 @@ public:
    return u;
   }
 
-  double uniform ( bool reseed )
+  inline double uniform ( bool reseed )
   {
    long t, lo, hi;
    double u;
@@ -6897,7 +7119,7 @@ public:
 
   // Works better with small numbers 0-255, used in Randoms.h,
   // Adheres to RAND_MAX (0x7fff) but is intended to be distinct and non-OS specific
-  int pseudorandom( unsigned int s, unsigned int x ) {
+  inline int zpseudorandom( unsigned int s, unsigned int x ) {
    s++;
    x++;
    long S=s;
@@ -6906,41 +7128,41 @@ public:
    return abs((int)result);
   }
 
-  long getMillis(void) {
+  inline long getMillis(void) {
    SYSTEMTIME t;
    GetLocalTime(&t);
    return (long) (t.wYear + t.wMonth + t.wDayOfWeek + t.wDay + t.wHour + t.wMinute + t.wSecond + t.wMilliseconds);
   }
 
   // Reseeding
-  void init_seeder() {
+  inline void init_seeder() {
    r_seed = (long) ( getMillis() );
    r_seed = (long) (LONG_MIN+uniform()*ULONG_MAX);
    if ( r_seed == 0 ) r_seed++;
   }
 
-  void reseed() {
+  inline void reseed() {
    r_seed = (long) ( getMillis() );
    r_seed = (long) (LONG_MIN+uniform()*ULONG_MAX);
    if ( r_seed == 0 ) r_seed++;
   }
 
-  double random(double x) {
+  inline double zrandom(double x) {
    return x*uniform();
   }
 
   // Properly rounds ints
-  int iround ( float f ) {
+  inline int iround ( float f ) {
    return (int)(f+0.5f);
   }
 
   // Properly rounds ints
-  int iround ( double d ) {
+  inline int iround ( double d ) {
    return (int)(d+0.5);
   }
 
   // Do a floating point lerp from "start" to "finish"
-  int ilerp( int start, int end, float percent ) {
+  inline int ilerp( int start, int end, float percent ) {
    int d;
    if ( start > end ) {
     d=start-end;
@@ -6952,7 +7174,7 @@ public:
   }
 
   // Do a floating point lerp from "start" to "finish"
-  int ilerpw( int start, int end, float percent ) {
+  inline int ilerpw( int start, int end, float percent ) {
    float d=((float)ADIFF(start,end));
    if ( start > end ) d=-d;
    return start+iround( d * percent );
@@ -6960,7 +7182,7 @@ public:
 
 
   // Do a floating point lerp from "start" to "finish"
-  int ilerp( int start, int end, double percent ) {
+  inline int ilerp( int start, int end, double percent ) {
    int d;
    if ( start > end ) {
     d=start-end;
@@ -6972,20 +7194,20 @@ public:
   }
 
   // Do a floating point lerp from "start" to "finish"
-  int ilerpw( int start, int end, double percent ) {
+  inline int ilerpw( int start, int end, double percent ) {
    double d=((double)ADIFF(start,end));
    if ( start > end ) d=-d;
    return start+iround( d * percent );
   }
 
-  double double_range( double L, double H ) {
+  inline double double_range( double L, double H ) {
    double u=uniform();
    double t=(H-L);
    u*= t;
    return (u) + L;
   }
 
-  float float_range( float L, float H ) {
+  inline float float_range( float L, float H ) {
    double u=uniform();
    double t= (double) (H-L);
    u*= t;
@@ -6993,7 +7215,7 @@ public:
   }
 
   // Randomize an integer in range L-H
-  int number_range( int L, int H ) {
+  inline int number_range( int L, int H ) {
    double u=uniform();
    int t=H-L;
    u*=(double) t;
@@ -7001,7 +7223,7 @@ public:
    return iround((float) (u));
   }
 
-  int upto( int M ) {
+  inline int upto( int M ) {
    if ( M==0 ) return 0;
    return number_range(0,M*2)%M;
    //  return (int) (uniform()/*0.999999999999999*/*(double) max);
@@ -7009,7 +7231,7 @@ public:
 
 
   // Generating gaussian random number with mean 0 and standard deviation 1.
-  float Gauss()
+  inline float Gauss()
   {
    double u1 = uniform();
    double u2 = uniform();
@@ -7018,7 +7240,7 @@ public:
   }
 
 
-  char randomChar( const char *list ) {
+  inline char randomChar( const char *list ) {
    int c=(int)upto((int)strlen(list));
    return list[c];
   }
@@ -7028,25 +7250,24 @@ public:
   a: the action of indenting : the condition of being indented
   b: the blank space produced by indenting
   */
-  string indention=string("");
 
-  void incdent() {
-   indention+=string(" ");
+  inline void incdent() {
+   indention()+=string(" ");
   }
 
-  void decdent() {
-   size_t spaces=indention.length();
+  inline void decdent() {
+   size_t spaces=indention().length();
    spaces--;
    nodent();
    for ( int i=0; i<(int)spaces; i++ ) incdent();
   }
 
-  void nodent() {
-   indention=string("");
+  inline void nodent() {
+   indention()=string("");
   }
 
   // Low-brow alphanumeric hash.
-  string Hash( int len ) {
+  inline string Hash( int len ) {
    if ( len<1 ) len=1;
    char *buf;
    buf = new char[len+1];
@@ -7058,14 +7279,14 @@ public:
   }
 
 
-  bool HashCompare5( string *a, string *b ) {
+  inline bool HashCompare5( string *a, string *b ) {
    const char *A=a->c_str();
    const char *B=b->c_str();
    return ( A[0]==B[0] && A[1]==B[1] && A[2]==B[2] && A[3]==B[3] && A[4]==B[4] );
   }
 
   // Pseudo-
-  string RomanNumerals( int v ) {
+  inline string RomanNumerals( int v ) {
    switch ( v ) {
    case 1: return string("I");
    case 2: return string("II");
@@ -7113,33 +7334,33 @@ public:
 
 
 
-  string slash_to_backslash( const char * s ) {
+  inline string slash_to_backslash( const char * s ) {
    Zstring in(s);
    in("/","\\");
    return in.c_str();
   }
 
-  string backslash_to_slash( const char * s ) {
+  inline string backslash_to_slash( const char * s ) {
    Zstring in(s);
    in("\\","/");
    return in.c_str();
   }
 
-  string trailing_slash( const char *s ) {
+  inline string trailing_slash( const char *s ) {
    Zstring in(s);
    in.Trim();
    if ( in.last() != '/' ) in+=string("/");
    return in.value;
   }
 
-  string basename( const char *path, char sep ) {
+  inline string basename( const char *path, char sep ) {
    Strings parts;
    parts.SplitPush(path,sep);
    if ( !parts.last ) return string("");
    return ((String *)parts.last)->s;
   }
 
-  string trailing_backslash( const char *s ) {
+  inline string trailing_backslash( const char *s ) {
    Zstring in(s);
    in.Trim();
    if ( in.last() != '\\' ) in+=string("\\");
@@ -7159,11 +7380,11 @@ public:
 
   // String
 
-  const char *String::c_str() {
+  inline const char *String::c_str() {
    return this->s.c_str();
   }
 
-  void Strings::ls_( const char *targetPath, bool listFiles, bool prependPath, bool filterOSFiles ) {
+  inline void Strings::ls_( const char *targetPath, bool listFiles, bool prependPath, bool filterOSFiles ) {
    //Strings *folder=ls(targetPath,listFiles,prependPath,filterOSFiles);
    //if ( folder ) {
    // Concat(folder);
@@ -7171,17 +7392,17 @@ public:
    //}
   }
 
-  bool Strings::inList( string s ) {
+  inline bool Strings::inList( string s ) {
    FOREACH(String,sL) if ( s == sL->s ) return true;
    return false;
   }
 
-  String *Strings::matchPrefix( const char *s ) {
+  inline String *Strings::matchPrefix( const char *s ) {
    FOREACH(String,sL) if ( sL->s.length() > 0 && strlen(s) > 0 && !str_prefix(sL->c_str(),s) ) return sL;
    return null;
   }
 
-  void Strings::matchesPrefix( const char *s, Strings *out ) {
+  inline void Strings::matchesPrefix( const char *s, Strings *out ) {
    FOREACH(String,sL) {
     if ( sL->s.length() > 0 && strlen(s) > 0 && !str_prefix(sL->c_str(),s) ) {
      out->Push(sL->s.c_str());
@@ -7189,46 +7410,46 @@ public:
    }
   }
 
-  String *Strings::match( const char *s ) {
+  inline String *Strings::match( const char *s ) {
    FOREACH(String,sL) if ( !str_cmp(sL->c_str(),s) ) return sL;
    return null;
   }
 
-  String *Strings::find( string s ) {
+  inline String *Strings::find( string s ) {
    FOREACH(String,sL) if ( s == sL->s ) return sL; 
    return null;
   }
 
-  String *Strings::find( const char *s ) {
+  inline String *Strings::find( const char *s ) {
    string f=string(s);
    FOREACH(String,sL) if ( f == sL->s ) return sL; 
    return null;
   }
 
-  String *Strings::findCaseless( const char *s ) {
+  inline String *Strings::findCaseless( const char *s ) {
    string f=string(s);
    FOREACH(String,sL) if ( !str_cmp(s, sL->s.c_str() ) ) return sL; 
    return null;
   }
 
-  String *Strings::findCaseless( string s ) {
+  inline String *Strings::findCaseless( string s ) {
    string f=string(s);
    FOREACH(String,sL) if ( !str_cmp((char *) s.c_str(), (char *) sL->s.c_str() ) ) return sL; 
    return null;
   }
 
-  String *Strings::findSubstring( const char *s ) {
+  inline String *Strings::findSubstring( const char *s ) {
    FOREACH(String, sL) { Zstring z=sL->s; if ( z.contains(s) ) return sL; }
    return nullptr;
   }
 
-  String *Strings::findNextSubstring( String *start, const char *s ) {
+  inline String *Strings::findNextSubstring( String *start, const char *s ) {
    String *sL=start;
    while ( sL && string_infix(s,sL->s) ) sL=(String *) sL->next;
    return sL;
   }
 
-  string Strings::concatToNextSubstring( String *start, const char *end ) {
+  inline string Strings::concatToNextSubstring( String *start, const char *end ) {
    String *e = this->findNextSubstring(start,end);
    string x=string("");
    String *sL=start;
@@ -7237,7 +7458,7 @@ public:
   }
 
   // Returns -1 if not in list
-  int Strings::IndexOf( String *s ) {
+  inline int Strings::IndexOf( String *s ) {
    int i=0;
    FOREACH(String,sL) {
     if ( s == sL ) return i;
@@ -7247,7 +7468,7 @@ public:
   }
 
   // Returns duplicated concatenations of Strings
-  string Strings::Concatenate( char seperator ) {
+  inline string Strings::Concatenate( char seperator ) {
    string e = string("");
    FOREACH(String,sL) {
     e=e+sL->s;
@@ -7257,7 +7478,7 @@ public:
   }
 
   // Returns duplicated concatenations of Strings
-  string Strings::Concatenate( having Seamless ) {
+  inline string Strings::Concatenate( having Seamless ) {
    string e = string("");
    FOREACH(String,sL) {
     e=e+sL->s;
@@ -7265,7 +7486,7 @@ public:
    return e;
   }
 
-  void Strings::appendFromString( const char *s, char c ) {
+  inline void Strings::appendFromString( const char *s, char c ) {
    static char temp[STRING_SIZE];
    const char *p= s;
    int i=0;
@@ -7285,23 +7506,23 @@ public:
    }
   }
 
-  void Strings::appendFromString( string s, char c ) {
+  inline void Strings::appendFromString( string s, char c ) {
    appendFromString( (char *) s.c_str(), c );
   }
 
-  void Strings::show() 
+  inline void Strings::show()
   { 
    FOREACH(String,s) OUTPUT( "%s\n", s->s.c_str() ); 
   }
 
-  void Strings::show( const char *sep, const char *end ) 
+  inline void Strings::show( const char *sep, const char *end )
   { 
    FOREACH(String,s) OUTPUT( "%s%s", s->s.c_str(), (s->next ? sep : "") );
    OUTPUT("%s",end);
   }
 
   // Splits using string_argument
-  void Strings::SplitPush( const char *s ) {
+  inline void Strings::SplitPush( const char *s ) {
    const char *p=s;
    while ( *p != '\0' ) {
     string t;
@@ -7312,7 +7533,7 @@ public:
 
 
   // Splits by char_in(), like char_isof, default is newline/space
-  void Strings::SplitPush( const char *s, const char *delimiterList ) {
+  inline void Strings::SplitPush( const char *s, const char *delimiterList ) {
    const char *p=s;
    Zstring t;
    while ( *p != '\0' ) {
@@ -7322,7 +7543,7 @@ public:
    }
   }
 
-  void Strings::SplitPush( string s, char seperator ) {
+  inline void Strings::SplitPush( string s, char seperator ) {
    string t;
    static char buf[2];
    buf[0]=seperator;
@@ -7334,7 +7555,7 @@ public:
 
 
 
-  void Strings::SplitPush( const char *s, char seperator ) {
+  inline void Strings::SplitPush( const char *s, char seperator ) {
    string t;
    static char buf[2];
    buf[0]=seperator;
@@ -7346,9 +7567,9 @@ public:
 
 
   // Splits using string_argument
-  void Strings::ScriptPush( const char *s ) { SplitPush(s); }
+  inline void Strings::ScriptPush( const char *s ) { SplitPush(s); }
 
-  void Strings::Push( string s ) {
+  inline void Strings::Push( string s ) {
    String *t; NEW(t,String(s));
    if (!t) {
     OUTPUT("Push: error on allocation, Could not allocate new string.\n");
@@ -7357,7 +7578,7 @@ public:
    Append(t);
   }
 
-  void Strings::Push( const char *s ) {
+  inline void Strings::Push( const char *s ) {
    String *t; NEW(t,String(s));
    if (!t) {
     OUTPUT("Push: error on allocation, Could not allocate new string.\n");
@@ -7366,7 +7587,7 @@ public:
    Append(t);
   }
 
-  String *Strings::PushAndGet( const char *s ) {
+  inline String *Strings::PushAndGet( const char *s ) {
    String *x; NEW(x,String(string(s)));
    if (!x) {
     OUTPUT("PushAndGet: error on allocation, Could not allocate new string.\n");
@@ -7376,7 +7597,7 @@ public:
    return x;
   }
 
-  void Strings::DuplicateAndPush( const char *s ) { // No longer different
+  inline void Strings::DuplicateAndPush( const char *s ) { // No longer different
    String *t; NEW(t,String(s));
    if (!t) {
     OUTPUT("DuplicateAndPush: error on allocation, Could not allocate new string.\n");
@@ -7391,7 +7612,7 @@ public:
   // List directory contents
   // http://msdn.microsoft.com/en-us/library/aa365200%28VS.85%29.aspx
   // When listFiles parameter is false, find only subfolder names.
-  Strings *ls( const char *targetPath, bool listFiles, bool prependPath, bool filterOSFiles ) {
+  inline Strings *ls( const char *targetPath, bool listFiles, bool prependPath, bool filterOSFiles ) {
    WIN32_FIND_DATA ffd;
    TCHAR szDir[MAX_PATH];
    size_t length_of_arg;
@@ -7474,7 +7695,7 @@ public:
    return list;
   }
 
-  Strings *ls( const char *targetPath, bool listFiles, bool prependPath, Strings *filters ) {
+  inline Strings *ls( const char *targetPath, bool listFiles, bool prependPath, Strings *filters ) {
    WIN32_FIND_DATA ffd;
    size_t length_of_arg;
    HANDLE hFind=INVALID_HANDLE_VALUE;
@@ -7569,7 +7790,7 @@ public:
   ///////////////////////////////////////////////// Cartesian
 
   // Source: Paeth, Graphics Gems V
-  int Cartesian::PntOnLine(int px, int py, int qx, int qy, int tx, int ty) {
+  inline int Cartesian::PntOnLine(int px, int py, int qx, int qy, int tx, int ty) {
    /*
    * given a line through P:(px,py) Q:(qx,qy) and T:(tx,ty)
    * return 0 if T is not on the line through      <--P--Q-->
@@ -7616,7 +7837,7 @@ public:
   }
 
   //! Uses the approximation Cartesian list to approximate a circle at a given precision
-  void Cartesian::ApproximateCircle( int precision ) {
+  inline void Cartesian::ApproximateCircle( int precision ) {
    approximation.Recycle();
    if ( precision < 3 ) precision=3;
    double precisiond = (double)precision;
@@ -7633,7 +7854,7 @@ public:
   }
 
   //! Performs validation and calculation of box parameters
-  void Cartesian::Box() {
+  inline void Cartesian::Box() {
    double lx=MinX();
    double ly=MinY();
    double lz=MinZ();
@@ -7651,7 +7872,7 @@ public:
    approximation->centroid.Set((x+x2)/2.0,(y+y2)/2.0);
   }
 
-  bool Cartesian::CircleLine(Cartesian line, Cartesian &enter, Cartesian &exit, int precision) {
+  inline bool Cartesian::CircleLine(Cartesian line, Cartesian &enter, Cartesian &exit, int precision) {
    if ( !approximation || approximation->count != precision ) ApproximateCircle(precision);
    CoplanarLinesResults results;
    enter.exists = false;
@@ -7676,12 +7897,12 @@ public:
   }
 
   //! Returns true if an AAB rectangle and a line are colliding.  If !enter.exists, line started outside rectangle, if !exit exists, line ended inside rectangle
-  bool Cartesian::RectLine( Cartesian line, BoxCollisionResults &out) {
+  inline bool Cartesian::RectLine( Cartesian line, BoxCollisionResults &out) {
    return line.LineRect(*this,out); // not yet done!
   }
 
   //! Returns true if the AAB Box and Line are colliding.  
-  bool Cartesian::LineRect( Cartesian box, BoxCollisionResults &out ) {
+  inline bool Cartesian::LineRect( Cartesian box, BoxCollisionResults &out ) {
    out.Reset();
    out.startsInside=box.Within(x,y);
    out.endsInside = box.Within(x2, y2);
@@ -7721,11 +7942,11 @@ public:
   }
 
   //! Returns true if a point is inside a circle
-  bool Cartesian::PointCircle( Cartesian circle) { return circle.Distance(*this) < circle.R; }
+  inline bool Cartesian::PointCircle( Cartesian circle) { return circle.Distance(*this) < circle.R; }
 
 #define ARBITRARY_SCALE_PRECISON_Cartesian_LineLine (100.0)
   //! Returns true if a line and a line are crossing.  Will not manipulate "point" if !collided, otherwise will write the point of crossing
-  bool Cartesian::LineLine( Cartesian otherLine, Cartesian &point) {
+  inline bool Cartesian::LineLine( Cartesian otherLine, Cartesian &point) {
    point.exists = false;
    // Source: Paul Bourke
    // Incorrectly returns the midpoint of the test line (this)
@@ -7790,7 +8011,7 @@ public:
   }
 
   //! Returns true if a circle and a circle are colliding.  Returns the intersection points as a line.
-  bool Cartesian::CircleCircle( Cartesian circle, Cartesian &intersection) {
+  inline bool Cartesian::CircleCircle( Cartesian circle, Cartesian &intersection) {
    if ( R == 0.0 ) {
     intersection.Zero();
     return circle.Within(x,y);
@@ -7819,12 +8040,12 @@ public:
   }
 
   //! Returns true if a sphere and a sphere are colliding.  Returns the overlap.
-  bool Cartesian::SphereSphere( Cartesian box, Cartesian &overlap) {
+  inline bool Cartesian::SphereSphere( Cartesian box, Cartesian &overlap) {
    return true; // does not yet work!
   }
 
   //! Returns true if the 2d rect and 2d rect are colliding.  Returns the overlap.
-  bool Cartesian::RectRect( Cartesian b, CoplanarLinesResults &out, Cartesian &overlap ) {
+  inline bool Cartesian::RectRect( Cartesian b, CoplanarLinesResults &out, Cartesian &overlap ) {
    out.Clear();
    if (!b.approximation) b.Box();
    if (!approximation) Box();
@@ -7867,12 +8088,12 @@ public:
    return colliding;
   }
 
-  bool operator == ( Cartesian& a, Cartesian& b ) {
+  inline bool operator == ( Cartesian& a, Cartesian& b ) {
    return a.x == b.x && a.y == b.y && a.z == b.z && a.x2 == b.x2 && a.y2 == b.y2 && a.z2 == b.z2;
   }
 
   //! Treating the list as a series of coplanar lines, test another line against it, sorted by distance
-  bool Cartesians::Collides( Cartesian line, CoplanarLinesResults &out ) {
+  inline bool Cartesians::Collides( Cartesian line, CoplanarLinesResults &out ) {
    out.Clear();
    out.sx=line.x;
    out.sy=line.y;
@@ -7883,7 +8104,7 @@ public:
   }
 
   //! Treating the list as a series of coplanar lines, test another line against it but sort results in reverse distance
-  bool Cartesians::Collides( Cartesian line, CoplanarLinesResults &out, bool reverseSort ) {
+  inline bool Cartesians::Collides( Cartesian line, CoplanarLinesResults &out, bool reverseSort ) {
    out.Clear();
    out.sx=line.x2;
    out.sy=line.y2;
@@ -7895,7 +8116,7 @@ public:
   }
 
   //! Treating the list as a series of coplanar lines, test another series of lines against it
-  bool Cartesians::Collides( Cartesians *lines, CoplanarLinesResults &out ) {
+  inline bool Cartesians::Collides( Cartesians *lines, CoplanarLinesResults &out ) {
    Cartesian collision;
    FOREACH(Cartesian,L) EACH(lines->first,Cartesian,M) if ( L->LineLine(*M,collision) ) {
     out.Add(M,&collision);
@@ -7904,10 +8125,7 @@ public:
    return (out.count > 0);
   }
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-  string file_as_string( const char *filename ) {
+  inline string file_as_string( const char *filename ) {
    ifstream input_file(filename);
    if (!input_file.is_open()) {
     cerr << "Could not open the file - '"
@@ -7917,8 +8135,7 @@ public:
    return string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
   }
 
-#include <streambuf>
-  string file_as_string_streams( const char *filename ) {
+  inline string file_as_string_streams( const char *filename ) {
    std::ifstream t(filename);
    std::string str;
    t.seekg(0, std::ios::end);   
@@ -7928,7 +8145,7 @@ public:
    return str;
   }
 
-  bool string_as_file(const char *text, const char *fn) {
+  inline bool string_as_file(const char *text, const char *fn) {
    std::ofstream out(fn);
    if (!out.is_open()) return false;
    out << text;
@@ -7937,9 +8154,12 @@ public:
   }
 
   // Tests if a file exists.
-  bool file_exists(const char *fn) {
+  inline bool file_exists(const char *fn) {
    std::ifstream f(fn);
    if (!f.is_open()) return false;
    f.close();
    return true;
   }
+
+#endif // _ZEROTYPES_HPP_
+#endif // C++
