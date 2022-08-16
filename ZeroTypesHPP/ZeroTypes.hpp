@@ -6828,11 +6828,15 @@ inline bool file_exists(const char *fn);
 
   //////////////////////////////////////////// ListItem and LinkedList
 
-  Zint anyReseed;
+  inline Zint &anyReseed() {
+	  static Zint anyReseed;
+	  return anyReseed;
+  }
+
   inline ListItem *LinkedList::Any( int seed ) {
    if ( count == 0 ) return null;
-   anyReseed++;
-   return Element(zpseudorandom(count*2,anyReseed)%count);
+   anyReseed()++;
+   return Element(zpseudorandom(count*2,anyReseed())%count);
   }
 
   inline void LinkedList::sendUp(ListItem *L, bool wrap)
@@ -7064,7 +7068,11 @@ inline bool file_exists(const char *fn);
   const long r = 3399L;
 
   // A variable used to initialize the generator (should never be 0).
-  long r_seed = 12345678L;
+  long r_seed(long setme = 0) {
+	  static long r_seed = 12345678L;
+	  if ( setme!=0 ) r_seed=setme;
+	  return r_seed;
+  }
 
   // Integer SQRT
 #define MAX_SRT 10000
@@ -7086,14 +7094,14 @@ inline bool file_exists(const char *fn);
    long t, lo, hi;
    double u;
 
-   hi = r_seed / q;
-   lo = r_seed - q * hi;
+   hi = r_seed() / q;
+   lo = r_seed() - q * hi;
    t = a * lo - r * hi;
    if (t > 0)
-    r_seed = t;
+    r_seed(t);
    else
-    r_seed = t + m;
-   u = (double) r_seed / (double) m ;
+    r_seed(t + m);
+   u = (double) r_seed() / (double) m ;
 
    return u;
   }
@@ -7103,16 +7111,16 @@ inline bool file_exists(const char *fn);
    long t, lo, hi;
    double u;
 
-   hi = r_seed / q;
-   lo = r_seed - q * hi;
+   hi = r_seed() / q;
+   lo = r_seed() - q * hi;
    if ( reseed ) {
     t = a * lo - r * hi;
     if (t > 0)
-     r_seed = t;
+     r_seed(t);
     else
-     r_seed = t + m;
+     r_seed(t + m);
    }
-   u = (double) r_seed / (double) m ;
+   u = (double) r_seed() / (double) m ;
 
    return u;
   }
