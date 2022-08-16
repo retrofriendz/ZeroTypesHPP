@@ -7065,7 +7065,7 @@ inline bool file_exists(const char *fn);
   const long r = 3399L;
 
   // A variable used to initialize the generator (should never be 0).
-  long r_seed(long setme = 0) {
+ inline long r_seed(long setme = 0) {
 	  static long r_seed = 12345678L;
 	  if ( setme!=0 ) r_seed=setme;
 	  return r_seed;
