@@ -7144,15 +7144,15 @@ inline bool file_exists(const char *fn);
 
   // Reseeding
   inline void init_seeder() {
-   r_seed = (long) ( getMillis() );
-   r_seed = (long) (LONG_MIN+uniform()*ULONG_MAX);
-   if ( r_seed == 0 ) r_seed++;
+   r_seed( (long) ( getMillis() ) );
+   r_seed( (long) (LONG_MIN+uniform()*ULONG_MAX) );
+   if ( r_seed == 0 ) r_seed(r_seed()+1);
   }
 
   inline void reseed() {
-   r_seed = (long) ( getMillis() );
-   r_seed = (long) (LONG_MIN+uniform()*ULONG_MAX);
-   if ( r_seed == 0 ) r_seed++;
+   r_seed( (long) ( getMillis() ) );
+   r_seed( (long) (LONG_MIN+uniform()*ULONG_MAX) );
+   if ( r_seed == 0 ) r_seed(r_seed()+1);
   }
 
   inline double zrandom(double x) {
