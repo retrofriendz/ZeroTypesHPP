@@ -28,10 +28,13 @@ inline void ZIndexed_Rigorous_Test();
 #include <string>
 #include <stdbool.h>
 #include <iostream>
-//#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 #if !defined(DEBUG) && defined(_DEBUG)
 #define DEBUG _DEBUG
@@ -159,7 +162,7 @@ public:
  Zfloat() { value=0.0f; }
  Zfloat( float value ) { this->value=value; }
  std::string toString() { return std::to_string(value);} 
- float abs() { return std::abs(value); }
+ float abs() { return (float)std::abs((long double)value); }
  operator std::string() { return toString(); }
  operator float() { return value; }
  operator float *() { return &value; }
@@ -1039,7 +1042,7 @@ public:
  Zdouble( double value ) { this->value=value; }
  std::string toString() { return std::to_string(value); }
  operator std::string() { return toString(); }
- double abs() { return std::abs(value); }
+ double abs() { return (double)std::abs((long double)value); }
  operator double() { return value; }
  operator double *() { return &value; }
  Zdouble *operator()() { return this; }
@@ -5568,19 +5571,9 @@ inline bool file_exists(const char *fn);
 
 
 
-#include <algorithm> 
-#include <functional> 
-#include <cctype>
-#include <locale>
 
-
-  // Work Strings
-  char buf[STRING_SIZE];
-  char buf2[STRING_SIZE];
-  char buf3[STRING_SIZE];
 
   inline void InitZeroTypesLibrary() {
-   for ( int i=0; i<STRING_SIZE; i++ ) buf[i]=buf2[i]=buf3[i]='\0';
    init_seeder();
   }
 
