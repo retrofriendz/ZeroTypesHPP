@@ -1756,7 +1756,7 @@ public:
 	char *Tbuf() { return tbuf; }
 };
 
-ZeroTypesStringBuffers &ZTSB() {
+inline ZeroTypesStringBuffers &ZTSB() {
 	static ZeroTypesStringBuffers ztsb;
 	return ztsb;
 }
@@ -2963,7 +2963,7 @@ public:
 #include <varargs.h>
 #endif
 
-const char *string_error() {
+inline const char *string_error() {
 	static const char _string_error = '\0';
 	return &_string_error;
 }
