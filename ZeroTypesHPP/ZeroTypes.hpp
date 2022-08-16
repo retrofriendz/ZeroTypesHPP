@@ -2009,7 +2009,7 @@ public:
   for ( int i=0; i<number; i++ ) next(out);
   return out;
  }
- bool word( const char *matches, int number, char *out=buf ) {
+ bool word( const char *matches, int number, char *out=ZTSB().buf ) {
   rewind();
   for ( int i=0; i<number; i++ ) next(out);
   return !str_cmp(matches,out);
@@ -2018,7 +2018,7 @@ public:
   p=one_argument(p,out);
   return out;
  }
- char *next_case( char *out=buf ) {
+ char *next_case( char *out=ZTSB().buf ) {
   p=one_argument_case(p,out);
   return out;
  }
@@ -4117,7 +4117,7 @@ inline bool file_exists(const char *fn);
    int wchars = MultiByteToWideChar( CP_UTF8,0,OUT_buf,-1, NULL , 0 );
    wchar_t* msg = new wchar_t[wchars];
    MultiByteToWideChar(CP_UTF8,0,OUT_buf,-1, msg,wchars);
-   MultiByteToWideChar(CP_UTF8,MB_PRECOMPOSED,buf,(int)strlen(OUT_buf),msg,0);
+   MultiByteToWideChar(CP_UTF8,MB_PRECOMPOSED,ZTSB().buf,(int)strlen(OUT_buf),msg,0);
    OutputDebugStringW(msg);
    delete[] msg;
   }
