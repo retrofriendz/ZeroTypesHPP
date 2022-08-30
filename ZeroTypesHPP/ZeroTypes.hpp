@@ -2425,39 +2425,36 @@ public:
 #define WORDKEYSGroup(keyname,type) string toString() { OUTPUT("out>>%s>> ",(typeid(*this).name()) ); string out=string("\n"); FOREACH(type,k) out+=keyname+string(" {")+k->toString()+string("}\n"); OUTPUT(" > Saved %d %s\n",count.value,keyname ); return out; }
 #define KEYSWORDSGroups(keyname,type) KEYWORDSGroup(keyname,type) WORDKEYSGroup(keyname,type)
 
+
 // These macros do not work due to problems with Parent->Child virtuals not being called...
 //#define SORTABLE(single,code) int Compare( ListItem *a, ListItem *b ) { single *A=(single *)a; single *B=(single *)b; int result=0; {code} return result; }
 //#define COMPARABLE(single,code,comparator) int Compare( ListItem *a, ListItem *b, void *value ) { single *A=(single *)a; single *B=(single *)b; comparator *comparing=(comparator *)value; int result=0; {code} return result; }
 // The below macro works, because it implements the function on the list.  Better because you can have multiple sorts on the same list.
 // Use in the following way:  SORTING(NameOfSort,{/*precomputation*/},{}
-#define SORTING(single,SortName,precomputation,compare_neg1_means_earlier,postcomputation)   void SortName() {                    \
-  {precomputation}                    \
-  if ( count < 2 ) return;            \
-  LinkedList list;                    \
-  list.first=first; first=null;       \
-  list.last=last; last=null;          \
-  list.count=count; count=0;          \
-  ListItem *q=list.first;             \
-  list.Remove(q);                     \
-  Append(q);                          \
-  while(list.first) {                 \
-   ListItem *a=list.first;            \
-   list.Remove(a);                    \
-   bool inserted=false;               \
-   EACH(this->first,ListItem,b) {     \
-    int result=0;                     \
-    single *A=(single *)a;            \
-    single *B=(single *)b;            \
-    {compare_neg1_means_earlier}      \
-    if ( result < 0 ) {               \
-     this->InsertBefore(a,b);         \
-     inserted=true;                   \
-     break;                           \
-    }                                 \
-   }                                  \
-   if ( !inserted ) Append(a);        \
-  }                                   \
-  {postcomputation}                   } 
+#define SORTING(single,SortName,precomputation,compare_neg1_means_earlier,postcomputation) \
+ListItem *SortName##_internal_merge(ListItem *a,ListItem *b) {         \
+ if ( !a ) return b; if ( !b ) return a;                               \
+ int result=0;                                                         \
+ single *A=(single *)a; single *B=(single *)b;                         \
+ {compare_neg1_means_earlier}                                          \
+ if ( result < 0 ) {                                                   \
+  a->next = SortName##_internal_merge(A->next,B);                      \
+  a->next->prev=a; a->prev = nullptr;                                  \
+  return a; } else {                                                   \
+  b->next = SortName##_internal_merge(a,b->next);                      \
+  b->next->prev=b; b->prev= nullptr;                                   \
+  return b; } }                                                        \
+ListItem *SortName##_internal_sort(ListItem *a) {                      \
+ if (!a || !a->next) return a;                                         \
+ ListItem *c = a, *b = a;                                              \
+ while (c->next && c->next->next) { c = c->next->next; b = b->next; }  \
+ b->next = nullptr;                                                    \
+ a = SortName##_internal_sort(a);                                      \
+ b = SortName##_internal_sort(b);                                      \
+ return SortName##_internal_merge(a,b); }                              \
+void SortName() { {precomputation}                                     \
+ if ( count < 2 ) return;                                              \
+ first = SortName##_internal_sort(first);                              \
 
 
 // Class template:
