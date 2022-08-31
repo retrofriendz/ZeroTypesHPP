@@ -2431,30 +2431,24 @@ public:
 //#define COMPARABLE(single,code,comparator) int Compare( ListItem *a, ListItem *b, void *value ) { single *A=(single *)a; single *B=(single *)b; comparator *comparing=(comparator *)value; int result=0; {code} return result; }
 // The below macro works, because it implements the function on the list.  Better because you can have multiple sorts on the same list.
 // Use in the following way:  SORTING(NameOfSort,{/*precomputation*/},{}
-#define SORTING(single,SortName,precomputation,compare_neg1_means_earlier,postcomputation) \
-ListItem *SortName##_internal_merge(ListItem *a,ListItem *b) {         \
- if ( !a ) return b; if ( !b ) return a;                               \
- int result=0;                                                         \
- single *A=(single *)a; single *B=(single *)b;                         \
- {compare_neg1_means_earlier}                                          \
- if ( result < 0 ) {                                                   \
-  a->next = SortName##_internal_merge(A->next,B);                      \
-  a->next->prev=a; a->prev = nullptr;                                  \
-  return a; } else {                                                   \
-  b->next = SortName##_internal_merge(a,b->next);                      \
-  b->next->prev=b; b->prev= nullptr;                                   \
-  return b; } }                                                        \
-ListItem *SortName##_internal_sort(ListItem *a) {                      \
- if (!a || !a->next) return a;                                         \
- ListItem *c = a, *b = a;                                              \
- while (c->next && c->next->next) { c = c->next->next; b = b->next; }  \
- b->next = nullptr;                                                    \
- a = SortName##_internal_sort(a);                                      \
- b = SortName##_internal_sort(b);                                      \
- return SortName##_internal_merge(a,b); }                              \
-void SortName() { {precomputation}                                     \
- if ( count < 2 ) return;                                              \
- first = SortName##_internal_sort(first);                              \
+
+#define SORTING(single,SortName,precomputation,compare_neg1_means_earlier,postcomputation) void SortName() { \
+  {precomputation} if (!first || !first->next) return; ListItem o; o.next=first; \
+   for (int width=1; width<count; width *= 2) { ListItem *lL=o.next, *bcml=nullptr; \
+    for (int j=0; j<count; j=j + width * 2) { ListItem * t=lL; \
+     for (int i=1; t && i<width; i++) t=t->next; if (!t) break; \
+     ListItem * right=t->next; if (!right) break; t->next=nullptr; \
+     ListItem * rs=nullptr; if (right->next) { rs=right->next;  ListItem * br=right; \
+      for (int i=1; rs && i<width; i++) { br=br->next; rs=rs->next; } br->next=nullptr; } \
+     ListItem * m=nullptr; int result=0; {  ListItem *L=lL, *R=right; ListItem d; \
+     ListItem *dP=&d, *LP=L, *RP=R; while (LP && RP) { { result=0; \
+      { single *a=(single *)LP, *b=(single *)RP, *A=a, *B=b; {compare_neg1_means_earlier} } \
+       if (result<=0) { dP->next=LP; LP=LP->next; } else { dP->next=RP; RP=RP->next; } } \
+       dP=dP->next; } if (LP) dP->next=LP; else if (RP) dP->next=RP; m=d.next; } t=m; \
+     while (t->next) t=t->next; t->next=rs; if (bcml) bcml->next=m; bcml=t; lL=t->next; \
+     if (j == 0) o.next=m; } } first=o.next; ListItem *p=nullptr; last=nullptr; \
+   FOREACH(single, s) { if (!s->next) last=s; s->prev=p; p=s; } \
+   {postcomputation} }
 
 
 // Class template:
@@ -2596,6 +2590,7 @@ public:
  void InsertBefore(ListItem *insert,ListItem *before);
  void InsertAfter(ListItem *insert, ListItem *after);
  void InsertAt(ListItem *insert, int i);
+ void Swap(ListItem *a, ListItem *b) { static ListItem t; t.next=a->next; t.prev=a->prev; a->next=b->next; a->prev=b->prev; b->next=t.next; b->prev=t.prev; }
  void _Remove(ListItem *L);
  void Remove(ListItem *L) { _Remove(L); }
  void RemoveAll(void);
