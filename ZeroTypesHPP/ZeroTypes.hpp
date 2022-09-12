@@ -3764,6 +3764,8 @@ public:
    }
    return null;
   }
+  // Query the pixel grid for a series of pixels that collide with a line, pox,poy is an offset inside a pixel 0-1
+  void PixelsInLine(Cartesian &pixel_line, double pox=0.5, double poy=0.5);
   Cartesian *Add(double x, double y) { Cartesian *a = new Cartesian(x, y); Append(a); return a; }
   Cartesian *Add(double x, double y, double z) { Cartesian *a = new Cartesian(x, y, z); Append(a); return a; }
   Cartesian *Add(double x, double y, double w, double h) { Cartesian *a = new Cartesian(x, y, w, h); Append(a); return a; }
@@ -8157,5 +8159,69 @@ inline bool file_exists(const char *fn);
 	  return _indention.value;
   }
 
+		// Query the pixel grid for a series of pixels that collide with a line, pox,poy is an offset inside a pixel 0-1
+		inline void Cartesians::PixelsInLine(Cartesian &pixel_line, double pox, double poy) {
+			Cartesian line;
+			line.Corners(pixel_line.x + pox, pixel_line.y + poy, pixel_line.x2 + pox, pixel_line.y2 + poy);
+			Cartesian area(min(line.x, line.x2), min(line.y, line.y2), max(line.x, line.x2), max(line.y, line.y2));
+			Cartesian start(line.x, line.y);
+			Cartesian end(line.x2, line.y2);
+			Add(start._X(), start._Y());
+			if (start._X() == end._X() && start._Y() == end._Y()) return;
+			Cartesian slope(line.x2 - line.x, line.y2 - line.y);
+			if (slope.x == 0.0 && slope.y == 0.0) return;
+			Cartesian slopeLength(0.0, 0.0, slope.x, slope.y);
+			double mag = slopeLength.Distance();
+			Cartesian unitSlope((slope.x / mag), (slope.y / mag));
+			// Start at the beginning.  Attach to the list.
+			Cartesian v(start.x, start.y);
+			Add(start._X(), start._Y());
+			BoxCollisionResults results;
+			while (end._X() != v._X() || end._Y() != v._Y()) {
+				v.x += unitSlope.x;
+				v.y += unitSlope.y;
+				Cartesian u(v._X(), v._Y());
+				Cartesian box(u._X(), u._Y());
+				// We expect this to be true, if it is not, we've moved beyond the end of the line, or something else is wrong, so we do something else..
+				if (line.LineRect(box, results)) {
+					// Check to see if we've already recorded the point.  Not super efficient, but necessary to avoid duplicates in some cases.
+					bool found = false;
+					EACH(first, Cartesian, c) {
+						if (c->_X() == u._X() && c->_Y() == u._Y()) {
+							found = true;
+							break;
+						}
+					}
+					if (found) continue;
+					Add(u._X(), u._Y());
+					if (results.endsInside || results.within) break; // This would mean we have reached the cell that includes the endpoint.
+				}
+				else { // Check boxes at the location, and nearby, to see if they collide with the line.  Last ditch effort to find corner cases.
+					Zint finds;
+					for (int cx = -1; cx <= 1; cx++) {
+						for (int cy = -1; cy += 1; cy++) {
+							u.Set(v._X() + cx, v._Y() + cy);
+							box.Set(u._X(), u._Y());
+							if (line.LineRect(box, results)) {
+								finds++;
+								// Check to see if we've already recorded the point.  Not super efficient, but necessary to avoid duplicates in some cases.
+								bool found = false;
+								EACH(first, Cartesian, c) {
+									if (c->_X() == u._X() && c->_Y() == u._Y()) {
+										found = true;
+										break;
+									}
+								}
+								if (found) continue;
+								Add(u._X(), u._Y());
+								if (results.endsInside || results.within) break; // This would mean we have reached the cell that includes the endpoint.
+							}
+						}
+					}
+					// We're LOST.  This case should never happen.  Placed here to avoid infinite loops.
+					if (finds == 0) break;
+				}
+			}
+		}
 #endif // _ZEROTYPES_HPP_
 #endif // C++
