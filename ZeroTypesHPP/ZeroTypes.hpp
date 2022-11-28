@@ -1401,254 +1401,265 @@ class ZIndexed {
 public:
  T oob;
  T *list;
- size_t unit,length,w,h;
- ZIndexed() {
-  list=nullptr;
-  w=h=0;
-  length=0;
-  unit=sizeof(T);
-  //  ZeroMemory(&oob,(SIZE_T)unit);
-  memset(&oob, 0, sizeof(oob));
+ size_t unit, length, w, h;
+ ZIndexed() { Init(); }
+ ZIndexed(size_t length) { Init(); Size(length); }
+ ZIndexed(size_t w, size_t h) { Init(); Size(w, h); }
+ void Init() {
+ 	list = nullptr;
+ 	w = h = 0;
+ 	length = 0;
+ 	unit = sizeof(T);
+ 	//  ZeroMemory(&oob,(SIZE_T)unit);
+ 	memset(&oob, 0, sizeof(oob));
  }
- ZIndexed( size_t length ) { Size(length); }
- ZIndexed( size_t w, size_t h ) { Size(w,h); }
- bool inBounds( int i ) {
-  if ( i < 0 ) return false;
-  size_t index=(size_t) i;
-  if ( index >= length ) return false;
-  return true;
+ bool inBounds(int i) {
+ 	if (i < 0) return false;
+ 	size_t index = (size_t)i;
+ 	if (index >= length) return false;
+ 	return true;
  }
- bool inBounds( int i, int j ) {
-  if ( i < 0 || j < 0 ) return false;
-  size_t index=(size_t) (i+j*w);
-  if ( index >= length ) return false;
-  return true;
+ bool inBounds(int i, int j) {
+ 	if (i < 0 || j < 0) return false;
+ 	if (i >= w || j >= h) return false;
+ 	return true;
  }
- void Swap( ZIndexed<T> *values ) {
-  T *tempList = list;
-  size_t tempLength = length;
-  size_t tempW = w;
-  size_t tempH = h;
-  list=values->list;
-  length=values->length;
-  w=values->w;
-  h=values->h;
-  values->list=tempList;
-  values->length=tempLength;
-  values->w=tempW;
-  values->h=tempH;
+ void Swap(ZIndexed<T> *values) {
+ 	T *tempList = list;
+ 	size_t tempLength = length;
+ 	size_t tempW = w;
+ 	size_t tempH = h;
+ 	list = values->list;
+ 	length = values->length;
+ 	w = values->w;
+ 	h = values->h;
+ 	values->list = tempList;
+ 	values->length = tempLength;
+ 	values->w = tempW;
+ 	values->h = tempH;
  }
  T *Increase() {
-  size_t newsize=length+1;
-  Size(newsize,true);
-  return Element((unsigned int) newsize-1);
+ 	size_t newsize = length + 1;
+ 	Size(newsize, true);
+ 	return Element((unsigned int)newsize - 1);
  }
  void IncreaseW() {
-  IncreaseW(w+1);
+ 	IncreaseW(w + 1);
  }
  void IncreaseH() {
-  IncreaseH(h+1);
+ 	IncreaseH(h + 1);
  }
- void IncreaseW( size_t neww ) {
-  if ( neww < w ) { ClipW(neww); return; }
-  if ( neww == w ) return;
-  if ( h == 0 ) Size(neww,1);
-  else {
-   size_t desiredLength=neww*h;
-   T *newlist;
-   try { newlist= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-   }
-   for ( int i=0; i<w; i++ ) for ( int j=0; j<h; j++ ) newlist[i+j*w]=list[i+j*w];
-   delete[] list;
-   length=desiredLength;
-   list=newlist;
-   w=neww;
-  }
+ void IncreaseW(size_t neww) {
+ 	if (neww < w) { ClipW(neww); return; }
+ 	if (neww == w) return;
+ 	if (h == 0) Size(neww, 1);
+ 	else {
+ 		size_t desiredLength = neww * h;
+ 		T *newlist;
+ 		try { newlist = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 		}
+ 		for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) OnCopyItem(newlist[i + j * w],list[i + j * w]);
+ 		delete[] list;
+ 		length = desiredLength;
+ 		list = newlist;
+ 		w = neww;
+ 	}
  }
- void IncreaseH( size_t newh ) {
-  if ( newh < h ) { ClipH(newh); return; }
-  if ( newh == h ) return;
-  if ( w == 0 ) Size(1,newh);
-  else {
-   size_t desiredLength=w*newh;
-   T *newlist;
-   try { newlist= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-   }
-   for ( int i=0; i<w; i++ ) for ( int j=0; j<h; j++ ) newlist[i+j*w]=list[i+j*w];
-   delete[] list;
-   length=desiredLength;
-   list=newlist;
-   h=newh;
-  }
+ void IncreaseH(size_t newh) {
+ 	if (newh < h) { ClipH(newh); return; }
+ 	if (newh == h) return;
+ 	if (w == 0) Size(1, newh);
+ 	else {
+ 		size_t desiredLength = w * newh;
+ 		T *newlist;
+ 		try { newlist = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 		}
+ 		for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) OnCopyItem(newlist[i + j * w],list[i + j * w]);
+ 		delete[] list;
+ 		length = desiredLength;
+ 		list = newlist;
+ 		h = newh;
+ 	}
  }
  void ClipW() {
-  if ( w==1 ) { Size(0); return; }
-  else if ( w==0 ) return;
-  ClipW(w-1);
+ 	if (w == 1) { Size(0); return; }
+ 	else if (w == 0) return;
+ 	ClipW(w - 1);
  }
  void ClipH() {
-  if ( h==1 ) { Size(0); return; }
-  else if ( h==0 ) return;
-  ClipW(h-1);
+ 	if (h == 1) { Size(0); return; }
+ 	else if (h == 0) return;
+ 	ClipW(h - 1);
  }
- void ClipW( size_t neww ) {
-  if ( neww==0 ) Size(0);
-  else
-   if ( neww > w ) IncreaseW(neww);
-   else {
-    size_t desiredLength=neww*h;
-    T *newlist;
-    try { newlist= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-     OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-    }
-    for ( int i=0; i<neww; i++ ) for ( int j=0; j<h; j++ ) newlist[i+j*w]=list[i+j*w];
-    delete[] list;
-    length=desiredLength;
-    list=newlist;
-    w=neww;
-   }
+ void ClipW(size_t neww) {
+ 	if (neww == 0) Size(0);
+ 	else
+ 		if (neww > w) IncreaseW(neww);
+ 		else {
+ 			size_t desiredLength = neww * h;
+ 			T *newlist;
+ 			try { newlist = new T[desiredLength]; }
+ 			catch (std::bad_alloc& ba) {
+ 				OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 			}
+ 			for (int i = 0; i < neww; i++) for (int j = 0; j < h; j++) OnCopyItem(newlist[i + j * w],list[i + j * w]);
+ 			delete[] list;
+ 			length = desiredLength;
+ 			list = newlist;
+ 			w = neww;
+ 		}
  }
- void ClipH( size_t newh ) {
-  if ( newh==0 ) Size(0);
-  else
-   if ( newh > h ) IncreaseH(newh);
-   else {
-    size_t desiredLength=w*newh;
-    T *newlist;
-    try { newlist= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-     OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-    }
-    for ( int i=0; i<w; i++ ) for ( int j=0; j<newh; j++ ) newlist[i+j*w]=list[i+j*w];
-    delete[] list;
-    length=desiredLength;
-    list=newlist;
-    h=newh;
-   }
+ void ClipH(size_t newh) {
+ 	if (newh == 0) Size(0);
+ 	else
+ 		if (newh > h) IncreaseH(newh);
+ 		else {
+ 			size_t desiredLength = w * newh;
+ 			T *newlist;
+ 			try { newlist = new T[desiredLength]; }
+ 			catch (std::bad_alloc& ba) {
+ 				OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 			}
+ 			for (int i = 0; i < w; i++) for (int j = 0; j < newh; j++) OnCopyItem(newlist[i + j * w],list[i + j * w]);
+ 			delete[] list;
+ 			length = desiredLength;
+ 			list = newlist;
+ 			h = newh;
+ 		}
  }
- void Size( size_t w, size_t h ) {
-  Size(w*h);
-  this->w=w;
-  this->h=h;
+ void Size(size_t w, size_t h) {
+ 	Size(w*h);
+ 	this->w = w;
+ 	this->h = h;
  }
  // Cannot have Size(w,h,keep) because it must be arbitrarily made later
- void Size( size_t desiredLength, having keep ) {
-  if ( length==desiredLength ) return;
-  if ( desiredLength == 0 ) {
-   if ( list ) {
-    delete[] list;
-    list=nullptr;
-   }
-   length=0;
-   return;
-  }
-  if ( list ) {
-   T *newlist;
-   try { newlist= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-    return;
-   }
-   int kept=(int) ( length < desiredLength ? length : desiredLength );
-   for ( int i=0; i<kept; i++ ) newlist[i]=list[i];
-   delete[] list;
-   length=desiredLength;
-   list=newlist;
-  } else {
-   length=desiredLength;
-   try { list= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-    return;
-   }
-  }
+ void Size(size_t desiredLength, having keep) {
+ 	if (length == desiredLength) return;
+ 	if (desiredLength == 0) {
+ 		if (list) {
+ 			delete[] list;
+ 			list = nullptr;
+ 		}
+ 		length = 0;
+ 		return;
+ 	}
+ 	if (list) {
+ 		T *newlist;
+ 		try { newlist = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 			return;
+ 		}
+ 		int kept = (int)(length < desiredLength ? length : desiredLength);
+ 		for (int i = 0; i < kept; i++) OnCopyItem(newlist[i],list[i]);
+ 		delete[] list;
+ 		length = desiredLength;
+ 		list = newlist;
+ 	}
+ 	else {
+ 		length = desiredLength;
+ 		try { list = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 			return;
+ 		}
+ 	}
  }
- void Size( size_t desiredLength ) {
-  if ( length==desiredLength ) return;
-  if ( desiredLength == 0 ) {
-   if ( list ) delete[] list;
-   list=nullptr;
-   length=0;
-   w=0;
-   h=0;
-   return;
-  }
-  if ( list ) {
-   delete[] list;
-   try { list= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-   }
-  } else {
-   try { list= new T[desiredLength]; } catch (std::bad_alloc& ba) {
-    OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int) (sizeof(T)*desiredLength) );
-   }
-  }
-  length=desiredLength;
+ void Size(size_t desiredLength) {
+ 	if (length == desiredLength) return;
+ 	if (desiredLength == 0) {
+ 		if (list) delete[] list;
+ 		list = nullptr;
+ 		length = 0;
+ 		w = 0;
+ 		h = 0;
+ 		return;
+ 	}
+ 	if (list) {
+ 		delete[] list;
+ 		try { list = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 		}
+ 	}
+ 	else {
+ 		try { list = new T[desiredLength]; }
+ 		catch (std::bad_alloc& ba) {
+ 			OUTPUT("NEW: bad_alloc caught: %s requesting %d\n", ba.what(), (int)(sizeof(T)*desiredLength));
+ 		}
+ 	}
+ 	length = desiredLength;
  }
- T *Element( unsigned int index ) {
-  return &list[index];
+ virtual void OnCopyItem(T* &a, T* &b) { a = b; }
+ T *Element(unsigned int index) {
+ 	return &list[index];
  }
- T *Element( unsigned int x, unsigned int y ) {
-  return &list[x+y*w];
+ T *Element(unsigned int x, unsigned int y) {
+ 	return &list[x + y * w];
  }
- T *Element( unsigned int index, bool boundaryCheck ) {
-  if ( index >= (unsigned int) length ) return nullptr;
-  return &list[index];
+ T *Element(unsigned int index, bool boundaryCheck) {
+ 	if (index >= (unsigned int)length) return nullptr;
+ 	return &list[index];
  }
- T *Element( unsigned int x, unsigned int y, bool boundaryCheck ) {
-  unsigned int index=x+y*w;
-  if ( index > (unsigned int) length ) return nullptr;
-  return &list[index];
+ T *Element(unsigned int x, unsigned int y, bool boundaryCheck) {
+ 	unsigned int index = x + y * w;
+ 	if (index > (unsigned int)length) return nullptr;
+ 	return &list[index];
  }
- T Value( unsigned int index ) {
-  return list[index];
+ T Value(unsigned int index) {
+ 	return list[index];
  }
- T Value( unsigned int x, unsigned int y ) { // unbounded
-  return list[x+y*w];
+ T Value(unsigned int x, unsigned int y) { // unbounded
+ 	return list[x + y * w];
  }
- T Value( unsigned int index, bool boundaryCheck ) {
-  if ( index >= (unsigned int) length ) return oob;
-  return list[index];
+ T Value(unsigned int index, bool boundaryCheck) {
+ 	if (index >= (unsigned int)length) return oob;
+ 	return list[index];
  }
- T Value( unsigned int x, unsigned int y, bool boundaryCheck ) {
-  int linear=x+y*w;
-  if ( linear > (unsigned int) length ) return oob;
-  return list[linear];
+ T Value(unsigned int x, unsigned int y, bool boundaryCheck) {
+ 	int linear = x + y * w;
+ 	if (linear > (unsigned int)length) return oob;
+ 	return list[linear];
  }
  T &Wrap(int index) {
 #if defined(DEBUG) || defined(DEBUG_OUTPUT)
-  if ( length == 0 ) {
-   OUTPUT("Warning: length was 0 when Indexed<T>.Wrap() was called\n");
-   return oob;
+  if (length == 0) {
+  	OUTPUT("Warning: length was 0 when Indexed<T>.Wrap() was called\n");
+  	return oob;
   }
 #endif
-  return (*this)[(index<0?-index:index)%length]; // Macos doesn't have abs(int)
+ 	return (*this)[(index < 0 ? -index : index) % length]; // Macos doesn't have abs(int)
  }
  T &operator[] (unsigned int index) {
 #if defined(DEBUG) || defined(DEBUG_OUTPUT)
-  if ( index >= (unsigned int) length ) {
-   OUTPUT("Warning: %d was out of bounds when requested on type %s\n",
-    (int) index, typeid(*this).name());
-   return oob;
-  }
+ if (index >= (unsigned int)length) {
+ 	OUTPUT("Warning: %d was out of bounds when requested on type %s\n",
+ 		(int)index, typeid(*this).name());
+ 	return oob;
+ }
 #endif
-  return list[index];
+ 	return list[index];
  }
  T &operator() (unsigned int x, unsigned int y) {
-  unsigned int linear=(unsigned int)(x+y*w);
+ 	unsigned int linear = (unsigned int)(x + y * w);
 #if defined(DEBUG) || defined(DEBUG_OUTPUT)
-  if ( linear >= (unsigned int) length ) {
-   OUTPUT("Warning: %d (%d,%d) was out of bounds when requested on type %s\n",
-    linear, (int)x, (int)y, typeid(*this).name());
-   return oob;
-  }
+ if (linear >= (unsigned int)length) {
+ 	OUTPUT("Warning: %d (%d,%d) was out of bounds when requested on type %s\n",
+ 		linear, (int)x, (int)y, typeid(*this).name());
+ 	return oob;
+ }
 #endif
-  return list[linear];
+ 	return list[linear];
  }
  T &operator() (unsigned int index) {
-  return list[index];
+ 	return list[index];
  }
  ~ZIndexed() {
-  if ( list ) delete[] list;
+ 	if (list) delete[] list;
  }
 };
 
