@@ -1595,6 +1595,18 @@ public:
   length = desiredLength;
  }
  virtual void OnCopyItem(T* listA, unsigned int indexA, T* listB, unsigned int indexB) { listA[indexA] = listB[indexB]; }
+ void CopyFrom(ZIndexed<T>& in) {
+	Size(in.length);
+	w=in.w;
+	h=in.h;
+	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(list,i,in.list,i);
+ }
+ void Set(ZIndexed<T>& out) {
+	out.Size(length);
+	out.w=w;
+	out.h=h;
+	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(out.list, i, list, i);
+ }
  T *Element(unsigned int index) {
   return &list[index];
  }
