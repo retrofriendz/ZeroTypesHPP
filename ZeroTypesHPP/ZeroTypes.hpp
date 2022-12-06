@@ -1601,7 +1601,7 @@ public:
 	h=in.h;
 	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(list,i,in.list,i);
  }
- void Set(ZIndexed<T>& out) {
+ void CopyTo(ZIndexed<T>& out) {
 	out.Size(length);
 	out.w=w;
 	out.h=h;
