@@ -2,7 +2,7 @@
 
 Truly single file library version of the ZeroTypes drop-in library ZeroTypesSFL, based on the ZeroJSON variant.
 
-Builds in MSVC2017
+Builds in MSVC2017 and beyond
 
 Easily ported to Linux
 
