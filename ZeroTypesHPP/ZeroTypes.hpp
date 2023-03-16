@@ -2684,7 +2684,7 @@ public:
 
 /// HANDLES, lists of specialty classes that point to list items of specific classes ONE..MANY..DONE automatically creates these ///
 
-// Internal unnamed handles
+// Internal unnamed handles; the "p" should never be nullptr or point to bad memory!  *you must be certain
 #define HANDLING(single,handle,singlekey) \
  class handle:public ListItem{public: \
   Zp<single> p; \
@@ -2699,6 +2699,7 @@ public:
    if(p) return p->toString(); \
    else return string(""); \
   } \
+  single& operator()() { return *(this->p); } \
  };
 
 #define HANDLINGS(single,handle,handles,singlekey) \
