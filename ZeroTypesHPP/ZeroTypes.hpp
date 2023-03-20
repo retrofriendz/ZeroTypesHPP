@@ -1607,6 +1607,20 @@ public:
 	out.h=h;
 	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(out.list, i, list, i);
  }
+ void CopyFrom(ZIndexed<T>& in, int start, int count) {
+ 	Size(in.count);
+ 	w = in.w;
+ 	h = in.h;
+ 	int total=start+count;
+ 	for (unsigned int i = start; i < (unsigned int)total; i++) OnCopyItem(list, i, in.list, i-start);
+ }
+ void CopyTo(ZIndexed<T>& out, int start, int count) {
+ 	out.Size(count);
+ 	out.w = w;
+ 	out.h = h;
+ 	int total = start + count;
+ 	for (unsigned int i = start; i < (unsigned int)length; i++) OnCopyItem(out.list, i, list, i-start);
+ }
  T *Element(unsigned int index) {
   return &list[index];
  }
