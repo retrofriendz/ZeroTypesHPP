@@ -1596,31 +1596,36 @@ public:
  }
  virtual void OnCopyItem(T* listA, unsigned int indexA, T* listB, unsigned int indexB) { listA[indexA] = listB[indexB]; }
  void CopyFrom(ZIndexed<T>& in) {
-	Size(in.length);
-	w=in.w;
-	h=in.h;
-	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(list,i,in.list,i);
+  Size(in.length);
+  w=in.w;
+  h=in.h;
+  for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(list,i,in.list,i);
  }
- void CopyTo(ZIndexed<T>& out) {
-	out.Size(length);
-	out.w=w;
-	out.h=h;
-	for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(out.list, i, list, i);
- }
+ void CopyTo(ZIndexed<T>& out) { out.CopyFrom(*this); }
  void CopyFrom(ZIndexed<T>& in, int start, int count) {
- 	Size(in.count);
- 	w = in.w;
- 	h = in.h;
- 	int total=start+count;
- 	for (unsigned int i = start; i < (unsigned int)total; i++) OnCopyItem(list, i, in.list, i-start);
+  Size(in.count);
+  w = in.w;
+  h = in.h;
+  int total = start + count;
+  for (unsigned int i = start; i < (unsigned int)total; i++) OnCopyItem(list, i, in.list, i - start);
  }
- void CopyTo(ZIndexed<T>& out, int start, int count) {
- 	out.Size(count);
- 	out.w = w;
- 	out.h = h;
- 	int total = start + count;
- 	for (unsigned int i = start; i < (unsigned int)length; i++) OnCopyItem(out.list, i, list, i-start);
+ void CopyTo(ZIndexed<T>& out, int start, int count) { out.CopyFrom(*this,start,count); }
+ void AppendFrom(ZIndexed<T>& in) {
+  int oldLength=length;
+  Size(length+in.length,true);
+  w = w+in.w;
+  //h = h+in.h; // Not supported.
+  for (unsigned int i = 0; i < (unsigned int)length; i++) OnCopyItem(list, oldLength+i, in.list, i);
  }
+ void AppendTo(ZIndexed<T>& out) { out.AppendFrom(in); }
+ void AppendFrom(ZIndexed<T>& in, int start, int count) {
+  int oldLength = length;
+  Size(length + in.length, true);
+  w = w+in.w;
+  //h = h+in.h; // Not supported.
+  for (unsigned int i = 0; i < (unsigned int)count; i++) OnCopyItem(list, oldLength + i, in.list, i+start);
+ }
+ void AppendTo(ZIndexed<T>& out, int start, int count) {	out.AppendFrom((*this), start, count); }
  T *Element(unsigned int index) {
   return &list[index];
  }
